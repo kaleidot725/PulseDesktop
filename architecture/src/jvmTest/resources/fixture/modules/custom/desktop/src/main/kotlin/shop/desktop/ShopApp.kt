@@ -1,8 +1,7 @@
 package shop.desktop
 
 import shop.catalog.CatalogScreen
-import shop.db.ItemTable
-import shop.repository.TableItemRepository
-import shop.usecase.ListItemsUseCase
+import shop.data.TableItemRepository
+import shop.domain.ListItemsUseCase
 
-val app = CatalogScreen(ListItemsUseCase(TableItemRepository(ItemTable())))
+val app = CatalogScreen(ListItemsUseCase(TableItemRepository()))

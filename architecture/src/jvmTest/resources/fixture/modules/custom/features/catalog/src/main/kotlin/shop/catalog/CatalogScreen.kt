@@ -1,5 +1,5 @@
 package shop.catalog
 
-import shop.usecase.ListItemsUseCase
+import shop.domain.ListItemsUseCase
 
 class CatalogScreen(private val listItems: ListItemsUseCase)
