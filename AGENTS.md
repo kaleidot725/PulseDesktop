@@ -27,7 +27,8 @@ data and callbacks only. Packages decide which is which — `section` and `compo
 free. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
 `feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: the domain owns the
 repository interfaces and depends only on the model, `core/data` implements them, and a feature
-reaches data only through the domain. Dependencies are read from imports.
+reaches data only through the domain. Dependencies are read from imports. The module names are a
+`PulseModuleLayout`, which a project with names of its own replaces.
 
 ## Development Commands
 
@@ -98,7 +99,8 @@ PulseDesktop/
 │   └── src/
 │       ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
 │       │   ├── PulseConventions.kt   # assertPulseMviConventions and the checks it runs
-│       │   └── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
+│       │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
+│       │   └── PulseModuleLayout.kt  # which module names play which layer, Now in Android by default
 │       └── jvmTest/…                 # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app (Navigation 3)
 │   └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/

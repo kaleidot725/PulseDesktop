@@ -31,7 +31,7 @@ class PulseModuleConventionsTest {
                 "core/designsystem",
                 "core/ui",
             ),
-            conforming.files.mapNotNull { it.pulseModule }.toSet(),
+            conforming.files.mapNotNull { it.pulseModule() }.toSet(),
         )
 
         conforming.assertPulseModuleConventions()
@@ -51,10 +51,43 @@ class PulseModuleConventionsTest {
      */
     @Test
     fun `reads an api and impl split as one feature`() {
-        val modules = conforming.files.filter { it.name in setOf("ForYouRoute", "ForYouScreen") }.map { it.pulseModule }
+        val modules = conforming.files.filter { it.name in setOf("ForYouRoute", "ForYouScreen") }.map { it.pulseModule() }
 
         assertEquals(listOf("feature/foryou", "feature/foryou"), modules)
         conforming.assertFeaturesDoNotDependOnEachOther()
+    }
+
+    /**
+     * A project with names of its own is not recognised under Now in Android's names, and so is not checked at all —
+     * which is why the names can be replaced.
+     */
+    @Test
+    fun `leaves a project with other module names alone under the default layout`() {
+        assertEquals(emptySet(), custom.files.mapNotNull { it.pulseModule() }.toSet())
+    }
+
+    /**
+     * The same rules hold under a layout that maps each layer to the project's own names, and a broad wildcard under `shared` for
+     * support only takes what the earlier layers left.
+     */
+    @Test
+    fun `checks a project with its own module names under a custom layout`() {
+        assertEquals(
+            setOf("desktop", "features/catalog", "shared/entity", "shared/usecase", "shared/repository", "shared/db"),
+            custom.files.mapNotNull { it.pulseModule(shopLayout) }.toSet(),
+        )
+
+        custom.assertPulseModuleConventions(shopLayout)
+    }
+
+    /** A violation is found under the custom names exactly as it is under the default ones. */
+    @Test
+    fun `reports a violation under a custom layout`() {
+        val violating = custom + Konsist.scopeFromDirectory(fixture("custom-violating"))
+
+        val failure = assertFailsWith<KoAssertionFailedException> { violating.assertModelDependsOnNothing(shopLayout) }
+        val message = failure.message ?: ""
+        check(message.contains("EntityKnowsTheUseCase")) { "Expected the failure to name EntityKnowsTheUseCase: $message" }
     }
 
     /** A `core` module that reaches into `app` can no longer be built without the whole application. */
@@ -131,4 +164,18 @@ class PulseModuleConventionsTest {
     private val conforming get() = Konsist.scopeFromDirectory(fixture("conforming"))
 
     private val violating get() = conforming + Konsist.scopeFromDirectory(fixture("violating"))
+
+    private val custom get() = Konsist.scopeFromDirectory(fixture("custom"))
+
+    private val shopLayout =
+        PulseModuleLayout(
+            app = listOf("desktop"),
+            features = listOf("features/*"),
+            model = listOf("shared/entity"),
+            domain = listOf("shared/usecase"),
+            data = listOf("shared/repository"),
+            dataSources = listOf("shared/db"),
+            sharedUi = listOf("shared/widget"),
+            support = listOf("shared/*"),
+        )
 }
