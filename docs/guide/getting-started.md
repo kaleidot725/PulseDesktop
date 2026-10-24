@@ -229,7 +229,7 @@ The repository includes a pulse grid demo: four areas share one Container, and a
 to the two it shares an edge with. Clone the repo and run:
 
 ```bash
-./gradlew :demo:run
+./gradlew :demo:app:run
 ```
 
 ## Next Steps
