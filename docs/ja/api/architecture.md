@@ -1,8 +1,8 @@
-# Konsist
+# アーキテクチャ検査
 
 このページの内容はすべて任意のアーティファクト `architecture` にあります。パッケージは `jp.kaleidot725.pulse.architecture` で、いずれも Konsist の `KoScope` の拡張関数です。
 
-それぞれの検査の意味と理由は [Konsist ガイド](/ja/guide/konsist) にあります。
+それぞれの検査の意味と理由は [アーキテクチャ検査のガイド](/ja/guide/architecture-checks) にあります。
 
 ## assertPulseMviConventions
 
@@ -105,5 +105,5 @@ fun KoScope.assertScreensComposeSections()
 
 ## 次のステップ
 
-- [Konsist ガイド](/ja/guide/konsist) — セットアップと各検査の理由
+- [アーキテクチャ検査のガイド](/ja/guide/architecture-checks) — セットアップと各検査の理由
 - [マーカーインターフェース](/ja/api/interfaces) — 検査の対象になっている型

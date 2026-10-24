@@ -79,4 +79,5 @@ dependencies {
 - [Getting Started](/guide/getting-started) — build your first counter app
 - [Architecture](/guide/architecture) — understand how all the pieces fit together
 - [Navigation 3](/guide/navigation3) — scope ViewModels to a back stack entry
+- [Architecture checks](/guide/architecture-checks) — check in your tests that the code follows the conventions
 - [Unicast](/guide/unicast) — send child ViewModel messages up to a Container

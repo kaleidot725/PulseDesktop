@@ -77,4 +77,5 @@ dependencies {
 - [はじめかた](/ja/guide/getting-started) — 最初のカウンターアプリを作る
 - [アーキテクチャ](/ja/guide/architecture) — 各要素がどう組み合わさるかを理解する
 - [Navigation 3](/ja/guide/navigation3) — ViewModel をバックスタックエントリにスコープする
+- [アーキテクチャ検査](/ja/guide/architecture-checks) — 規約に従っているかを自分のテストで検査する
 - [Unicast](/ja/guide/unicast) — 子の ViewModel から Container へメッセージを送る
