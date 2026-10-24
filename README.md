@@ -9,11 +9,14 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![](https://jitpack.io/v/kaleidot725/PulseDesktop.svg)](https://jitpack.io/#kaleidot725/PulseDesktop)
 
-PulseDesktop is an MVI library for Compose Desktop. A `PulseViewModel` owns the state of one section
-of the screen, and a `PulseContainer` coordinates several of them: **Broadcast** sends a message
-from the Container to every ViewModel, **Unicast** sends one from a ViewModel up to the Container,
-and **Refresh** rebuilds the view tree without losing state. Both extend
-`androidx.lifecycle.ViewModel`, so the `ViewModelStore` that holds them decides how long they live.
+PulseDesktop is a framework for Compose Desktop apps. A desktop window shows many panels at once, so
+PulseDesktop gives each **section** of a screen its own `PulseViewModel` and puts one
+`PulseContainer` above them. **Broadcast** reaches every section, **Unicast** sends a message up from
+one, and **Refresh** rebuilds the view without losing state.
+
+Around that, it decides how a window is split. A **screen** creates the ViewModels and lays out the
+sections, a section binds one ViewModel with `PulseContent`, and a **component** takes data and
+callbacks only. Your own tests can check that the code keeps to it.
 
 Read [What is PulseDesktop?](https://kaleidot725.github.io/PulseDesktop/guide/) for the idea behind it.
 
@@ -54,8 +57,9 @@ dependencies {
 
 ## Getting started
 
-A ViewModel handles actions and updates its state; a screen observes it with `PulseContent`.
-The full walkthrough, including the Container, is in
+A ViewModel handles actions and updates its state. A section binds it to the UI with
+`PulseContent`, and the screen creates the ViewModel and places the section. The full walkthrough,
+including the Container, is in
 [Getting Started](https://kaleidot725.github.io/PulseDesktop/guide/getting-started).
 
 ```kotlin
@@ -69,15 +73,22 @@ class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEven
     }
 }
 
+// counter/section/CounterSection.kt
 @Composable
-fun CounterScreen() {
-    val viewModel = rememberPulseViewModel { CounterViewModel() }
-
+fun CounterSection(viewModel: CounterViewModel) {
     PulseContent(viewModel = viewModel) { state, onAction ->
         Button(onClick = { onAction(CounterAction.Increment) }) {
             Text("${state.count}")
         }
     }
+}
+
+// counter/CounterScreen.kt
+@Composable
+fun CounterScreen() {
+    val viewModel = rememberPulseViewModel { CounterViewModel() }
+
+    CounterSection(viewModel = viewModel)
 }
 ```
 

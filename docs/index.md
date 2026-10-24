@@ -3,36 +3,36 @@ layout: home
 
 hero:
   name: PulseDesktop
-  text: MVI for Compose Desktop
-  tagline: A lightweight, coroutine-based MVI library for Compose Desktop.
+  text: A framework for Compose Desktop apps
+  tagline: Split a window into screens, sections and components. Give each section its own ViewModel, and let one Container keep them working together.
   actions:
     - theme: brand
       text: Get Started
       link: /guide/getting-started
     - theme: alt
+      text: What is PulseDesktop?
+      link: /guide/
+    - theme: alt
       text: View on GitHub
       link: https://github.com/kaleidot725/PulseDesktop
 
 features:
-  - icon: 🏗️
-    title: MVI Architecture
-    details: Clear separation of State, Action, Event, Broadcast, and Unicast. Keeps your code organized and testable.
-  - icon: 🔄
-    title: ViewModel & Container
-    details: PulseViewModel manages state autonomously. PulseContainer coordinates multiple ViewModels across your app.
+  - icon: 🪟
+    title: Designed for windows
+    details: A desktop window shows many panels at once. Each section gets its own ViewModel, rather than each screen getting one.
+  - icon: 🧩
+    title: Screen, Section, Component
+    details: A fixed way to split a window. A screen lays out sections, a section binds one ViewModel, and a component takes data and callbacks.
   - icon: 📡
-    title: Broadcast
-    details: Type-safe messages delivered from Container to all registered ViewModels simultaneously.
-  - icon: ⬆️
-    title: Unicast
-    details: Type-safe messages emitted from ViewModels to their parent Container for coordination.
-  - icon: 🖥️
-    title: View Refresh
-    details: Forces the entire view tree to reconstruct on demand while preserving ViewModel state.
-  - icon: ⚡
-    title: Coroutine-Based
-    details: Built on Kotlin Coroutines and StateFlow. Efficient, non-blocking reactive state management.
-  - icon: 🎨
-    title: Compose Integration
-    details: Ready-to-use PulseHost and PulseContent composables with automatic lifecycle management.
+    title: Sections that work together
+    details: The Container broadcasts to every section, and a section reports up with Unicast. Refresh rebuilds the view without losing state.
+  - icon: 🔁
+    title: One-way state
+    details: MVI with State, Action and Event. State changes through update and reaches the UI as a StateFlow.
+  - icon: 🧭
+    title: Navigation 3 lifetimes
+    details: The navigation artifact ties ViewModels and Containers to a back stack entry, so a route keeps its state while it is covered.
+  - icon: ✅
+    title: Conventions you can test
+    details: The architecture artifact checks the state rules and the screen, section and component split with Konsist, from one test in your own suite.
 ---

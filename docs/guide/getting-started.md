@@ -118,7 +118,8 @@ fun main() = application {
 
 ### Screen composable
 
-Wrap your layout with `PulseHost` to enable refresh and broadcast:
+The screen is what the route shows, and it sits at the root of the feature package. It wraps the
+layout with `PulseHost` to enable refresh and broadcast, and places the sections inside:
 
 ```kotlin
 @Composable
@@ -142,9 +143,10 @@ fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
 }
 ```
 
-### Content composable
+### Section composable
 
-Use `PulseContent` to observe a ViewModel and handle events:
+A section is the part one ViewModel answers for, and it lives in a `section` package. It binds that
+ViewModel with `PulseContent`, which observes the state and handles the events:
 
 ```kotlin
 @Composable

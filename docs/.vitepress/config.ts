@@ -15,7 +15,7 @@ export default withMermaid(defineConfig({
     root: {
       label: 'English',
       lang: 'en',
-      description: 'A lightweight MVI library for Compose Desktop',
+      description: 'A framework for Compose Desktop apps',
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/', activeMatch: '/guide/' },
@@ -83,7 +83,7 @@ export default withMermaid(defineConfig({
       label: '日本語',
       lang: 'ja',
       link: '/ja/',
-      description: 'Compose Desktop 向けの軽量 MVI ライブラリ',
+      description: 'Compose Desktop アプリのためのフレームワーク',
       themeConfig: {
         nav: [
           { text: 'ガイド', link: '/ja/guide/', activeMatch: '/ja/guide/' },
