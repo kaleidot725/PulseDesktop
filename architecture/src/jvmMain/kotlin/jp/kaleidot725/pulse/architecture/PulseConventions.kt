@@ -210,12 +210,14 @@ public fun KoScope.pulseMessageClasses(): List<KoClassDeclaration> = classes().w
 /** Every object that implements one of the four message markers directly. */
 public fun KoScope.pulseMessageObjects(): List<KoObjectDeclaration> = objects().withParentOf(messageMarkers)
 
-private fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
+internal fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
 
-private fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
+internal fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
 
 private fun KoFunctionDeclaration.hasViewModelOrContainerParameter(): Boolean =
     parameters.any { it.type.name.endsWith("ViewModel") || it.type.name.endsWith("Container") }
+
+internal fun KoFunctionDeclaration.hasRepositoryParameter(): Boolean = parameters.any { it.type.name.endsWith("Repository") }
 
 private val messageMarkers =
     listOf(
