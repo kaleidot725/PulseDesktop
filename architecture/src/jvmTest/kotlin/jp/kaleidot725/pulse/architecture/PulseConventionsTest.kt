@@ -24,7 +24,7 @@ class PulseConventionsTest {
      */
     @Test
     fun `passes on the demo application`() {
-        Konsist.scopeFromProject(moduleName = "demo").assertPulseMviConventions()
+        Konsist.scopeFromDirectory("demo").assertPulseMviConventions()
     }
 
     /**

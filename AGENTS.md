@@ -39,7 +39,7 @@ The module names are a `PulseModuleLayout`, which a project with names of its ow
 - **Check code quality**: `./gradlew ktlintCheck` (auto-fix with `./gradlew ktlintFormat`)
 - **Test coverage**: `./gradlew koverHtmlReport` (opens at `build/reports/kover/html/index.html`; XML via `koverXmlReport`)
 - **Publish to local Maven**: `./gradlew :mvi:publishToMavenLocal :navigation:publishToMavenLocal :architecture:publishToMavenLocal`
-- **Run the demo**: `./gradlew :demo:run`
+- **Run the demo**: `./gradlew :demo:app:run`
 
 ## Writing Tests
 
@@ -102,10 +102,13 @@ PulseDesktop/
 │       │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
 │       │   └── PulseModuleLayout.kt  # which module names play which layer, Now in Android by default
 │       └── jvmTest/…                 # the checks, over conforming and violating fixtures
-├── demo/                             # Pulse grid demo app (Navigation 3)
-│   └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/
-│       ├── DemoApp.kt                # NavDisplay and the back stack
-│       └── count/                    # One feature: screen at its root
+├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
+│   ├── app/                          # :demo:app — the window, NavDisplay and the back stack
+│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/
+│   │       ├── DemoApp.kt
+│   │       └── Main.kt
+│   └── feature/count/                # :demo:feature:count — one feature, screen at its root
+│       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/
 │           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
 │           ├── PulseCountContainer.kt
 │           ├── component/            # Stateless composables of the screen

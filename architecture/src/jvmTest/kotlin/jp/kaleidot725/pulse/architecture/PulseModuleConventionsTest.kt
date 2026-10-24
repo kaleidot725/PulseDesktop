@@ -36,11 +36,16 @@ class PulseModuleConventionsTest {
     }
 
     /**
-     * The demo is a single module outside the `app` / `feature` / `core` layout, which the checks must leave alone.
+     * The demo is split the way the default layout expects — `demo/app` on top of `demo/feature/count` — so the rules are
+     * known to hold on a real build, not only on fixtures. The layout matches the end of each directory, which is why
+     * the `demo` above them does not get in the way.
      */
     @Test
     fun `passes on the demo application`() {
-        Konsist.scopeFromProject(moduleName = "demo").assertPulseModuleConventions()
+        val demo = Konsist.scopeFromDirectory("demo")
+
+        assertEquals(setOf("app", "feature/count"), demo.files.mapNotNull { it.pulseModule() }.toSet())
+        demo.assertPulseModuleConventions()
     }
 
     /**

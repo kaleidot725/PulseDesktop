@@ -15,4 +15,5 @@ rootProject.name = "PulseDesktop"
 include(":mvi")
 include(":navigation")
 include(":architecture")
-include(":demo")
+include(":demo:app")
+include(":demo:feature:count")
