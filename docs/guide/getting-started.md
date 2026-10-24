@@ -2,8 +2,8 @@
 
 This guide walks you through building a simple counter app with PulseDesktop.
 
-It creates the ViewModel with `rememberPulseViewModel` from `navigation`, so add that
-artifact alongside the core one. To drive the lifecycle yourself with the core alone, see
+It creates the ViewModel with `rememberPulseViewModel`, which the `navigation` artifact adds, so that
+one goes in alongside `mvi`. To drive the lifecycle yourself with `mvi` alone, see
 [ViewModel](/guide/viewmodel).
 
 ```kotlin

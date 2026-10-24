@@ -2,7 +2,7 @@
 
 このページの内容はすべて、任意のアーティファクト `navigation` にあります。パッケージは `jp.kaleidot725.pulse.navigation` です。
 
-仕組みの解説は [Navigation 3 ガイド](/ja/guide/navigation3) を、コアのみで使う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
+仕組みの解説は [Navigation 3 ガイド](/ja/guide/navigation3) を、`mvi` だけで使う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ## rememberPulseViewModel
 
@@ -40,7 +40,7 @@ inline fun <reified ViewModel : PulseViewModel<*, *, *, *, *>> rememberPulseView
 | Compose Desktop の `Window` | 画面が生きている間。コンポジションの再起動をまたいで生き残る |
 | Navigation 3 のエントリ（`NavDisplay` の `entryDecorators` に `rememberPulseNavEntryDecorators()` を渡した場合） | ルートがバックスタックにある間。ルートが pop されるとキャンセルされる |
 | `CompositionLocalProvider(LocalViewModelStoreOwner provides ...)` で自分で与えたもの | そのオーナーを保持している間 |
-| ホストが何も提供しない | `rememberPulseViewModel` はメッセージ付きで失敗する。寿命を所有するものが無いので、オーナーを与えるかコアのみで使う |
+| ホストが何も提供しない | `rememberPulseViewModel` はメッセージ付きで失敗する。寿命を所有するものが無いので、オーナーを与えるか `mvi` だけで使う |
 
 #### 計画しておくべき 2 つの帰結
 

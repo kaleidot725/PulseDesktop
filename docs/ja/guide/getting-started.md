@@ -2,7 +2,7 @@
 
 このガイドでは、PulseDesktop でシンプルなカウンターアプリを作る手順を追います。
 
-ViewModel の生成には `navigation` の `rememberPulseViewModel` を使うので、コアと一緒に追加してください。コアのみでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
+ViewModel の生成には `navigation` が追加する `rememberPulseViewModel` を使うので、`mvi` と一緒に追加してください。`mvi` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ```kotlin
 dependencies {

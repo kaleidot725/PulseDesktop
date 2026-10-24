@@ -1,6 +1,6 @@
 # API Overview
 
-PulseDesktop exposes a small, focused API surface. The core artifact lives in `jp.kaleidot725.pulse.mvi`. The optional `navigation` artifact adds three composables. They live in `jp.kaleidot725.pulse.navigation` and are listed under [Extensions](#extensions).
+PulseDesktop exposes a small, focused API surface. One package per artifact: `mvi` is the core and lives in `jp.kaleidot725.pulse.mvi`, while the optional `navigation` and `architecture` artifacts live in `jp.kaleidot725.pulse.navigation` and `jp.kaleidot725.pulse.architecture`. Both are listed under [Extensions](#extensions).
 
 ## Classes
 
@@ -35,3 +35,16 @@ PulseDesktop exposes a small, focused API surface. The core artifact lives in `j
 | [`rememberPulseViewModel`](/api/navigation3#rememberpulseviewmodel) | ViewModel scoped to a `ViewModelStoreOwner` |
 | [`rememberPulseContainer`](/api/navigation3#rememberpulsecontainer) | Container scoped to a `ViewModelStoreOwner` |
 | [`rememberPulseNavEntryDecorators`](/api/navigation3#rememberpulsenaventrydecorators) | `NavDisplay` decorators that scope ViewModels to a back stack entry |
+
+### Architecture checks
+
+| Assertion | Description |
+|---|---|
+| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | Every check below, in order |
+| [`assertStatesAreDataTypes`](/api/architecture#assertstatesaredatatypes) | A `PulseState` is a `data class` or `data object` |
+| [`assertMessagesAreSealedOrDataTypes`](/api/architecture#assertmessagesaresealedordatatypes) | A message interface is `sealed`; a class or object implementing one is `data` |
+| [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` and `…Container` |
+| [`assertViewModelsHoldTheirDataInTheirState`](/api/architecture#assertviewmodelsholdtheirdataintheirstate) | No `var` property on a ViewModel or Container |
+| [`assertSectionsBindOneViewModel`](/api/architecture#assertsectionsbindoneviewmodel) | A section binds its ViewModel with `PulseContent` |
+| [`assertComponentsAreStateless`](/api/architecture#assertcomponentsarestateless) | A component takes data and callbacks only |
+| [`assertScreensComposeSections`](/api/architecture#assertscreenscomposesections) | A screen composes sections instead of binding a ViewModel |
