@@ -1,4 +1,4 @@
-# Konsist
+# Architecture checks
 
 `architecture` is an optional artifact. It states the conventions PulseDesktop expects of the code around it as [Konsist](https://docs.konsist.lemonappdev.com/) assertions, so your own test suite checks them.
 
@@ -103,6 +103,6 @@ An empty result passes. A module with no PulseDesktop types yet does not fail, s
 
 ## Next steps
 
-- [Konsist API](/api/konsist) — the signature of every assertion and query
+- [Architecture checks API](/api/architecture) — the signature of every assertion and query
 - [Architecture](/guide/architecture) — the conventions these checks come from
 - [ViewModel](/guide/viewmodel) — state, actions and the lifecycle hooks

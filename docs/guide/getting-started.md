@@ -2,8 +2,8 @@
 
 This guide walks you through building a simple counter app with PulseDesktop.
 
-It creates the ViewModel with `rememberPulseViewModel` from `navigation`, so add that
-artifact alongside the core one. To drive the lifecycle yourself with the core alone, see
+It creates the ViewModel with `rememberPulseViewModel`, which the `navigation` artifact adds, so that
+one goes in alongside `mvi`. To drive the lifecycle yourself with `mvi` alone, see
 [ViewModel](/guide/viewmodel).
 
 ```kotlin
@@ -118,7 +118,8 @@ fun main() = application {
 
 ### Screen composable
 
-Wrap your layout with `PulseHost` to enable refresh and broadcast:
+The screen is what the route shows, and it sits at the root of the feature package. It wraps the
+layout with `PulseHost` to enable refresh and broadcast, and places the sections inside:
 
 ```kotlin
 @Composable
@@ -142,9 +143,10 @@ fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
 }
 ```
 
-### Content composable
+### Section composable
 
-Use `PulseContent` to observe a ViewModel and handle events:
+A section is the part one ViewModel answers for, and it lives in a `section` package. It binds that
+ViewModel with `PulseContent`, which observes the state and handles the events:
 
 ```kotlin
 @Composable

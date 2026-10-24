@@ -3,7 +3,7 @@
 `navigation` is an optional artifact. It ties a `PulseViewModel`'s lifetime to a
 Navigation 3 back stack entry.
 
-The core artifact has no opinion about lifetime. `PulseViewModel` is an
+The `mvi` artifact has no opinion about lifetime. `PulseViewModel` is an
 `androidx.lifecycle.ViewModel`, so whichever `ViewModelStore` holds it decides how long it lives.
 This artifact supplies a store per back stack entry, and the composables that put a ViewModel into
 it.

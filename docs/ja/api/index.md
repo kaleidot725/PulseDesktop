@@ -1,6 +1,6 @@
 # API 概要
 
-PulseDesktop の API は小さく、焦点が絞られています。コアのアーティファクトは `jp.kaleidot725.pulse.mvi` にあります。任意のアーティファクト `navigation` は、3 つの Composable を追加します。パッケージは `jp.kaleidot725.pulse.navigation` です（[拡張](#拡張) を参照）。
+PulseDesktop の API は小さく、焦点が絞られています。アーティファクトとパッケージは 1 対 1 です。コアの `mvi` は `jp.kaleidot725.pulse.mvi`、任意の `navigation` と `architecture` はそれぞれ `jp.kaleidot725.pulse.navigation` と `jp.kaleidot725.pulse.architecture` にあります。後者 2 つは [拡張](#拡張) にまとめています。
 
 ## クラス
 
@@ -35,3 +35,16 @@ PulseDesktop の API は小さく、焦点が絞られています。コアの�
 | [`rememberPulseViewModel`](/ja/api/navigation3#rememberpulseviewmodel) | `ViewModelStoreOwner` にスコープされた ViewModel |
 | [`rememberPulseContainer`](/ja/api/navigation3#rememberpulsecontainer) | `ViewModelStoreOwner` にスコープされた Container |
 | [`rememberPulseNavEntryDecorators`](/ja/api/navigation3#rememberpulsenaventrydecorators) | ViewModel をバックスタックエントリにスコープする `NavDisplay` のデコレータ |
+
+### アーキテクチャ検査
+
+| アサート | 説明 |
+|---|---|
+| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 以下のすべての検査を順に実行する |
+| [`assertStatesAreDataTypes`](/ja/api/architecture#assertstatesaredatatypes) | `PulseState` は `data class` または `data object` |
+| [`assertMessagesAreSealedOrDataTypes`](/ja/api/architecture#assertmessagesaresealedordatatypes) | メッセージの interface は `sealed`、直接実装する class・object は `data` |
+| [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/ja/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` と `…Container` |
+| [`assertViewModelsHoldTheirDataInTheirState`](/ja/api/architecture#assertviewmodelsholdtheirdataintheirstate) | ViewModel と Container は `var` プロパティを持たない |
+| [`assertSectionsBindOneViewModel`](/ja/api/architecture#assertsectionsbindoneviewmodel) | Section は `PulseContent` で ViewModel を束ねる |
+| [`assertComponentsAreStateless`](/ja/api/architecture#assertcomponentsarestateless) | Component はデータとコールバックだけを受け取る |
+| [`assertScreensComposeSections`](/ja/api/architecture#assertscreenscomposesections) | Screen は ViewModel を束ねず Section を並べる |

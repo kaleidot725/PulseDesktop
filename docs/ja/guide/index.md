@@ -1,30 +1,61 @@
 # PulseDesktop とは
 
-PulseDesktop は **Compose Desktop** 向けの軽量な MVI（Model-View-Intent）ライブラリです。標準的な MVI パターンに、複数の Composable からなるレイアウトを調整するための 3 つの機能を加えています。
+PulseDesktop は **Compose Desktop** のアプリを作るためのフレームワークです。ウィンドウをどう分けるか、各部分の状態をどこに置くか、部分どうしがどうやり取りするか、それぞれがどれだけ生きるかを決めています。コードがその決まりを守っているかは、自分のテストで検査できます。
+
+## なぜデスクトップ向けなのか
+
+スマートフォンでは、1 つの画面に 1 つの ViewModel を対応させるのが普通です。デスクトップのウィンドウは違います。サイドバー、エディタ、インスペクタが同時に表示され、それぞれが別々に変化し、その変化の一部はほかのパネルにも届く必要があります。
+
+すべてを 1 つの ViewModel に入れると、その ViewModel がすべてを知るファイルになります。かといって連携の手段なしに分けると、パネルどうしが互いの中身に手を伸ばし始めます。PulseDesktop は各部分に専用の ViewModel を持たせ、その上に Container を 1 つ置きます。
+
+## ウィンドウの分け方
+
+ウィンドウは 3 種類の Composable から組み立てます。どれに当たるかは、Composable を置くパッケージで決まります。
+
+| 役割 | 何をするか | 置き場所 |
+|---|---|---|
+| **Screen** | ルートが表示するもの。ViewModel と Container を生成し、Section を配置する | feature パッケージのルート |
+| **Section** | 1 つの ViewModel が受け持つ部分。その ViewModel を `PulseContent` で束ねる | `section` パッケージ |
+| **Component** | 末端。データとコールバックだけを受け取るので、使い回せて単体で Preview できる | `component` パッケージ |
+
+## Section どうしの連携
+
+Section をつなぐのは、Screen が持つ Container です。Section 間のメッセージは 3 つの機能が運びます。
 
 | 機能 | 説明 |
 |---|---|
-| **Broadcast** | Container から登録済みのすべての ViewModel へ、型付きメッセージを一斉に届ける |
-| **Unicast** | 子の ViewModel から親の Container へ、型付きメッセージを送る |
-| **View Refresh** | ViewModel の状態を失わずに、Compose のビューツリー全体をオンデマンドで再構築する |
+| **Broadcast** | Container から、すべての Section の ViewModel へ型付きメッセージを一度に届ける |
+| **Unicast** | ある Section の ViewModel から、Container へ型付きメッセージを送る |
+| **View Refresh** | どの ViewModel の状態も失わずに、Container 配下のビューツリーを作り直す |
 
-## なぜ PulseDesktop か
+## ウィンドウの例
 
-Compose アプリはたいてい、独立した Composable のセクションを複数含みます。それぞれが独自の状態を持ちます。PulseDesktop は、それらを密結合させずに調整できるようにします。
-
-次の図では、`PulseContainer` が両方の ViewModel の上に位置しています。`container.broadcast(MyBroadcast.Sync)` を呼ぶと、ViewModel A と ViewModel B の両方がメッセージを受け取り、それぞれ独立して反応します。
+下のウィンドウでは、エディタが変更を Unicast で伝え、Container がそれを 3 つの Section すべてに Broadcast します。どう反応するかは、それぞれの Section が自分で決めます。
 
 ```mermaid
 flowchart TB
-    PC["PulseContainer"]
+    PC["PulseContainer<br/><i>Screen が保持する</i>"]
     subgraph W["Window"]
         direction LR
-        SB["サイドバー<br/><i>ViewModel A</i>"]
-        MC["メインコンテンツ<br/><i>ViewModel B</i>"]
+        A["SideBar Section<br/><i>SideBarViewModel</i>"]
+        B["Editor Section<br/><i>EditorViewModel</i>"]
+        C["Inspector Section<br/><i>InspectorViewModel</i>"]
     end
-    PC -- "broadcast(Sync)" --> SB
-    PC -- "broadcast(Sync)" --> MC
+    B -- "unicast" --> PC
+    PC -- "broadcast" --> A
+    PC -- "broadcast" --> B
+    PC -- "broadcast" --> C
 ```
+
+## アーティファクト
+
+PulseDesktop は 3 つのアーティファクトに分かれていて、それぞれが 1 つのパッケージを持ちます。必須なのは `mvi` だけです。
+
+| アーティファクト | 何を決めるか | 内容 |
+|---|---|---|
+| `mvi` | 状態をどこに置き、Section どうしがどうやり取りするか | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース |
+| `navigation` | Screen の ViewModel がどれだけ生きるか | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
+| `architecture` | コードが規約を守っているか | 状態の規約と、Screen・Section・Component の分け方を検査する Konsist のアサート |
 
 ## インストール
 
@@ -41,30 +72,24 @@ dependencyResolutionManagement {
 }
 ```
 
-### 依存
+### 依存関係
 
 `build.gradle.kts` に依存を追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases) の最新タグに置き換えてください。
-
-`navigation` は任意です。ViewModel をバックスタックエントリにスコープしたい場合に追加します（[Navigation 3](/ja/guide/navigation3) を参照）。
 
 ```kotlin
 // build.gradle.kts
 dependencies {
     implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
 
-    // 任意: オーナーに紐づくライフタイムと Navigation 3 バックスタックへのスコープ
+    // 任意: ViewModel を Navigation 3 のバックスタックエントリにスコープする
     implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
+
+    // 任意: 規約をテストで検査する
+    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
 }
 ```
 
-## アーティファクト
-
-| アーティファクト | 内容 |
-|---|---|
-| `mvi` | `PulseState`、`PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast`、`PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent` |
-| `navigation` | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
-
-## 動作要件
+## 要件
 
 | 要件 | バージョン |
 |---|---|
@@ -75,6 +100,7 @@ dependencies {
 ## 次のステップ
 
 - [はじめかた](/ja/guide/getting-started) — 最初のカウンターアプリを作る
-- [アーキテクチャ](/ja/guide/architecture) — 各要素がどう組み合わさるかを理解する
+- [アーキテクチャ](/ja/guide/architecture) — 状態がどう流れるかを理解する
+- [Container](/ja/guide/container) — Section をまとめて動かす
 - [Navigation 3](/ja/guide/navigation3) — ViewModel をバックスタックエントリにスコープする
-- [Unicast](/ja/guide/unicast) — 子の ViewModel から Container へメッセージを送る
+- [アーキテクチャ検査](/ja/guide/architecture-checks) — 規約に従っているかを自分のテストで検査する

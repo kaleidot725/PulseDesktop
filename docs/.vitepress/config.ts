@@ -15,7 +15,7 @@ export default withMermaid(defineConfig({
     root: {
       label: 'English',
       lang: 'en',
-      description: 'A lightweight MVI library for Compose Desktop',
+      description: 'A framework for Compose Desktop apps',
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/', activeMatch: '/guide/' },
@@ -45,7 +45,7 @@ export default withMermaid(defineConfig({
               text: 'Extensions',
               items: [
                 { text: 'Navigation 3', link: '/guide/navigation3' },
-                { text: 'Konsist', link: '/guide/konsist' },
+                { text: 'Architecture checks', link: '/guide/architecture-checks' },
               ],
             },
           ],
@@ -64,7 +64,7 @@ export default withMermaid(defineConfig({
               text: 'Extensions',
               items: [
                 { text: 'Navigation 3', link: '/api/navigation3' },
-                { text: 'Konsist', link: '/api/konsist' },
+                { text: 'Architecture checks', link: '/api/architecture' },
               ],
             },
           ],
@@ -83,7 +83,7 @@ export default withMermaid(defineConfig({
       label: '日本語',
       lang: 'ja',
       link: '/ja/',
-      description: 'Compose Desktop 向けの軽量 MVI ライブラリ',
+      description: 'Compose Desktop アプリのためのフレームワーク',
       themeConfig: {
         nav: [
           { text: 'ガイド', link: '/ja/guide/', activeMatch: '/ja/guide/' },
@@ -113,7 +113,7 @@ export default withMermaid(defineConfig({
               text: '拡張',
               items: [
                 { text: 'Navigation 3', link: '/ja/guide/navigation3' },
-                { text: 'Konsist', link: '/ja/guide/konsist' },
+                { text: 'アーキテクチャ検査', link: '/ja/guide/architecture-checks' },
               ],
             },
           ],
@@ -132,7 +132,7 @@ export default withMermaid(defineConfig({
               text: '拡張',
               items: [
                 { text: 'Navigation 3', link: '/ja/api/navigation3' },
-                { text: 'Konsist', link: '/ja/api/konsist' },
+                { text: 'アーキテクチャ検査', link: '/ja/api/architecture' },
               ],
             },
           ],

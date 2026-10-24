@@ -1,4 +1,4 @@
-# Konsist
+# アーキテクチャ検査
 
 `architecture` は任意のアーティファクトです。PulseDesktop が周りのコードに期待する規約を [Konsist](https://docs.konsist.lemonappdev.com/) のアサートとして公開しているので、自分のテストで検査できます。
 
@@ -103,6 +103,6 @@ Konsist が読むのはコンパイル済みのクラスではなくソースコ
 
 ## 次のステップ
 
-- [Konsist API](/ja/api/konsist) — アサートとクエリの完全なシグネチャ
+- [アーキテクチャ検査 API](/ja/api/architecture) — アサートとクエリの完全なシグネチャ
 - [アーキテクチャ](/ja/guide/architecture) — これらの検査が由来する規約
 - [ViewModel](/ja/guide/viewmodel) — State、Action、ライフサイクルフック

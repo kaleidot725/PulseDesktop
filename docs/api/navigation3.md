@@ -45,7 +45,7 @@ long the ViewModel lives. Anything that changes that owner changes the ViewModel
 | The Compose Desktop `Window` | As long as the screen; survives a composition restart |
 | A Navigation 3 entry, via `rememberPulseNavEntryDecorators()` as `NavDisplay`'s `entryDecorators` | As long as the route stays on the back stack; cancelled when the route is popped |
 | One you provide with `CompositionLocalProvider(LocalViewModelStoreOwner provides ...)` | As long as you keep that owner |
-| None provided by the host | `rememberPulseViewModel` fails with a message: nothing owns a lifetime, so provide an owner or use the core artifact alone |
+| None provided by the host | `rememberPulseViewModel` fails with a message: nothing owns a lifetime, so provide an owner or use `mvi` alone |
 
 #### Two consequences worth planning for
 

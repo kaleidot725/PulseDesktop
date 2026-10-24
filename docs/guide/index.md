@@ -1,30 +1,61 @@
 # What is PulseDesktop?
 
-PulseDesktop is a lightweight MVI (Model-View-Intent) library for **Compose Desktop**. It extends the standard MVI pattern with three coordination features for multi-Composable layouts:
+PulseDesktop is a framework for building **Compose Desktop** apps. It decides how a window is split, where each part keeps its state, how the parts talk to each other and how long they live. Your own tests can check that the code keeps to those decisions.
+
+## Why a desktop framework
+
+On a phone, one screen usually maps to one ViewModel. A desktop window is different: a sidebar, an editor and an inspector are on screen together. Each changes on its own, and some of those changes have to reach the others.
+
+Putting all of it in one ViewModel turns that ViewModel into the file that knows everything. Splitting it with no way to coordinate makes the panels reach into each other instead. PulseDesktop gives each part its own ViewModel and puts one Container above them.
+
+## How a window is split
+
+A window is built from three kinds of composable. The package a composable lives in decides which one it is.
+
+| Role | What it does | Where it lives |
+|---|---|---|
+| **Screen** | What a route shows. It creates the ViewModels and the Container, and lays out the sections | the root of a feature package |
+| **Section** | The part one ViewModel answers for. It binds that ViewModel with `PulseContent` | a `section` package |
+| **Component** | A leaf. It takes data and callbacks, so it can be reused and previewed on its own | a `component` package |
+
+## How the sections work together
+
+The Container held by the screen is what connects the sections. Three features carry the messages between them.
 
 | Feature | Description |
 |---|---|
-| **Broadcast** | Deliver a typed message from a Container to all registered ViewModels at once |
-| **Unicast** | Send a typed message from a child ViewModel up to its Container |
-| **View Refresh** | Reconstruct the entire Compose view tree on demand without losing ViewModel state |
+| **Broadcast** | Deliver a typed message from the Container to every section's ViewModel at once |
+| **Unicast** | Send a typed message from one section's ViewModel up to the Container |
+| **View Refresh** | Rebuild the view tree under the Container without losing any ViewModel's state |
 
-## Why PulseDesktop?
+## An example window
 
-Compose apps often contain multiple independent Composable sections, each with its own state. PulseDesktop makes it easy to coordinate these sections without tightly coupling them.
-
-In the layout below, `PulseContainer` sits above both ViewModels. When you call `container.broadcast(MyBroadcast.Sync)`, both ViewModel A and ViewModel B receive the message and react independently.
+In the window below, the editor reports a change with Unicast, and the Container broadcasts it to all three sections. Each section decides on its own how to react.
 
 ```mermaid
 flowchart TB
-    PC["PulseContainer"]
+    PC["PulseContainer<br/><i>held by the screen</i>"]
     subgraph W["Window"]
         direction LR
-        SB["SideBar<br/><i>ViewModel A</i>"]
-        MC["Main Content<br/><i>ViewModel B</i>"]
+        A["SideBar section<br/><i>SideBarViewModel</i>"]
+        B["Editor section<br/><i>EditorViewModel</i>"]
+        C["Inspector section<br/><i>InspectorViewModel</i>"]
     end
-    PC -- "broadcast(Sync)" --> SB
-    PC -- "broadcast(Sync)" --> MC
+    B -- "unicast" --> PC
+    PC -- "broadcast" --> A
+    PC -- "broadcast" --> B
+    PC -- "broadcast" --> C
 ```
+
+## Artifacts
+
+PulseDesktop is split into three artifacts, one package each. Only `mvi` is required.
+
+| Artifact | What it decides | Contents |
+|---|---|---|
+| `mvi` | where state lives and how sections talk | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces |
+| `navigation` | how long a screen's ViewModels live | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
+| `architecture` | that the code keeps to the conventions | Konsist assertions for the state rules and the screen, section and component split |
 
 ## Installation
 
@@ -43,28 +74,20 @@ dependencyResolutionManagement {
 
 ### Dependencies
 
-Add the dependencies to `build.gradle.kts`. Replace `<version>` with the latest tag from
-[GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases).
-
-`navigation` is optional. Add it to scope ViewModels to a back stack entry (see
-[Navigation 3](/guide/navigation3)).
+Add the dependencies to `build.gradle.kts`. Replace `<version>` with the latest tag from [GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases).
 
 ```kotlin
 // build.gradle.kts
 dependencies {
     implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
 
-    // Optional: owner scoped lifetimes and Navigation 3 back stack scoping
+    // Optional: scope ViewModels to a Navigation 3 back stack entry
     implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
+
+    // Optional: check the conventions in your tests
+    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
 }
 ```
-
-## Artifacts
-
-| Artifact | Contents |
-|---|---|
-| `mvi` | `PulseState`, `PulseAction`, `PulseEvent`, `PulseBroadcast`, `PulseUnicast`, `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` |
-| `navigation` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
 
 ## Requirements
 
@@ -77,6 +100,7 @@ dependencies {
 ## Next Steps
 
 - [Getting Started](/guide/getting-started) — build your first counter app
-- [Architecture](/guide/architecture) — understand how all the pieces fit together
+- [Architecture](/guide/architecture) — understand how state flows
+- [Container](/guide/container) — make the sections work together
 - [Navigation 3](/guide/navigation3) — scope ViewModels to a back stack entry
-- [Unicast](/guide/unicast) — send child ViewModel messages up to a Container
+- [Architecture checks](/guide/architecture-checks) — check in your tests that the code follows the conventions

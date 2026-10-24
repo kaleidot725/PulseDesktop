@@ -2,7 +2,7 @@
 
 このガイドでは、PulseDesktop でシンプルなカウンターアプリを作る手順を追います。
 
-ViewModel の生成には `navigation` の `rememberPulseViewModel` を使うので、コアと一緒に追加してください。コアのみでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
+ViewModel の生成には `navigation` が追加する `rememberPulseViewModel` を使うので、`mvi` と一緒に追加してください。`mvi` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ```kotlin
 dependencies {
@@ -114,9 +114,9 @@ fun main() = application {
 }
 ```
 
-### 画面の Composable
+### Screen の Composable
 
-レイアウトを `PulseHost` で包むと、Refresh と Broadcast が使えるようになります。
+Screen はルートが表示するもので、feature パッケージのルートに置きます。レイアウトを `PulseHost` で包んで Refresh と Broadcast を使えるようにし、その中に Section を配置します。
 
 ```kotlin
 @Composable
@@ -140,9 +140,9 @@ fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
 }
 ```
 
-### コンテンツの Composable
+### Section の Composable
 
-`PulseContent` で ViewModel を観測し、Event を処理します。
+Section は 1 つの ViewModel が受け持つ部分で、`section` パッケージに置きます。その ViewModel を `PulseContent` で束ね、State を観測して Event を処理します。
 
 ```kotlin
 @Composable
