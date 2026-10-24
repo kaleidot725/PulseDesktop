@@ -1,6 +1,6 @@
 # Architecture
 
-PulseMVI follows the MVI (Model-View-Intent) pattern. It adds three coordination primitives: **Broadcast**, **Unicast**, and **View Refresh**.
+PulseDesktop follows the MVI (Model-View-Intent) pattern. It adds three coordination primitives: **Broadcast**, **Unicast**, and **View Refresh**.
 
 ## Data Flow
 

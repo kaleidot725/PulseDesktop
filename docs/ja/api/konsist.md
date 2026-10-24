@@ -1,6 +1,6 @@
 # Konsist
 
-このページの内容はすべて任意のアーティファクト `pulsemvi-konsist` にあります。パッケージは `jp.kaleidot725.pulse.mvi.konsist` で、いずれも Konsist の `KoScope` の拡張関数です。
+このページの内容はすべて任意のアーティファクト `architecture` にあります。パッケージは `jp.kaleidot725.pulse.mvi.konsist` で、いずれも Konsist の `KoScope` の拡張関数です。
 
 それぞれの検査の意味と理由は [Konsist ガイド](/ja/guide/konsist) にあります。
 

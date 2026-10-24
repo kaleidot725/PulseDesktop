@@ -1,13 +1,13 @@
 # はじめかた
 
-このガイドでは、PulseMVI でシンプルなカウンターアプリを作る手順を追います。
+このガイドでは、PulseDesktop でシンプルなカウンターアプリを作る手順を追います。
 
-ViewModel の生成には `pulsemvi-navigation3` の `rememberPulseViewModel` を使うので、コアと一緒に追加してください。コアのみでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
+ViewModel の生成には `navigation` の `rememberPulseViewModel` を使うので、コアと一緒に追加してください。コアのみでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ```kotlin
 dependencies {
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi:<version>")
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi-navigation3:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
 }
 ```
 

@@ -1,6 +1,6 @@
 # Konsist
 
-Everything on this page lives in the optional `pulsemvi-konsist` artifact. The package is `jp.kaleidot725.pulse.mvi.konsist`, and every declaration is an extension of Konsist's `KoScope`.
+Everything on this page lives in the optional `architecture` artifact. The package is `jp.kaleidot725.pulse.mvi.konsist`, and every declaration is an extension of Konsist's `KoScope`.
 
 For what the checks mean and why they exist, see the [Konsist guide](/guide/konsist).
 

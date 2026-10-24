@@ -1,14 +1,14 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 
-const github = 'https://github.com/kaleidot725/PulseMVI'
+const github = 'https://github.com/kaleidot725/PulseDesktop'
 
 export default withMermaid(defineConfig({
-  title: 'PulseMVI',
-  base: '/PulseMVI/',
+  title: 'PulseDesktop',
+  base: '/PulseDesktop/',
 
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/PulseMVI/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/PulseDesktop/favicon.svg' }],
   ],
 
   locales: {
@@ -27,7 +27,7 @@ export default withMermaid(defineConfig({
             {
               text: 'Introduction',
               items: [
-                { text: 'What is PulseMVI?', link: '/guide/' },
+                { text: 'What is PulseDesktop?', link: '/guide/' },
                 { text: 'Getting Started', link: '/guide/getting-started' },
               ],
             },
@@ -95,7 +95,7 @@ export default withMermaid(defineConfig({
             {
               text: 'はじめに',
               items: [
-                { text: 'PulseMVI とは', link: '/ja/guide/' },
+                { text: 'PulseDesktop とは', link: '/ja/guide/' },
                 { text: 'はじめかた', link: '/ja/guide/getting-started' },
               ],
             },

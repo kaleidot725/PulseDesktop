@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PulseMVI is a Kotlin MVI (Model-View-Intent) library for Compose Desktop. It publishes a JVM target
+PulseDesktop is a Kotlin MVI (Model-View-Intent) library for Compose Desktop. It publishes a JVM target
 only — Android and iOS support was dropped so the library stays straightforward on the desktop.
 
 ### Purpose
@@ -15,12 +15,12 @@ classes, and the `PulseHost` and `PulseContent` composables.
 
 `PulseViewModel` and `PulseContainer` extend `androidx.lifecycle.ViewModel`, so whichever
 `ViewModelStore` holds them decides how long they live. `PulseContent` calls `setupOnce()`, which
-runs `onSetup()` the first time an instance is observed and never again. The `pulsemvi-navigation3`
+runs `onSetup()` the first time an instance is observed and never again. The `navigation`
 artifact adds `rememberPulseViewModel` / `rememberPulseContainer`, and
 `rememberPulseNavEntryDecorators()` scopes an instance to a Navigation 3 back stack entry.
 
-The `pulsemvi-konsist` artifact publishes the conventions themselves as Konsist assertions, so an app
-can check in its own test suite that it uses PulseMVI the way the library expects. Among them is the
+The `architecture` artifact publishes the conventions themselves as Konsist assertions, so an app
+can check in its own test suite that it uses PulseDesktop the way the library expects. Among them is the
 view layout the demo follows: a **screen** at the root of a feature package creates the ViewModels and
 lays out **sections**, a section binds one ViewModel with `PulseContent`, and a **component** takes
 data and callbacks only. Packages decide which is which — `section` and `component` — and names are
@@ -34,7 +34,7 @@ free.
 - **Clean build**: `./gradlew clean`
 - **Check code quality**: `./gradlew ktlintCheck` (auto-fix with `./gradlew ktlintFormat`)
 - **Test coverage**: `./gradlew koverHtmlReport` (opens at `build/reports/kover/html/index.html`; XML via `koverXmlReport`)
-- **Publish to local Maven**: `./gradlew :library:publishToMavenLocal :navigation3:publishToMavenLocal`
+- **Publish to local Maven**: `./gradlew :mvi:publishToMavenLocal :navigation:publishToMavenLocal :architecture:publishToMavenLocal`
 - **Run the demo**: `./gradlew :demo:run`
 
 ## Writing Tests
@@ -58,9 +58,10 @@ Put a test in the source set that matches what it needs.
 
 | Source set | Use it for |
 |---|---|
-| `library/src/commonTest` | `PulseViewModel` and `PulseContainer` — anything that needs no composition |
-| `library/src/jvmTest` | The composables, through `createComposeRule()` from `ui-test-junit4` |
-| `navigation3/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
+| `mvi/src/commonTest` | `PulseViewModel` and `PulseContainer` — anything that needs no composition |
+| `mvi/src/jvmTest` | The composables, through `createComposeRule()` from `ui-test-junit4` |
+| `navigation/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
+| `architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
 
 ### Coverage
 
@@ -73,8 +74,8 @@ the library. A new public declaration is still expected to arrive with the test 
 ## Project Structure
 
 ```
-PulseMVI/
-├── library/                          # Core artifact: pulsemvi
+PulseDesktop/
+├── mvi/                              # Core artifact: mvi
 │   └── src/
 │       ├── commonMain/kotlin/jp/kaleidot725/pulse/mvi/
 │       │   ├── PulseState.kt         # Marker interface for state
@@ -86,11 +87,11 @@ PulseMVI/
 │       │   ├── PulseContainer.kt     # Coordinates ViewModels: broadcast, refresh, close
 │       │   └── PulseContent.kt       # PulseHost and PulseContent composables
 │       └── commonTest/kotlin/…       # PulseViewModelTest, PulseContainerTest
-├── navigation3/                      # Optional artifact: pulsemvi-navigation3
+├── navigation/                       # Optional artifact: navigation
 │   └── src/commonMain/kotlin/jp/kaleidot725/pulse/mvi/navigation3/
 │       └── PulseNavigation.kt        # rememberPulseViewModel / rememberPulseContainer /
 │                                     # rememberPulseNavEntryDecorators
-├── konsist/                          # Optional artifact: pulsemvi-konsist
+├── architecture/                     # Optional artifact: architecture
 │   └── src/
 │       ├── jvmMain/kotlin/jp/kaleidot725/pulse/mvi/konsist/
 │       │   └── PulseConventions.kt   # assertPulseMviConventions and the checks it runs
@@ -119,8 +120,8 @@ PulseMVI/
 ```
 
 Sources sit in `commonMain` even though `jvm()` is the only target. Keeping the source set makes
-re-adding a target a build-file change rather than a file move. The exception is `konsist`, whose
-sources are in `jvmMain` because Konsist publishes a JVM artifact only.
+re-adding a target a build-file change rather than a file move. The exception is `architecture`,
+whose sources are in `jvmMain` because Konsist publishes a JVM artifact only.
 
 ## Technical Details
 
@@ -130,17 +131,18 @@ sources are in `jvmMain` because Konsist publishes a JVM artifact only.
 - **Compose Multiplatform Version**: 1.10.1
 - **Coroutines Version**: 1.10.2
 - **Lifecycle Version**: 2.10.0
-- **Navigation 3 Version**: 1.1.1 (`navigation3` module only)
-- **Konsist Version**: 0.17.3 (`konsist` module only)
+- **Navigation 3 Version**: 1.1.1 (`navigation` module only)
+- **Konsist Version**: 0.17.3 (`architecture` module only)
 - **JVM Toolchain**: Java 17
 - **Code Style**: Official Kotlin code style with explicit API mode
 
 ## Key Configuration
 
-- Group ID: `com.github.kaleidot725.PulseMVI` (what JitPack serves for a multi-module repo)
-- Artifact IDs: `pulsemvi`, `pulsemvi-navigation3`, `pulsemvi-konsist`
+- Group ID: `com.github.kaleidot725.PulseDesktop` (what JitPack serves for a multi-module repo)
+- Artifact IDs: `mvi`, `navigation`, `architecture`
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.mvi.navigation3`,
-  `jp.kaleidot725.pulse.mvi.konsist`
-- JitPack dependency: `implementation("com.github.kaleidot725.PulseMVI:pulsemvi:<version>")`, and
-  `testImplementation("com.github.kaleidot725.PulseMVI:pulsemvi-konsist:<version>")` for the
+  `jp.kaleidot725.pulse.mvi.konsist` — the package names and the `Pulse` class prefix are unchanged by
+  the rename, so only the coordinates move
+- JitPack dependency: `implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")`, and
+  `testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")` for the
   convention checks

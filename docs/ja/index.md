@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: PulseMVI
+  name: PulseDesktop
   text: Compose Desktop のための MVI
   tagline: コルーチンベースの軽量 MVI ライブラリ。
   actions:
@@ -11,7 +11,7 @@ hero:
       link: /ja/guide/getting-started
     - theme: alt
       text: GitHub で見る
-      link: https://github.com/kaleidot725/PulseMVI
+      link: https://github.com/kaleidot725/PulseDesktop
 
 features:
   - icon: 🏗️

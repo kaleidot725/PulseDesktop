@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: PulseMVI
+  name: PulseDesktop
   text: MVI for Compose Desktop
   tagline: A lightweight, coroutine-based MVI library for Compose Desktop.
   actions:
@@ -11,7 +11,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/kaleidot725/PulseMVI
+      link: https://github.com/kaleidot725/PulseDesktop
 
 features:
   - icon: 🏗️

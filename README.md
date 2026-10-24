@@ -1,30 +1,30 @@
 <p align="center">
-  <img src="docs/public/logo.svg" width="96" alt="PulseMVI" />
+  <img src="docs/public/logo.svg" width="96" alt="PulseDesktop" />
 </p>
 
-# PulseMVI
+# PulseDesktop
 
 [![Kotlin](https://img.shields.io/badge/kotlin-2.3.10-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.10.1-blue)](https://www.jetbrains.com/lp/compose-multiplatform/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![](https://jitpack.io/v/kaleidot725/PulseMVI.svg)](https://jitpack.io/#kaleidot725/PulseMVI)
+[![](https://jitpack.io/v/kaleidot725/PulseDesktop.svg)](https://jitpack.io/#kaleidot725/PulseDesktop)
 
-PulseMVI is an MVI library for Compose Desktop. A `PulseViewModel` owns the state of one section
+PulseDesktop is an MVI library for Compose Desktop. A `PulseViewModel` owns the state of one section
 of the screen, and a `PulseContainer` coordinates several of them: **Broadcast** sends a message
 from the Container to every ViewModel, **Unicast** sends one from a ViewModel up to the Container,
 and **Refresh** rebuilds the view tree without losing state. Both extend
 `androidx.lifecycle.ViewModel`, so the `ViewModelStore` that holds them decides how long they live.
 
-Read [What is PulseMVI?](https://kaleidot725.github.io/PulseMVI/guide/) for the idea behind it.
+Read [What is PulseDesktop?](https://kaleidot725.github.io/PulseDesktop/guide/) for the idea behind it.
 
 ![demo](docs/demo.png)
 
 ## Installation
 
 Add JitPack to `settings.gradle.kts`, then the dependencies to `build.gradle.kts`. Replace
-`<version>` with a tag from [Releases](https://github.com/kaleidot725/PulseMVI/releases). Both extra
-artifacts are optional: `pulsemvi-navigation3` scopes ViewModels to a Navigation 3 back stack entry,
-and `pulsemvi-konsist` checks in your tests that the code follows the PulseMVI conventions.
+`<version>` with a tag from [Releases](https://github.com/kaleidot725/PulseDesktop/releases). Both extra
+artifacts are optional: `navigation` scopes ViewModels to a Navigation 3 back stack entry,
+and `architecture` checks in your tests that the code follows the PulseDesktop conventions.
 
 ```kotlin
 // settings.gradle.kts
@@ -36,9 +36,9 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi:<version>")
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi-navigation3:<version>")
-    testImplementation("com.github.kaleidot725.PulseMVI:pulsemvi-konsist:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
 }
 ```
 
@@ -54,7 +54,7 @@ dependencies {
 
 A ViewModel handles actions and updates its state; a screen observes it with `PulseContent`.
 The full walkthrough, including the Container, is in
-[Getting Started](https://kaleidot725.github.io/PulseMVI/guide/getting-started).
+[Getting Started](https://kaleidot725.github.io/PulseDesktop/guide/getting-started).
 
 ```kotlin
 class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(
@@ -81,7 +81,7 @@ fun CounterScreen() {
 
 ## Documentation
 
-**[kaleidot725.github.io/PulseMVI](https://kaleidot725.github.io/PulseMVI/)** (English and Japanese).
+**[kaleidot725.github.io/PulseDesktop](https://kaleidot725.github.io/PulseDesktop/)** (English and Japanese).
 
 ## Demo
 

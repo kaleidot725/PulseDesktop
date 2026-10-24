@@ -1,6 +1,6 @@
 # アーキテクチャ
 
-PulseMVI は MVI（Model-View-Intent）パターンに従います。そこに **Broadcast**、**Unicast**、**View Refresh** の 3 つの調整プリミティブを加えています。
+PulseDesktop は MVI（Model-View-Intent）パターンに従います。そこに **Broadcast**、**Unicast**、**View Refresh** の 3 つの調整プリミティブを加えています。
 
 ## データフロー
 
