@@ -11,8 +11,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":mvi"))
-                implementation(project(":navigation"))
+                implementation(project(":library:mvi"))
+                implementation(project(":library:navigation"))
                 implementation("org.jetbrains.compose.foundation:foundation:1.10.1")
                 implementation("org.jetbrains.compose.material3:material3:1.9.0")
                 implementation("org.jetbrains.compose.runtime:runtime:1.10.1")

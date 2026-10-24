@@ -23,7 +23,7 @@ kotlin {
         // Konsist publishes a JVM artifact only, so the assertions cannot live in commonMain.
         val jvmMain by getting {
             dependencies {
-                api(project(":mvi"))
+                api(project(":library:mvi"))
                 api("com.lemonappdev:konsist:0.17.3")
             }
         }

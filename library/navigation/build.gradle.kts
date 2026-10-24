@@ -24,7 +24,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":mvi"))
+                api(project(":library:mvi"))
                 api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
                 api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0")
                 api("org.jetbrains.androidx.navigation3:navigation3-ui:1.1.1")

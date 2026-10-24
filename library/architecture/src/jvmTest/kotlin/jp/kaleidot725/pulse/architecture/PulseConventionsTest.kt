@@ -33,7 +33,7 @@ class PulseConventionsTest {
      */
     @Test
     fun `passes on a project with no PulseDesktop types`() {
-        Konsist.scopeFromDirectory("architecture/src/jvmMain").assertPulseMviConventions()
+        Konsist.scopeFromDirectory("library/architecture/src/jvmMain").assertPulseMviConventions()
     }
 
     /**
@@ -115,9 +115,9 @@ class PulseConventionsTest {
         check(message.contains(name)) { "Expected the failure to name $name, but it said: $message" }
     }
 
-    private val conforming get() = Konsist.scopeFromDirectory("architecture/src/jvmTest/resources/fixture/conforming")
+    private val conforming get() = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/conforming")
 
-    private val violating get() = Konsist.scopeFromDirectory("architecture/src/jvmTest/resources/fixture/violating")
+    private val violating get() = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/violating")
 
-    private val violatingViews get() = Konsist.scopeFromDirectory("architecture/src/jvmTest/resources/fixture/violating-view")
+    private val violatingViews get() = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/violating-view")
 }

@@ -146,7 +146,7 @@ class PulseModuleConventionsTest {
         check(message.contains(name)) { "Expected the failure to name $name, but it said: $message" }
     }
 
-    private fun fixture(path: String) = "architecture/src/jvmTest/resources/fixture/modules/$path"
+    private fun fixture(path: String) = "library/architecture/src/jvmTest/resources/fixture/modules/$path"
 
     private val conforming get() = Konsist.scopeFromDirectory(fixture("conforming"))
 
