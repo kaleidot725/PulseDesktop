@@ -24,7 +24,10 @@ can check in its own test suite that it uses PulseDesktop the way the library ex
 view layout the demo follows: a **screen** at the root of a feature package creates the ViewModels and
 lays out **sections**, a section binds one ViewModel with `PulseContent`, and a **component** takes
 data and callbacks only. Packages decide which is which — `section` and `component` — and names are
-free.
+free. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
+`feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: the domain owns the
+repository interfaces and depends only on the model, `core/data` implements them, and a feature
+reaches data only through the domain. Dependencies are read from imports.
 
 ## Development Commands
 
@@ -94,7 +97,8 @@ PulseDesktop/
 ├── architecture/                     # Optional artifact: architecture
 │   └── src/
 │       ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
-│       │   └── PulseConventions.kt   # assertPulseMviConventions and the checks it runs
+│       │   ├── PulseConventions.kt   # assertPulseMviConventions and the checks it runs
+│       │   └── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
 │       └── jvmTest/…                 # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app (Navigation 3)
 │   └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/
