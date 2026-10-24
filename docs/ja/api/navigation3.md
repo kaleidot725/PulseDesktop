@@ -1,6 +1,6 @@
 # Navigation 3
 
-このページの内容はすべて、任意のアーティファクト `navigation` にあります。パッケージは `jp.kaleidot725.pulse.mvi.navigation3` です。
+このページの内容はすべて、任意のアーティファクト `navigation` にあります。パッケージは `jp.kaleidot725.pulse.navigation` です。
 
 仕組みの解説は [Navigation 3 ガイド](/ja/guide/navigation3) を、コアのみで使う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 

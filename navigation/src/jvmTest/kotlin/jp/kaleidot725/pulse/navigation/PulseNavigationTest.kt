@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.mvi.navigation3
+package jp.kaleidot725.pulse.navigation
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider

@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.mvi.navigation3
+package jp.kaleidot725.pulse.navigation
 
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner

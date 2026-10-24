@@ -1,6 +1,6 @@
 # API Overview
 
-PulseDesktop exposes a small, focused API surface. The core artifact lives in `jp.kaleidot725.pulse.mvi`. The optional `navigation` artifact adds three composables. They live in `jp.kaleidot725.pulse.mvi.navigation3` and are listed under [Extensions](#extensions).
+PulseDesktop exposes a small, focused API surface. The core artifact lives in `jp.kaleidot725.pulse.mvi`. The optional `navigation` artifact adds three composables. They live in `jp.kaleidot725.pulse.navigation` and are listed under [Extensions](#extensions).
 
 ## Classes
 

@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.mvi.navigation3
+package jp.kaleidot725.pulse.navigation
 
 import jp.kaleidot725.pulse.mvi.PulseViewModel
 import org.junit.Test
@@ -27,7 +27,7 @@ class PulseNavigationInternalsTest {
                 override fun onAction(uiAction: NavAction) = Unit
             }
 
-        assertEquals("jp.kaleidot725.pulse.mvi.navigation3.NavViewModel", defaultPulseKey(NavViewModel::class, "x"))
+        assertEquals("jp.kaleidot725.pulse.navigation.NavViewModel", defaultPulseKey(NavViewModel::class, "x"))
         assertEquals("Local", defaultPulseKey(Local::class, "x"))
         assertEquals("PulseViewModel", defaultPulseKey(anonymous::class, "PulseViewModel"))
     }
