@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.mvi.konsist
+package jp.kaleidot725.pulse.architecture
 
 import androidx.compose.runtime.Composable
 import com.lemonappdev.konsist.api.KoModifier

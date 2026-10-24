@@ -93,7 +93,7 @@ PulseDesktop/
 │                                     # rememberPulseNavEntryDecorators
 ├── architecture/                     # Optional artifact: architecture
 │   └── src/
-│       ├── jvmMain/kotlin/jp/kaleidot725/pulse/mvi/konsist/
+│       ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
 │       │   └── PulseConventions.kt   # assertPulseMviConventions and the checks it runs
 │       └── jvmTest/…                 # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app (Navigation 3)
@@ -141,8 +141,9 @@ whose sources are in `jvmMain` because Konsist publishes a JVM artifact only.
 - Group ID: `com.github.kaleidot725.PulseDesktop` (what JitPack serves for a multi-module repo)
 - Artifact IDs: `mvi`, `navigation`, `architecture`
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.mvi.navigation3`,
-  `jp.kaleidot725.pulse.mvi.konsist` — the package names and the `Pulse` class prefix are unchanged by
-  the rename, so only the coordinates move
+  `jp.kaleidot725.pulse.architecture` — the checks sit beside `mvi` rather than inside it, since they
+  are about the architecture rather than about the MVI types. The core and navigation packages and the
+  `Pulse` class prefix are unchanged by the rename
 - JitPack dependency: `implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")`, and
   `testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")` for the
   convention checks

@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.mvi.konsist
+package jp.kaleidot725.pulse.architecture
 
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.core.exception.KoAssertionFailedException
