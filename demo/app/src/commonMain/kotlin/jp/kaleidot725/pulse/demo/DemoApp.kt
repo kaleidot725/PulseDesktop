@@ -1,6 +1,5 @@
 package jp.kaleidot725.pulse.demo
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.Saver
@@ -10,6 +9,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import jp.kaleidot725.pulse.demo.core.designsystem.theme.PulseDesktopTheme
+import jp.kaleidot725.pulse.demo.core.domain.PulseCountRepository
 import jp.kaleidot725.pulse.demo.count.PulseCountHost
 import jp.kaleidot725.pulse.navigation.rememberPulseNavEntryDecorators
 
@@ -26,13 +27,13 @@ private val PulseCountBackStackSaver: Saver<SnapshotStateList<PulseCountRoute>, 
     )
 
 @Composable
-fun DemoApp() {
+fun DemoApp(repository: PulseCountRepository) {
     val backStack = rememberSaveable(saver = PulseCountBackStackSaver) { mutableStateListOf(PulseCountRoute(depth = 1)) }
     val popLast: () -> Unit = {
         if (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
     }
 
-    MaterialTheme {
+    PulseDesktopTheme {
         NavDisplay(
             backStack = backStack,
             onBack = popLast,
@@ -42,6 +43,7 @@ fun DemoApp() {
                     entry<PulseCountRoute> { route ->
                         PulseCountHost(
                             depth = route.depth,
+                            repository = repository,
                             onNewArea = { backStack.add(PulseCountRoute(route.depth + 1)) },
                             onBack = popLast.takeIf { route.depth > 1 },
                         )

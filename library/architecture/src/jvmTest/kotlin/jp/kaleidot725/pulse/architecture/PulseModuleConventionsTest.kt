@@ -36,15 +36,18 @@ class PulseModuleConventionsTest {
     }
 
     /**
-     * The demo is split the way the default layout expects — `demo/app` on top of `demo/feature/count` — so the rules are
-     * known to hold on a real build, not only on fixtures. The layout matches the end of each directory, which is why
-     * the `demo` above them does not get in the way.
+     * The demo is split the way the default layout expects — an app, a feature, and a domain, data and design system
+     * under `core` — so the rules are known to hold on a real build, not only on fixtures. The layout matches the end of
+     * each directory, which is why the `demo` above them does not get in the way.
      */
     @Test
     fun `passes on the demo application`() {
         val demo = Konsist.scopeFromDirectory("demo")
 
-        assertEquals(setOf("app", "feature/count"), demo.files.mapNotNull { it.pulseModule() }.toSet())
+        assertEquals(
+            setOf("app", "feature/count", "core/domain", "core/data", "core/designsystem"),
+            demo.files.mapNotNull { it.pulseModule() }.toSet(),
+        )
         demo.assertPulseModuleConventions()
     }
 

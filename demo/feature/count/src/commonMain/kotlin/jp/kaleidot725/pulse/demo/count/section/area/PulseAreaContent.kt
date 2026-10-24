@@ -3,10 +3,10 @@ package jp.kaleidot725.pulse.demo.count.section.area
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.section.area.component.PulseAreaCell
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaAction
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaEvent
-import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaState
 import jp.kaleidot725.pulse.mvi.PulseContent
 

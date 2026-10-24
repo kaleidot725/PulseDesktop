@@ -3,12 +3,12 @@ package jp.kaleidot725.pulse.demo.count.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseButton
+import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseTextButton
 
 @Composable
 fun PulseCountHeader(
@@ -30,20 +30,12 @@ fun PulseCountHeader(
             style = MaterialTheme.typography.bodyMedium,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = onNewArea) {
-                Text("New Area")
-            }
+            PulseButton(text = "New Area", onClick = onNewArea)
             if (onBack != null) {
-                TextButton(onClick = onBack) {
-                    Text("Back")
-                }
+                PulseTextButton(text = "Back", onClick = onBack)
             }
-            TextButton(onClick = onReset) {
-                Text("Reset")
-            }
-            TextButton(onClick = onRefresh) {
-                Text("Refresh view")
-            }
+            PulseTextButton(text = "Reset", onClick = onReset)
+            PulseTextButton(text = "Refresh view", onClick = onRefresh)
         }
     }
 }

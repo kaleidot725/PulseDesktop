@@ -1,5 +1,6 @@
 package jp.kaleidot725.pulse.demo.count.section.area.state
 
+import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
 import jp.kaleidot725.pulse.mvi.PulseEvent
 
 sealed interface PulseAreaEvent : PulseEvent {

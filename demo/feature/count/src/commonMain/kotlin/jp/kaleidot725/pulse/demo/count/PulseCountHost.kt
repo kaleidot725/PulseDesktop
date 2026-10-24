@@ -21,10 +21,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import jp.kaleidot725.pulse.demo.core.domain.ObservePulseCountUseCase
+import jp.kaleidot725.pulse.demo.core.domain.PulseArea
+import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
+import jp.kaleidot725.pulse.demo.core.domain.PulseCountRepository
+import jp.kaleidot725.pulse.demo.core.domain.ReceivePulseUseCase
+import jp.kaleidot725.pulse.demo.core.domain.ResetPulseCountUseCase
+import jp.kaleidot725.pulse.demo.core.domain.SendPulseUseCase
 import jp.kaleidot725.pulse.demo.count.component.PulseCountHeader
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaContent
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaViewModel
-import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.state.PulseCountBroadcast
 import jp.kaleidot725.pulse.mvi.PulseHost
 import jp.kaleidot725.pulse.navigation.rememberPulseContainer
@@ -34,12 +40,21 @@ import kotlinx.coroutines.launch
 @Composable
 fun PulseCountHost(
     depth: Int,
+    repository: PulseCountRepository,
     onNewArea: () -> Unit,
     onBack: (() -> Unit)?,
 ) {
     val areas =
         PulseAreaPosition.entries.map { position ->
-            rememberPulseViewModel(key = position.name) { PulseAreaViewModel(position) }
+            rememberPulseViewModel(key = position.name) {
+                PulseAreaViewModel(
+                    area = PulseArea(depth, position),
+                    observePulseCount = ObservePulseCountUseCase(repository),
+                    sendPulse = SendPulseUseCase(repository),
+                    receivePulse = ReceivePulseUseCase(repository),
+                    resetPulseCount = ResetPulseCountUseCase(repository),
+                )
+            }
         }
     val container = rememberPulseContainer { PulseCountContainer(viewModels = areas) }
 

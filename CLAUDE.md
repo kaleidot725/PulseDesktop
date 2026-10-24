@@ -104,11 +104,16 @@ PulseDesktop/
 │           │   └── PulseModuleLayout.kt      # which module names play which layer
 │           └── jvmTest/…             # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
-│   ├── app/                          # :demo:app — the window, NavDisplay and the back stack
-│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/
+│   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and the wiring:
+│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # creates the DataStore repository
 │   │       ├── DemoApp.kt
 │   │       └── Main.kt
-│   └── feature/count/                # :demo:feature:count — one feature, screen at its root
+│   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
+│   │                                 # PulseCountRepository and the use cases; plain Kotlin
+│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository, counts kept per area
+│   ├── core/designsystem/            # :demo:core:designsystem — PulseDesktopTheme, PulseCard, PulseButton
+│   └── feature/count/                # :demo:feature:count — one feature, screen at its root; reaches
+│                                     # the counts through the domain use cases, never core/data
 │       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/
 │           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
 │           ├── PulseCountContainer.kt
