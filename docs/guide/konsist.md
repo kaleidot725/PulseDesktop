@@ -1,6 +1,6 @@
 # Konsist
 
-`pulsemvi-konsist` is an optional artifact. It states the conventions PulseMVI expects of the code around it as [Konsist](https://docs.konsist.lemonappdev.com/) assertions, so your own test suite checks them.
+`architecture` is an optional artifact. It states the conventions PulseDesktop expects of the code around it as [Konsist](https://docs.konsist.lemonappdev.com/) assertions, so your own test suite checks them.
 
 The compiler already rejects what the types can express. A ViewModel must implement `onAction`, and its message types must be the ones its Container knows. What is left are habits the types cannot express, each with a consequence that is easy to miss in review.
 
@@ -11,7 +11,7 @@ Add the artifact to the test classpath. Konsist itself comes with it, so there i
 ```kotlin
 // build.gradle.kts
 dependencies {
-    testImplementation("com.github.kaleidot725.PulseMVI:pulsemvi-konsist:<version>")
+    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
 }
 ```
 
@@ -20,7 +20,7 @@ Then write one test. `scopeFromProduction()` reads the project's main source set
 ```kotlin
 class PulseMviConventionTest {
     @Test
-    fun `follows the PulseMVI conventions`() {
+    fun `follows the PulseDesktop conventions`() {
         Konsist.scopeFromProduction().assertPulseMviConventions()
     }
 }
@@ -99,7 +99,7 @@ Konsist has no plugin mechanism, unlike ktlint's rule sets or detekt's plugins. 
 
 Konsist also reads source code rather than compiled classes. A ViewModel that reaches `PulseViewModel` through a base class from a library is not recognised, because that base class is not in the sources being scanned.
 
-An empty result passes. A module with no PulseMVI types yet does not fail, so the test can be added before the code it checks.
+An empty result passes. A module with no PulseDesktop types yet does not fail, so the test can be added before the code it checks.
 
 ## Next steps
 

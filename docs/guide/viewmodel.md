@@ -1,6 +1,6 @@
 # ViewModel
 
-`PulseViewModel` is the core building block of PulseMVI. It manages the UI state for a single screen or section of your app.
+`PulseViewModel` is the core building block of PulseDesktop. It manages the UI state for a single screen or section of your app.
 
 ## Creating a ViewModel
 
@@ -104,7 +104,7 @@ Container needs the same treatment.
 
 ::: warning
 The ViewModel then lives exactly as long as this composition. Leaving and re-entering it builds a
-new instance, and its state is lost. Add `pulsemvi-navigation3` when that matters.
+new instance, and its state is lost. Add `navigation` when that matters.
 :::
 
 ```kotlin

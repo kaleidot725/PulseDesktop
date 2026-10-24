@@ -1,6 +1,6 @@
-# What is PulseMVI?
+# What is PulseDesktop?
 
-PulseMVI is a lightweight MVI (Model-View-Intent) library for **Compose Desktop**. It extends the standard MVI pattern with three coordination features for multi-Composable layouts:
+PulseDesktop is a lightweight MVI (Model-View-Intent) library for **Compose Desktop**. It extends the standard MVI pattern with three coordination features for multi-Composable layouts:
 
 | Feature | Description |
 |---|---|
@@ -8,9 +8,9 @@ PulseMVI is a lightweight MVI (Model-View-Intent) library for **Compose Desktop*
 | **Unicast** | Send a typed message from a child ViewModel up to its Container |
 | **View Refresh** | Reconstruct the entire Compose view tree on demand without losing ViewModel state |
 
-## Why PulseMVI?
+## Why PulseDesktop?
 
-Compose apps often contain multiple independent Composable sections, each with its own state. PulseMVI makes it easy to coordinate these sections without tightly coupling them.
+Compose apps often contain multiple independent Composable sections, each with its own state. PulseDesktop makes it easy to coordinate these sections without tightly coupling them.
 
 In the layout below, `PulseContainer` sits above both ViewModels. When you call `container.broadcast(MyBroadcast.Sync)`, both ViewModel A and ViewModel B receive the message and react independently.
 
@@ -44,18 +44,18 @@ dependencyResolutionManagement {
 ### Dependencies
 
 Add the dependencies to `build.gradle.kts`. Replace `<version>` with the latest tag from
-[GitHub Releases](https://github.com/kaleidot725/PulseMVI/releases).
+[GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases).
 
-`pulsemvi-navigation3` is optional. Add it to scope ViewModels to a back stack entry (see
+`navigation` is optional. Add it to scope ViewModels to a back stack entry (see
 [Navigation 3](/guide/navigation3)).
 
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
 
     // Optional: owner scoped lifetimes and Navigation 3 back stack scoping
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi-navigation3:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
 }
 ```
 
@@ -63,8 +63,8 @@ dependencies {
 
 | Artifact | Contents |
 |---|---|
-| `pulsemvi` | `PulseState`, `PulseAction`, `PulseEvent`, `PulseBroadcast`, `PulseUnicast`, `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` |
-| `pulsemvi-navigation3` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
+| `mvi` | `PulseState`, `PulseAction`, `PulseEvent`, `PulseBroadcast`, `PulseUnicast`, `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` |
+| `navigation` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
 
 ## Requirements
 

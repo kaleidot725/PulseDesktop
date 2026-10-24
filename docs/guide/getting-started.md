@@ -1,15 +1,15 @@
 # Getting Started
 
-This guide walks you through building a simple counter app with PulseMVI.
+This guide walks you through building a simple counter app with PulseDesktop.
 
-It creates the ViewModel with `rememberPulseViewModel` from `pulsemvi-navigation3`, so add that
+It creates the ViewModel with `rememberPulseViewModel` from `navigation`, so add that
 artifact alongside the core one. To drive the lifecycle yourself with the core alone, see
 [ViewModel](/guide/viewmodel).
 
 ```kotlin
 dependencies {
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi:<version>")
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi-navigation3:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
 }
 ```
 

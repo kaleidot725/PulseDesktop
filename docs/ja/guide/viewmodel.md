@@ -1,6 +1,6 @@
 # ViewModel
 
-`PulseViewModel` は PulseMVI の中核となる構成要素です。アプリの 1 画面、または 1 セクションの UI 状態を管理します。
+`PulseViewModel` は PulseDesktop の中核となる構成要素です。アプリの 1 画面、または 1 セクションの UI 状態を管理します。
 
 ## ViewModel を作る
 
@@ -101,7 +101,7 @@ override fun onAction(uiAction: MyAction) {
 ViewModel を素の `remember` で持つと誰も破棄しないので、自分でキャンセルしてください。Container も同様です。
 
 ::: warning
-この場合、ViewModel はこのコンポジションと同じ長さだけ生きます。離れて戻ってくると新しいインスタンスが作られ、状態は失われます。それが問題になるなら `pulsemvi-navigation3` を追加してください。
+この場合、ViewModel はこのコンポジションと同じ長さだけ生きます。離れて戻ってくると新しいインスタンスが作られ、状態は失われます。それが問題になるなら `navigation` を追加してください。
 :::
 
 ```kotlin

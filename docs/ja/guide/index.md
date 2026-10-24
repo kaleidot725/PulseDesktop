@@ -1,6 +1,6 @@
-# PulseMVI とは
+# PulseDesktop とは
 
-PulseMVI は **Compose Desktop** 向けの軽量な MVI（Model-View-Intent）ライブラリです。標準的な MVI パターンに、複数の Composable からなるレイアウトを調整するための 3 つの機能を加えています。
+PulseDesktop は **Compose Desktop** 向けの軽量な MVI（Model-View-Intent）ライブラリです。標準的な MVI パターンに、複数の Composable からなるレイアウトを調整するための 3 つの機能を加えています。
 
 | 機能 | 説明 |
 |---|---|
@@ -8,9 +8,9 @@ PulseMVI は **Compose Desktop** 向けの軽量な MVI（Model-View-Intent）�
 | **Unicast** | 子の ViewModel から親の Container へ、型付きメッセージを送る |
 | **View Refresh** | ViewModel の状態を失わずに、Compose のビューツリー全体をオンデマンドで再構築する |
 
-## なぜ PulseMVI か
+## なぜ PulseDesktop か
 
-Compose アプリはたいてい、独立した Composable のセクションを複数含みます。それぞれが独自の状態を持ちます。PulseMVI は、それらを密結合させずに調整できるようにします。
+Compose アプリはたいてい、独立した Composable のセクションを複数含みます。それぞれが独自の状態を持ちます。PulseDesktop は、それらを密結合させずに調整できるようにします。
 
 次の図では、`PulseContainer` が両方の ViewModel の上に位置しています。`container.broadcast(MyBroadcast.Sync)` を呼ぶと、ViewModel A と ViewModel B の両方がメッセージを受け取り、それぞれ独立して反応します。
 
@@ -43,17 +43,17 @@ dependencyResolutionManagement {
 
 ### 依存
 
-`build.gradle.kts` に依存を追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulseMVI/releases) の最新タグに置き換えてください。
+`build.gradle.kts` に依存を追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases) の最新タグに置き換えてください。
 
-`pulsemvi-navigation3` は任意です。ViewModel をバックスタックエントリにスコープしたい場合に追加します（[Navigation 3](/ja/guide/navigation3) を参照）。
+`navigation` は任意です。ViewModel をバックスタックエントリにスコープしたい場合に追加します（[Navigation 3](/ja/guide/navigation3) を参照）。
 
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
 
     // 任意: オーナーに紐づくライフタイムと Navigation 3 バックスタックへのスコープ
-    implementation("com.github.kaleidot725.PulseMVI:pulsemvi-navigation3:<version>")
+    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
 }
 ```
 
@@ -61,8 +61,8 @@ dependencies {
 
 | アーティファクト | 内容 |
 |---|---|
-| `pulsemvi` | `PulseState`、`PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast`、`PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent` |
-| `pulsemvi-navigation3` | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
+| `mvi` | `PulseState`、`PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast`、`PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent` |
+| `navigation` | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
 
 ## 動作要件
 

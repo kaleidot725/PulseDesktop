@@ -1,6 +1,6 @@
 # Konsist
 
-`pulsemvi-konsist` は任意のアーティファクトです。PulseMVI が周りのコードに期待する規約を [Konsist](https://docs.konsist.lemonappdev.com/) のアサートとして公開しているので、自分のテストで検査できます。
+`architecture` は任意のアーティファクトです。PulseDesktop が周りのコードに期待する規約を [Konsist](https://docs.konsist.lemonappdev.com/) のアサートとして公開しているので、自分のテストで検査できます。
 
 型で表せることはコンパイラが弾きます。ViewModel は `onAction` を実装しなければならず、メッセージの型は Container が知っているものに限られます。残るのは型で表せない書き方の習慣で、どれもレビューで見落としやすいものです。
 
@@ -11,7 +11,7 @@
 ```kotlin
 // build.gradle.kts
 dependencies {
-    testImplementation("com.github.kaleidot725.PulseMVI:pulsemvi-konsist:<version>")
+    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
 }
 ```
 
@@ -20,7 +20,7 @@ dependencies {
 ```kotlin
 class PulseMviConventionTest {
     @Test
-    fun `follows the PulseMVI conventions`() {
+    fun `follows the PulseDesktop conventions`() {
         Konsist.scopeFromProduction().assertPulseMviConventions()
     }
 }
@@ -99,7 +99,7 @@ Konsist には ktlint のルールセットや detekt のプラグインのよ�
 
 Konsist が読むのはコンパイル済みのクラスではなくソースコードです。ライブラリ側の基底クラスを経由して `PulseViewModel` に到達する ViewModel は、その基底クラスが走査対象のソースにないため認識できません。
 
-対象が 0 件のときは成功します。PulseMVI の型がまだないモジュールでも落ちないので、検査するコードより先にテストを置けます。
+対象が 0 件のときは成功します。PulseDesktop の型がまだないモジュールでも落ちないので、検査するコードより先にテストを置けます。
 
 ## 次のステップ
 

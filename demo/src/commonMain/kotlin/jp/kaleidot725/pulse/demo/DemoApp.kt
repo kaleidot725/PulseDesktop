@@ -11,7 +11,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import jp.kaleidot725.pulse.demo.count.PulseCountHost
-import jp.kaleidot725.pulse.mvi.navigation3.rememberPulseNavEntryDecorators
+import jp.kaleidot725.pulse.navigation.rememberPulseNavEntryDecorators
 
 private data class PulseCountRoute(
     val depth: Int,

@@ -1,6 +1,6 @@
 # Navigation 3
 
-`pulsemvi-navigation3` は任意のアーティファクトです。`PulseViewModel` の寿命を、Navigation 3 のバックスタックエントリに結びつけます。
+`navigation` は任意のアーティファクトです。`PulseViewModel` の寿命を、Navigation 3 のバックスタックエントリに結びつけます。
 
 コアのアーティファクトは寿命について何も決めていません。`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、それを保持している `ViewModelStore` が寿命を決めます。このアーティファクトが提供するのは、バックスタックエントリごとのストアと、ViewModel をそこに入れる Composable です。
 

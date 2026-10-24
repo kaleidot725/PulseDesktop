@@ -1,6 +1,6 @@
 # Navigation 3
 
-`pulsemvi-navigation3` is an optional artifact. It ties a `PulseViewModel`'s lifetime to a
+`navigation` is an optional artifact. It ties a `PulseViewModel`'s lifetime to a
 Navigation 3 back stack entry.
 
 The core artifact has no opinion about lifetime. `PulseViewModel` is an

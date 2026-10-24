@@ -27,8 +27,8 @@ import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaViewModel
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.state.PulseCountBroadcast
 import jp.kaleidot725.pulse.mvi.PulseHost
-import jp.kaleidot725.pulse.mvi.navigation3.rememberPulseContainer
-import jp.kaleidot725.pulse.mvi.navigation3.rememberPulseViewModel
+import jp.kaleidot725.pulse.navigation.rememberPulseContainer
+import jp.kaleidot725.pulse.navigation.rememberPulseViewModel
 import kotlinx.coroutines.launch
 
 @Composable

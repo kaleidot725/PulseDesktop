@@ -1,6 +1,6 @@
 # API 概要
 
-PulseMVI の API は小さく、焦点が絞られています。コアのアーティファクトは `jp.kaleidot725.pulse.mvi` にあります。任意のアーティファクト `pulsemvi-navigation3` は、3 つの Composable を追加します。パッケージは `jp.kaleidot725.pulse.mvi.navigation3` です（[拡張](#拡張) を参照）。
+PulseDesktop の API は小さく、焦点が絞られています。コアのアーティファクトは `jp.kaleidot725.pulse.mvi` にあります。任意のアーティファクト `navigation` は、3 つの Composable を追加します。パッケージは `jp.kaleidot725.pulse.navigation` です（[拡張](#拡張) を参照）。
 
 ## クラス
 
