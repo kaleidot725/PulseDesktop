@@ -40,6 +40,7 @@ import jp.kaleidot725.pulse.mvi.PulseViewModel
 public fun KoScope.assertPulseMviConventions() {
     assertStatesAreDataTypes()
     assertMessagesAreSealedOrDataTypes()
+    assertStatesAndMessagesLiveInTheStatePackage()
     assertViewModelsAndContainersAreNamedAfterTheirBase()
     assertViewModelsHoldTheirDataInTheirState()
     assertSectionsBindOneViewModel()
@@ -99,6 +100,21 @@ public fun KoScope.assertMessagesAreSealedOrDataTypes() {
         testName = "PulseDesktop message cases are data types",
         additionalMessage = "Add `data`, or `sealed` when the case groups cases of its own.",
     ) { it.hasModifier(KoModifier.DATA) || (it is KoClassDeclaration && it.hasModifier(KoModifier.SEALED)) }
+}
+
+/**
+ * A [PulseState], [PulseAction], [PulseEvent], [PulseBroadcast] or [PulseUnicast] lives in a `state` package.
+ *
+ * These types are what a ViewModel and its Container agree on, and a reader looks for them in one place: beside the
+ * ViewModel of a section, in `…section/foo/state`, or beside the Container of a screen, in `…/state`. Only the type
+ * that implements the marker is checked; the cases inside a sealed class are in the same file.
+ */
+public fun KoScope.assertStatesAndMessagesLiveInTheStatePackage() {
+    (pulseStateClasses() + pulseStateObjects() + pulseMessageInterfaces() + pulseMessageClasses() + pulseMessageObjects())
+        .assertTrue(
+            testName = "states and messages live in a state package",
+            additionalMessage = "Move the type into the `state` package beside the ViewModel or Container that uses it.",
+        ) { it.resideInPackage("..state..") }
 }
 
 /**
