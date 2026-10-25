@@ -68,28 +68,28 @@ public fun KoScope.assertStatesAreDataTypes() {
 }
 
 /**
- * A [PulseAction], [PulseEvent], [PulseBroadcast] or [PulseUnicast] is a `sealed interface`, or a `data` type when a
- * single case is all there is.
+ * A [PulseAction], [PulseEvent], [PulseBroadcast] or [PulseUnicast] is a `sealed class`, and every case inside it is a
+ * `data class` or a `data object`.
  *
  * Every one of them is consumed by a `when`, in `onAction`, `onReceive`, `onReceived` or an event handler. Sealing the
  * type is what makes that `when` exhaustive, so adding a case turns into a compile error instead of a branch nobody
- * wrote.
+ * wrote, and `data` is what lets a case print and compare by its value. A case may itself be a `sealed class` to group
+ * cases further; its own cases are held to the same rule.
+ *
+ * One shape for every message keeps them alike: an interface, an `open` class or a lone object implementing the marker
+ * is reported, even when it would compile.
  */
 public fun KoScope.assertMessagesAreSealedOrDataTypes() {
-    pulseMessageInterfaces().assertTrue(
-        testName = "PulseDesktop message interfaces are sealed",
-        additionalMessage = "Add `sealed` so a `when` over this type stays exhaustive as cases are added.",
-    ) { it.hasModifier(KoModifier.SEALED) }
+    (pulseMessageInterfaces() + pulseMessageClasses() + pulseMessageObjects()).assertTrue(
+        testName = "PulseDesktop messages are sealed classes",
+        additionalMessage = "Declare the message as a `sealed class` and make each case inside it a `data class` or `data object`.",
+    ) { it is KoClassDeclaration && it.hasModifier(KoModifier.SEALED) }
 
-    pulseMessageClasses().assertTrue(
-        testName = "PulseDesktop messages implemented by a class are data classes",
-        additionalMessage = "Add `data`, or make the type a sealed interface and put the case inside it.",
-    ) { it.hasModifier(KoModifier.DATA) }
-
-    pulseMessageObjects().assertTrue(
-        testName = "PulseDesktop messages implemented by an object are data objects",
-        additionalMessage = "Add `data`, or make the type a sealed interface and put the case inside it.",
-    ) { it.hasModifier(KoModifier.DATA) }
+    val (caseClasses, caseObjects) = messageCases()
+    (caseClasses + caseObjects).assertTrue(
+        testName = "PulseDesktop message cases are data types",
+        additionalMessage = "Add `data`, or `sealed` when the case groups cases of its own.",
+    ) { it.hasModifier(KoModifier.DATA) || (it is KoClassDeclaration && it.hasModifier(KoModifier.SEALED)) }
 }
 
 /**
@@ -243,6 +243,27 @@ private fun String.isPreviewNameOf(component: String): Boolean = Regex("${Regex.
 
 private fun KoFunctionDeclaration.hasViewModelOrContainerParameter(): Boolean =
     parameters.any { it.type.name.endsWith("ViewModel") || it.type.name.endsWith("Container") }
+
+/**
+ * The classes and objects that extend a sealed message class, at any depth: a case that is a `sealed class` of its own
+ * passes its cases on to the next round.
+ */
+private fun KoScope.messageCases(): Pair<List<KoClassDeclaration>, List<KoObjectDeclaration>> {
+    val classes = classes()
+    val objects = objects()
+    val caseClasses = mutableListOf<KoClassDeclaration>()
+    val caseObjects = mutableListOf<KoObjectDeclaration>()
+    var parents = pulseMessageClasses().filter { it.hasModifier(KoModifier.SEALED) }.map { it.name }.toSet()
+    val seen = parents.toMutableSet()
+    while (parents.isNotEmpty()) {
+        val newClasses = classes.filter { c -> c.name !in seen && c.parents().any { it.name in parents } }
+        caseClasses += newClasses
+        caseObjects += objects.filter { o -> o.parents().any { it.name in parents } }
+        parents = newClasses.filter { it.hasModifier(KoModifier.SEALED) }.map { it.name }.toSet()
+        seen += newClasses.map { it.name }
+    }
+    return caseClasses to caseObjects.distinct()
+}
 
 private val messageMarkers =
     listOf(

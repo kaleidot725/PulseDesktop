@@ -9,8 +9,8 @@ internal data object ContainerAction : PulseAction
 
 internal data object ContainerEvent : PulseEvent
 
-internal sealed interface ContainerBroadcast : PulseBroadcast {
-    data object Refresh : ContainerBroadcast
+internal sealed class ContainerBroadcast : PulseBroadcast {
+    data object Refresh : ContainerBroadcast()
 }
 
 internal data object ContainerUnicast : PulseUnicast

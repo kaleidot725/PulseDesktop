@@ -11,13 +11,13 @@ data class CounterState(
     val count: Int = 0,
 ) : PulseState
 
-sealed interface CounterAction : PulseAction
+sealed class CounterAction : PulseAction
 
-sealed interface CounterEvent : PulseEvent
+sealed class CounterEvent : PulseEvent
 
-sealed interface CounterBroadcast : PulseBroadcast
+sealed class CounterBroadcast : PulseBroadcast
 
-sealed interface CounterUnicast : PulseUnicast
+sealed class CounterUnicast : PulseUnicast
 
 class Counter :
     PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(CounterState()) {

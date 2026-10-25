@@ -4,21 +4,21 @@ internal data class ContentState(
     val count: Int = 0,
 ) : PulseState
 
-internal sealed interface ContentAction : PulseAction {
-    data object Increment : ContentAction
+internal sealed class ContentAction : PulseAction {
+    data object Increment : ContentAction()
 }
 
-internal sealed interface ContentEvent : PulseEvent {
+internal sealed class ContentEvent : PulseEvent {
     data class Ping(
         val text: String,
-    ) : ContentEvent
+    ) : ContentEvent()
 }
 
-internal sealed interface ContentBroadcast : PulseBroadcast {
-    data object Reset : ContentBroadcast
+internal sealed class ContentBroadcast : PulseBroadcast {
+    data object Reset : ContentBroadcast()
 }
 
-internal sealed interface ContentUnicast : PulseUnicast
+internal sealed class ContentUnicast : PulseUnicast
 
 internal class ContentViewModel :
     PulseViewModel<ContentState, ContentAction, ContentEvent, ContentBroadcast, ContentUnicast>(ContentState()) {

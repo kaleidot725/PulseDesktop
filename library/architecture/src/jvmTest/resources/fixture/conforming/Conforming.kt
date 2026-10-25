@@ -12,15 +12,29 @@ data class CounterState(
     val count: Int = 0,
 ) : PulseState
 
-sealed interface CounterAction : PulseAction {
-    data object Increment : CounterAction
+sealed class CounterAction : PulseAction {
+    data object Increment : CounterAction()
+
+    data class Add(
+        val amount: Int,
+    ) : CounterAction()
+
+    sealed class Edit : CounterAction() {
+        data object Undo : Edit()
+    }
 }
 
-sealed interface CounterEvent : PulseEvent
+sealed class CounterEvent : PulseEvent {
+    data class Ping(
+        val text: String,
+    ) : CounterEvent()
+}
 
-sealed interface CounterBroadcast : PulseBroadcast
+sealed class CounterBroadcast : PulseBroadcast {
+    data object Reset : CounterBroadcast()
+}
 
-sealed interface CounterUnicast : PulseUnicast
+sealed class CounterUnicast : PulseUnicast
 
 class CounterViewModel :
     PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(CounterState()) {
@@ -32,9 +46,3 @@ class CounterContainer(
 ) : PulseContainer<CounterBroadcast, CounterUnicast>(viewModels)
 
 data object EmptyState : PulseState
-
-data class Ping(
-    val text: String,
-) : PulseEvent
-
-data object Reset : PulseBroadcast
