@@ -10,7 +10,7 @@ For what the checks mean and why they exist, see the [architecture checks guide]
 fun KoScope.assertPulseMviConventions()
 ```
 
-Runs the eight checks that follow, from `assertStatesAreDataTypes` to `assertComponentsHavePreviews`, in order. The first failing check throws, so a run reports one problem at a time.
+Runs the nine checks that follow, from `assertStatesAreDataTypes` to `assertComponentsHavePreviews`, in order. The first failing check throws, so a run reports one problem at a time.
 
 ## assertStatesAreDataTypes
 
@@ -34,6 +34,14 @@ fun KoScope.assertMessagesAreSealedOrDataTypes()
 ```
 
 Requires the type that implements `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` to be a `sealed class`, and every case inside it to be a `data class` or `data object`. A case may be a `sealed class` of its own, and its cases are held to the same rule. A message with a single case may instead be one `data class` or `data object` that implements the marker directly. An interface, including a sealed interface, or a class or object without `data` implementing a marker directly is reported.
+
+## assertStatesAndMessagesLiveInTheStatePackage
+
+```kotlin
+fun KoScope.assertStatesAndMessagesLiveInTheStatePackage()
+```
+
+Requires every class, object or interface that implements `PulseState`, `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` directly to be in a package with a `state` segment. Cases nested inside a sealed message are not checked on their own.
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 

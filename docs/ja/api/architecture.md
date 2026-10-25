@@ -10,7 +10,7 @@
 fun KoScope.assertPulseMviConventions()
 ```
 
-続く 8 つの検査（`assertStatesAreDataTypes` から `assertComponentsHavePreviews` まで）を順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
+続く 9 つの検査（`assertStatesAreDataTypes` から `assertComponentsHavePreviews` まで）を順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
 
 ## assertStatesAreDataTypes
 
@@ -34,6 +34,14 @@ fun KoScope.assertMessagesAreSealedOrDataTypes()
 ```
 
 `PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast` を実装する型は `sealed class` に、その中の各ケースは `data class` か `data object` にすることを要求します。ケース自体を `sealed class` にしてさらに分けることもでき、その中のケースにも同じルールが適用されます。ケースが 1 つだけのメッセージは、マーカーを直接実装する 1 つの `data class` か `data object` にしてもかまいません。マーカーを直接実装する interface（sealed interface を含む）と、`data` のない class・object は報告されます。
+
+## assertStatesAndMessagesLiveInTheStatePackage
+
+```kotlin
+fun KoScope.assertStatesAndMessagesLiveInTheStatePackage()
+```
+
+`PulseState`・`PulseAction`・`PulseEvent`・`PulseBroadcast`・`PulseUnicast` を直接実装する class・object・interface が、`state` という部分を含むパッケージにあることを要求します。sealed なメッセージの中にネストしたケースは、個別には検査しません。
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 

@@ -24,7 +24,8 @@ can check in its own test suite that it uses PulseDesktop the way the library ex
 view layout the demo follows: a **screen** at the root of a feature package creates the ViewModels and
 lays out **sections**, a section binds one ViewModel with `PulseContent`, and a **component** takes
 data and callbacks only. Packages decide which is which — `section` and `component` — and names are
-free. Every component has a `@Preview` named `<Component>_Preview`, or `<Component>_Preview_<Condition>`
+free. States and messages live in a `state` package beside the ViewModel or Container that uses
+them. Every component has a `@Preview` named `<Component>_Preview`, or `<Component>_Preview_<Condition>`
 for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
 `feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: `core/domain` holds
 the entities (`model`), repository interfaces (`repository`) and any use cases (`usecase`) and depends

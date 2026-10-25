@@ -43,12 +43,13 @@ class PulseDesktopConventionTest {
 
 ## 宣言
 
-`assertPulseMviConventions()` は 8 つの検査を実行します。4 つは宣言について、4 つは View についてのものです。失敗したときは、該当する宣言の名前と直し方を出します。
+`assertPulseMviConventions()` は 9 つの検査を実行します。5 つは宣言について、4 つは View についてのものです。失敗したときは、該当する宣言の名前と直し方を出します。
 
 | 検査 | ルール | 理由 |
 |---|---|---|
 | State は data 型 | `PulseState` は `data class` または `data object` | `StateFlow` は直前と等しい値を流さず、Compose は引数が等しい Composable をスキップする。`equals` がないと更新ごとに画面全体が再コンポジションされる |
 | メッセージは sealed class | Action・Event・Broadcast・Unicast は `sealed class`、その中の各ケースは `data class` か `data object`。ケースが 1 つなら単独の `data class` か `data object` でもよく、interface は使わない | どれも `when` で処理される。sealed にしてあればケースの追加がコンパイルエラーになり、`data` にしてあればケースが値で比較・表示される |
+| State とメッセージは state に置く | `PulseState`・Action・Event・Broadcast・Unicast は `state` パッケージにある | ViewModel と Container が取り決める型なので、1 か所で見つかるようにする。Section の ViewModel なら `…section/foo/state`、Screen の Container なら `…/state` |
 | 名前は基底クラスに従う | `PulseViewModel` は `…ViewModel`、`PulseContainer` は `…Container` | コンパイラにとってはどちらも `ViewModel` のサブクラスなので、どちらなのかを示すのは名前だけ |
 | データは State に置く | ViewModel と Container は `var` プロパティを持たない | State の外の `var` は変更しても emission が起きず、何も再コンポジションされない |
 

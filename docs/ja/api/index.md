@@ -40,9 +40,10 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 
 | アサート | 説明 |
 |---|---|
-| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 続く 8 つの検査を順に実行する |
+| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 続く 9 つの検査を順に実行する |
 | [`assertStatesAreDataTypes`](/ja/api/architecture#assertstatesaredatatypes) | `PulseState` は `data class` または `data object` |
 | [`assertMessagesAreSealedOrDataTypes`](/ja/api/architecture#assertmessagesaresealedordatatypes) | メッセージは `data class` / `data object` のケースを持つ `sealed class`、または単独の `data class` / `data object` |
+| [`assertStatesAndMessagesLiveInTheStatePackage`](/ja/api/architecture#assertstatesandmessagesliveinthestatepackage) | State とメッセージは `state` パッケージに置く |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/ja/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` と `…Container` |
 | [`assertViewModelsHoldTheirDataInTheirState`](/ja/api/architecture#assertviewmodelsholdtheirdataintheirstate) | ViewModel と Container は `var` プロパティを持たない |
 | [`assertSectionsBindOneViewModel`](/ja/api/architecture#assertsectionsbindoneviewmodel) | Section は `PulseContent` で ViewModel を束ねる |

@@ -43,12 +43,13 @@ class PulseDesktopConventionTest {
 
 ## Declarations
 
-`assertPulseMviConventions()` runs eight checks: four about the declarations and four about the views. A failure names the declaration and says how to fix it.
+`assertPulseMviConventions()` runs nine checks: five about the declarations and four about the views. A failure names the declaration and says how to fix it.
 
 | Check | Rule | Why |
 |---|---|---|
 | States are data types | a `PulseState` is a `data class` or `data object` | `StateFlow` drops an emission equal to the last one, and Compose skips a composable whose arguments are equal. Without `equals` the screen recomposes on every update |
 | Messages are sealed classes | an Action, Event, Broadcast or Unicast is a `sealed class`, and each case inside it is a `data class` or `data object`; a message with one case may be a single `data class` or `data object`, and an interface is never one | each one is consumed by a `when`. Sealing is what turns a new case into a compile error instead of a branch nobody wrote, and `data` lets a case compare and print by its value |
+| States and messages share a package | a `PulseState`, Action, Event, Broadcast or Unicast is in a `state` package | they are what a ViewModel and its Container agree on, so a reader finds them in one place: `…section/foo/state` beside a section's ViewModel, or `…/state` beside a screen's Container |
 | Names follow the base class | a `PulseViewModel` is named `…ViewModel`, a `PulseContainer` is named `…Container` | both are `ViewModel` subclasses to the compiler, so the name is what tells a reader which one this is |
 | Data lives in the state | a ViewModel and a Container declare no `var` property | a `var` beside the state changes without an emission, so nothing recomposes |
 
