@@ -29,6 +29,10 @@ free. `assertPulseModuleConventions` checks a multi-module app laid out like Now
 the entities, use cases and repository interfaces and depends on nothing, `core/data` implements the
 interfaces, and a feature reaches data only through the domain. Dependencies are read from imports.
 The module names are a `PulseModuleLayout`, which a project with names of its own replaces.
+`assertPulseDomainConventions` checks how a repository (a class or interface named `…Repository`)
+hands out data: a value to follow is a cold `Flow` or a `StateFlow`, and a function that fetches a
+value once returns kotlin-result's `Result<V, E>`. Commands that return nothing are not checked, and a
+repository may hold other repositories and the functions a data module exposes.
 
 ## Development Commands
 
@@ -100,6 +104,7 @@ PulseDesktop/
 │       └── src/
 │           ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
 │           │   ├── PulseConventions.kt       # assertPulseMviConventions and the checks it runs
+│           │   ├── PulseDomainConventions.kt # assertPulseDomainConventions: how repositories hand out data
 │           │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
 │           │   └── PulseModuleLayout.kt      # which module names play which layer
 │           └── jvmTest/…             # the checks, over conforming and violating fixtures
