@@ -8,20 +8,24 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-/** The counts as DataStore keeps them, one integer per key; what a key means is the repository's business. */
+/**
+ * Stores the counts in DataStore, one integer per key. It only reads, writes and removes what it is given: what a key
+ * means, and how a count changes, is the repository's business.
+ */
 class PulseCountLocalDataSource(
     private val dataStore: DataStore<Preferences>,
 ) {
-    fun count(key: String): Flow<Int> =
+    /** The stored value, or null when nothing is stored under [key]. */
+    fun read(key: String): Flow<Int?> =
         dataStore.data
-            .map { preferences -> preferences[intPreferencesKey(key)] ?: 0 }
+            .map { preferences -> preferences[intPreferencesKey(key)] }
             .distinctUntilChanged()
 
-    suspend fun increment(key: String) {
-        dataStore.edit { preferences ->
-            val counter = intPreferencesKey(key)
-            preferences[counter] = (preferences[counter] ?: 0) + 1
-        }
+    suspend fun write(
+        key: String,
+        value: Int,
+    ) {
+        dataStore.edit { preferences -> preferences[intPreferencesKey(key)] = value }
     }
 
     suspend fun remove(key: String) {
