@@ -42,7 +42,7 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 |---|---|
 | [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | The next eight checks, in order |
 | [`assertStatesAreDataTypes`](/api/architecture#assertstatesaredatatypes) | A `PulseState` is a `data class` or `data object` |
-| [`assertMessagesAreSealedOrDataTypes`](/api/architecture#assertmessagesaresealedordatatypes) | A message interface is `sealed`; a class or object implementing one is `data` |
+| [`assertMessagesAreSealedOrDataTypes`](/api/architecture#assertmessagesaresealedordatatypes) | A message is a `sealed class` with `data class` / `data object` cases, or a single `data class` / `data object` |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` and `…Container` |
 | [`assertViewModelsHoldTheirDataInTheirState`](/api/architecture#assertviewmodelsholdtheirdataintheirstate) | No `var` property on a ViewModel or Container |
 | [`assertSectionsBindOneViewModel`](/api/architecture#assertsectionsbindoneviewmodel) | A section binds its ViewModel with `PulseContent` |

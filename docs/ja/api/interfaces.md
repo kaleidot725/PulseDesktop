@@ -77,11 +77,11 @@ sealed class AppBroadcast : PulseBroadcast {
 interface PulseUnicast
 ```
 
-クラスを Unicast メッセージとして印付けます。子の `PulseViewModel` から親の `PulseContainer` へ発行されます。`sealed interface` または `sealed class` で実装してください。
+クラスを Unicast メッセージとして印付けます。子の `PulseViewModel` から親の `PulseContainer` へ発行されます。`sealed class` で実装してください。
 
 ```kotlin
-sealed interface AppUnicast : PulseUnicast {
-    data object SaveRequested : AppUnicast
-    data class ItemSelected(val id: String) : AppUnicast
+sealed class AppUnicast : PulseUnicast {
+    data object SaveRequested : AppUnicast()
+    data class ItemSelected(val id: String) : AppUnicast()
 }
 ```

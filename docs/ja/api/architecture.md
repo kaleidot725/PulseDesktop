@@ -33,7 +33,7 @@ fun KoScope.assertStatesAreDataTypes()
 fun KoScope.assertMessagesAreSealedOrDataTypes()
 ```
 
-`PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast` を実装する interface に `sealed` を、それらを直接実装する class と object に `data` を要求します。
+`PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast` を実装する型は `sealed class` に、その中の各ケースは `data class` か `data object` にすることを要求します。ケース自体を `sealed class` にしてさらに分けることもでき、その中のケースにも同じルールが適用されます。ケースが 1 つだけのメッセージは、マーカーを直接実装する 1 つの `data class` か `data object` にしてもかまいません。マーカーを直接実装する interface（sealed interface を含む）と、`data` のない class・object は報告されます。
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 

@@ -46,7 +46,7 @@ class PulseDesktopConventionTest {
 | Check | Rule | Why |
 |---|---|---|
 | States are data types | a `PulseState` is a `data class` or `data object` | `StateFlow` drops an emission equal to the last one, and Compose skips a composable whose arguments are equal. Without `equals` the screen recomposes on every update |
-| Messages are sealed | an Action, Event, Broadcast or Unicast interface is `sealed`; a class or object implementing one directly is `data` | each one is consumed by a `when`. Sealing is what turns a new case into a compile error instead of a branch nobody wrote |
+| Messages are sealed classes | an Action, Event, Broadcast or Unicast is a `sealed class`, and each case inside it is a `data class` or `data object`; a message with one case may be a single `data class` or `data object`, and an interface is never one | each one is consumed by a `when`. Sealing is what turns a new case into a compile error instead of a branch nobody wrote, and `data` lets a case compare and print by its value |
 | Names follow the base class | a `PulseViewModel` is named `…ViewModel`, a `PulseContainer` is named `…Container` | both are `ViewModel` subclasses to the compiler, so the name is what tells a reader which one this is |
 | Data lives in the state | a ViewModel and a Container declare no `var` property | a `var` beside the state changes without an emission, so nothing recomposes |
 

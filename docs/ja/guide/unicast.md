@@ -6,11 +6,11 @@ Unicast は、`PulseViewModel` から親の `PulseContainer` へ型付きメッ�
 
 ## Unicast を定義する
 
-sealed interface または sealed class で `PulseUnicast` を実装します。Unicast の型は、Container とそこに登録されるすべての ViewModel で共有されます。このジェネリクスの組み合わせにより、Container が理解できない Unicast 型を ViewModel が発行することはできません。
+`PulseUnicast` は sealed class で実装し、各ケースを data class か data object にします。Unicast の型は、Container とそこに登録されるすべての ViewModel で共有されます。このジェネリクスの組み合わせにより、Container が理解できない Unicast 型を ViewModel が発行することはできません。
 
 ```kotlin
-sealed interface CounterUnicast : PulseUnicast {
-    data class CounterUpdated(val count: Int) : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data class CounterUpdated(val count: Int) : CounterUnicast()
 }
 ```
 
@@ -84,8 +84,8 @@ sealed class CounterBroadcast : PulseBroadcast {
     data class CounterUpdated(val count: Int) : CounterBroadcast()
 }
 
-sealed interface CounterUnicast : PulseUnicast {
-    data class CounterUpdated(val count: Int) : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data class CounterUpdated(val count: Int) : CounterUnicast()
 }
 ```
 
