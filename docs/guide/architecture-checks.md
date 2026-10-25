@@ -4,14 +4,15 @@
 
 The compiler already rejects what the types can express. A ViewModel must implement `onAction`, and its message types must be the ones its Container knows. What is left are habits the types cannot express, each with a consequence that is easy to miss in review.
 
-The checks come in four groups, one assertion each. Every group can be used without the others.
+The checks come in five groups, one assertion each. Every group can be used without the others.
 
 | Assertion | What it checks |
 |---|---|
 | `assertPulseMviConventions()` | the state and message types, the ViewModel and Container names, how the views are split, and that every component has a preview |
-| `assertPulseDomainConventions()` | how a repository hands out its data |
-| `assertPulseModuleConventions()` | which module may depend on which |
+| `assertPulseDomainConventions()` | how a repository hands out its data, and what earns a use case its place |
+| `assertPulseModuleConventions()` | which module may depend on which, and the packages inside the domain and the data layer |
 | `assertPulseKoinConventions()` | where Koin modules are declared |
+| `assertPulseResourceConventions()` | where the text a user reads comes from |
 
 ## Setup
 
@@ -35,18 +36,20 @@ class PulseDesktopConventionTest {
         scope.assertPulseDomainConventions()
         scope.assertPulseModuleConventions()
         scope.assertPulseKoinConventions()
+        scope.assertPulseResourceConventions()
     }
 }
 ```
 
 ## Declarations
 
-`assertPulseMviConventions()` runs eight checks: four about the declarations and four about the views. A failure names the declaration and says how to fix it.
+`assertPulseMviConventions()` runs nine checks: five about the declarations and four about the views. A failure names the declaration and says how to fix it.
 
 | Check | Rule | Why |
 |---|---|---|
 | States are data types | a `PulseState` is a `data class` or `data object` | `StateFlow` drops an emission equal to the last one, and Compose skips a composable whose arguments are equal. Without `equals` the screen recomposes on every update |
 | Messages are sealed classes | an Action, Event, Broadcast or Unicast is a `sealed class`, and each case inside it is a `data class` or `data object`; a message with one case may be a single `data class` or `data object`, and an interface is never one | each one is consumed by a `when`. Sealing is what turns a new case into a compile error instead of a branch nobody wrote, and `data` lets a case compare and print by its value |
+| States and messages share a package | a `PulseState`, Action, Event, Broadcast or Unicast is in a `state` package | they are what a ViewModel and its Container agree on, so a reader finds them in one place: `…section/foo/state` beside a section's ViewModel, or `…/state` beside a screen's Container |
 | Names follow the base class | a `PulseViewModel` is named `…ViewModel`, a `PulseContainer` is named `…Container` | both are `ViewModel` subclasses to the compiler, so the name is what tells a reader which one this is |
 | Data lives in the state | a ViewModel and a Container declare no `var` property | a `var` beside the state changes without an emission, so nothing recomposes |
 
@@ -107,6 +110,15 @@ These are allowed and are not counted as data the repository hands out.
 - A property holding another repository, or a function such as one a data module exposes, is what the repository uses
 - A private `MutableStateFlow` behind a public `StateFlow` is how the repository changes its own state
 
+## Use cases
+
+A ViewModel may call a repository directly, so a use case is optional. Write one only when it has work of its own, such as combining two flows or deciding whether to act. `assertPulseDomainConventions()` checks the use cases there are. A use case is a class whose name ends with `UseCase`.
+
+| Check | Rule | Why |
+|---|---|---|
+| Use cases have a package | a use case is in a `usecase` package | the entities, the repository interfaces and the use cases are read for different reasons, so each has its own place |
+| Use cases do work of their own | no public function of a use case is a single line | a one-line use case only hands the call on to a repository. It is a class to read and wire for a call the ViewModel can make itself |
+
 ## Modules
 
 `assertPulseModuleConventions()` checks a multi-module app. The modules are named after Now in Android's, and the dependencies point the way Clean Architecture asks.
@@ -119,23 +131,28 @@ Each module belongs to one layer. A module outside these names is not checked.
 |---|---|
 | `app` | the application, which wires everything together |
 | `feature/<name>` | one feature's screens, sections and ViewModels; `feature/<name>/api` and `/impl` count as one feature |
-| `core/domain` | the entities, the use cases, and the repository interfaces the use cases need |
-| `core/data` | the repository implementations, including whatever they store data in |
-| `core/designsystem`, `core/ui` | composables shared between features |
+| `core/domain` | the entities, the repository interfaces, and the use cases when there are any |
+| `core/data` | the repository implementations and the data sources they read |
+| `core/designsystem` | the theme and the building blocks every screen is drawn with |
+| `core/ui` | composables shared between features that draw the domain's entities |
 | any other `core/<name>` | support, such as `core/common` or `core/testing` |
 
 ### Direction
 
 The domain is the centre and depends on nothing. Unlike Now in Android, where the domain module depends on the data module, the domain owns the repository interfaces and `core/data` implements them. A feature reaches data only through the domain, and the app hands it the implementation.
 
+The design system depends on nothing either. Its building blocks take text, numbers and callbacks, so any screen can use them whatever it shows. A composable that takes an entity belongs in `core/ui`, which may use both the domain and the design system.
+
 ```mermaid
 flowchart TB
     app --> feature["feature/*"]
     app --> data["core/data"]
     feature --> domain["core/domain"]
-    feature --> ui["core/ui · designsystem"]
+    feature --> ui["core/ui"]
+    feature --> designsystem["core/designsystem"]
     data --> domain
     ui --> domain
+    ui --> designsystem
 ```
 
 ### Rules
@@ -149,9 +166,34 @@ Dependencies are read from the imports in each file, so what is checked is the c
 | The core never depends on features | no core module imports from a feature |
 | The domain depends on nothing | the domain imports only from support modules |
 | The data layer implements the domain | the data layer imports only from the domain and support |
-| Shared UI only draws | the shared UI imports only from the domain, itself and support |
+| The design system stands alone | the design system imports only from support |
+| Shared UI only draws | the shared UI imports only from the domain, the design system, itself and support |
 | Features reach data through the domain | a feature imports nothing from the data layer |
 | The domain is framework-free | the domain imports nothing from Compose, AndroidX Lifecycle or PulseDesktop |
+
+### Packages
+
+Inside the domain and the data layer, the package says what a declaration is. A file sits in one of these packages, and any part of its package name may be the one: `com.example.core.domain.model` and `com.example.core.domain.model.area` both count as `model`.
+
+A data source in `local` only persists: it reads, writes and removes what it is given. How a value changes — adding one to a count, deciding what a missing value means — is the repository's.
+
+The table lists the packages of each layer, and a typical layout follows it.
+
+| Layer | Packages |
+|---|---|
+| domain | `model` for the entities, `repository` for the repository interfaces, `usecase` for the use cases |
+| data | `repository` for the repository implementations, `local` for the data sources, `model` for what those sources store |
+
+```
+core/domain/…/domain/
+├── model/          # PulseArea
+├── repository/     # PulseCountRepository
+└── usecase/        # ReceivePulseUseCase
+core/data/…/data/
+├── local/          # PulseCountLocalDataSource
+├── model/          # what the data source stores, when it differs from the entity
+└── repository/     # DataStorePulseCountRepository
+```
 
 ### Other module names
 
@@ -166,6 +208,7 @@ val layout =
         data = listOf("shared/data"),
         sharedUi = listOf("shared/widget"),
         support = listOf("shared/*"),
+        designSystem = listOf("shared/theme"),
     )
 
 Konsist.scopeFromProduction().assertPulseModuleConventions(layout)
@@ -178,6 +221,29 @@ Konsist.scopeFromProduction().assertPulseModuleConventions(layout)
 | Check | Rule | Why |
 |---|---|---|
 | Koin modules live in the app | a file that declares a Koin module — with `org.koin.dsl.module` or Koin Annotations' `@Module` — is in the app module | the app is the one module that knows every other, so it is the one place the whole graph can be read. A feature or core module with its own Koin module takes part of that decision away |
+
+## Text
+
+`assertPulseResourceConventions()` keeps an app translatable. Every module that draws — a feature, `core/ui`, `core/designsystem` — keeps its text in its own string resources, with Compose Multiplatform's `composeResources`, and reads it with `stringResource(Res.string.…)`. A translation is a `values-<language>` directory beside `values`. The check takes the same `PulseModuleLayout` as the module checks.
+
+An entity that needs a label gets it in the module that draws it. The checks are in the table, and the demo labelling the position of an area follows it.
+
+| Check | Rule | Why |
+|---|---|---|
+| The domain holds no text | no string literal in the domain contains a letter | a label in the domain is in one language for every screen that shows it. The domain names a case with a type, and the module that draws it maps it to a string resource |
+| Composables read text from resources | a composable hands no literal to `Text("…")` or to a `text`, `title`, `label`, `placeholder` or `contentDescription` argument | a literal there can only be read in one language. A literal that only places values, such as `"$count"`, and anything inside a `@Preview` pass |
+
+```kotlin
+// feature/count — the domain's enum has no label of its own
+internal val PulseAreaPosition.label: StringResource
+    get() =
+        when (this) {
+            PulseAreaPosition.TopLeft -> Res.string.position_top_left
+            PulseAreaPosition.TopRight -> Res.string.position_top_right
+            PulseAreaPosition.BottomLeft -> Res.string.position_bottom_left
+            PulseAreaPosition.BottomRight -> Res.string.position_bottom_right
+        }
+```
 
 ## Choosing the checks
 

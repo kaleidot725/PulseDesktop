@@ -40,16 +40,18 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 
 | Assertion | Description |
 |---|---|
-| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | The next eight checks, in order |
+| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | The next nine checks, in order |
 | [`assertStatesAreDataTypes`](/api/architecture#assertstatesaredatatypes) | A `PulseState` is a `data class` or `data object` |
 | [`assertMessagesAreSealedOrDataTypes`](/api/architecture#assertmessagesaresealedordatatypes) | A message is a `sealed class` with `data class` / `data object` cases, or a single `data class` / `data object` |
+| [`assertStatesAndMessagesLiveInTheStatePackage`](/api/architecture#assertstatesandmessagesliveinthestatepackage) | States and messages are in a `state` package |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` and `…Container` |
 | [`assertViewModelsHoldTheirDataInTheirState`](/api/architecture#assertviewmodelsholdtheirdataintheirstate) | No `var` property on a ViewModel or Container |
 | [`assertSectionsBindOneViewModel`](/api/architecture#assertsectionsbindoneviewmodel) | A section binds its ViewModel with `PulseContent` |
 | [`assertComponentsAreStateless`](/api/architecture#assertcomponentsarestateless) | A component takes data and callbacks only |
 | [`assertScreensComposeSections`](/api/architecture#assertscreenscomposesections) | A screen composes sections instead of binding a ViewModel |
 | [`assertComponentsHavePreviews`](/api/architecture#assertcomponentshavepreviews) | Every component has a `<Component>_Preview` |
-| [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls |
-| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks |
+| [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls; a use case lives in `usecase` and is more than one line |
+| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks, and the domain and data are split into packages |
 | [`assertPulseKoinConventions`](/api/architecture#assertpulsekoinconventions) | Koin modules are declared in the app module |
+| [`assertPulseResourceConventions`](/api/architecture#assertpulseresourceconventions) | The domain holds no text, and composables read their text from string resources |
 | [`PulseModuleLayout`](/api/architecture#pulsemodulelayout) | Which module names play which layer |

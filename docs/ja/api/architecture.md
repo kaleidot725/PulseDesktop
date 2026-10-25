@@ -10,7 +10,7 @@
 fun KoScope.assertPulseMviConventions()
 ```
 
-続く 8 つの検査（`assertStatesAreDataTypes` から `assertComponentsHavePreviews` まで）を順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
+続く 9 つの検査（`assertStatesAreDataTypes` から `assertComponentsHavePreviews` まで）を順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
 
 ## assertStatesAreDataTypes
 
@@ -34,6 +34,14 @@ fun KoScope.assertMessagesAreSealedOrDataTypes()
 ```
 
 `PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast` を実装する型は `sealed class` に、その中の各ケースは `data class` か `data object` にすることを要求します。ケース自体を `sealed class` にしてさらに分けることもでき、その中のケースにも同じルールが適用されます。ケースが 1 つだけのメッセージは、マーカーを直接実装する 1 つの `data class` か `data object` にしてもかまいません。マーカーを直接実装する interface（sealed interface を含む）と、`data` のない class・object は報告されます。
+
+## assertStatesAndMessagesLiveInTheStatePackage
+
+```kotlin
+fun KoScope.assertStatesAndMessagesLiveInTheStatePackage()
+```
+
+`PulseState`・`PulseAction`・`PulseEvent`・`PulseBroadcast`・`PulseUnicast` を直接実装する class・object・interface が、`state` という部分を含むパッケージにあることを要求します。sealed なメッセージの中にネストしたケースは、個別には検査しません。
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 
@@ -89,7 +97,7 @@ fun KoScope.assertComponentsHavePreviews()
 fun KoScope.assertPulseDomainConventions()
 ```
 
-以下の 2 つの Repository の検査を実行します。Repository は名前が `Repository` で終わる class または interface です。class と interface をまとめて検査するので、失敗時は違反したものをすべて一度に挙げます。
+以下の 2 つの Repository の検査と 2 つの UseCase の検査を実行します。Repository は名前が `Repository` で終わる class または interface です。class と interface をまとめて検査するので、失敗時は違反したものをすべて一度に挙げます。UseCase は名前が `UseCase` で終わる class です。
 
 ## assertRepositoriesExposeFlowsOrStateFlows
 
@@ -107,6 +115,22 @@ fun KoScope.assertRepositoriesReturnResultsFromOneShotCalls()
 
 値を返す Repository の public 関数が、`Flow`、`StateFlow`、または `com.github.michaelbull.result.Result`（import か完全修飾名で判定）を返すことを要求します。`Unit` を返す関数と、型を書いていないブロック本体の関数はコマンドとして扱い、検査しません。型を書いていない式本体の関数は違反になります。
 
+## assertUseCasesLiveInTheUseCasePackage
+
+```kotlin
+fun KoScope.assertUseCasesLiveInTheUseCasePackage()
+```
+
+UseCase が、`usecase` という部分を含むパッケージにあることを要求します。
+
+## assertUseCasesDoMoreThanOneLine
+
+```kotlin
+fun KoScope.assertUseCasesDoMoreThanOneLine()
+```
+
+UseCase の public 関数の本体が、空行を除いて 2 行以上であることを要求します。本体は、式本体なら `=` のあと、ブロック本体なら波括弧の中です。private 関数は検査しません。
+
 ## assertPulseModuleConventions
 
 ```kotlin
@@ -122,9 +146,12 @@ fun KoScope.assertPulseModuleConventions(layout: PulseModuleLayout = PulseModule
 | `assertCoreDoesNotDependOnFeatures(layout)` | app と feature 以外のモジュールは feature から import しない |
 | `assertDomainDependsOnNothing(layout)` | domain は補助モジュールからだけ import する |
 | `assertDataDependsOnlyOnTheDomain(layout)` | data は domain と補助モジュールからだけ import する |
-| `assertSharedUiDependsOnlyOnTheDomain(layout)` | 共有 UI は domain、自身、補助モジュールからだけ import する |
+| `assertDesignSystemDependsOnNothing(layout)` | designsystem は補助モジュールからだけ import する |
+| `assertSharedUiDependsOnlyOnTheDomain(layout)` | 共有 UI は domain、designsystem、自身、補助モジュールからだけ import する |
 | `assertFeaturesReachDataThroughTheDomain(layout)` | feature は data から何も import しない |
-| `assertDomainIsFrameworkFree(layout)` | domain は `androidx.compose`、`androidx.lifecycle`、`jp.kaleidot725.pulse` から import しない |
+| `assertDomainIsFrameworkFree(layout)` | domain は `androidx.compose`、`androidx.lifecycle`、`jp.kaleidot725.pulse.mvi`、`jp.kaleidot725.pulse.navigation`、`jp.kaleidot725.pulse.architecture` から import しない |
+| `assertDomainIsSplitIntoItsPackages(layout)` | domain のファイルは `model`・`repository`・`usecase` のどれかを含むパッケージにある |
+| `assertDataIsSplitIntoItsPackages(layout)` | data のファイルは `repository`・`local`・`model` のどれかを含むパッケージにある |
 
 ## PulseModuleLayout
 
@@ -134,8 +161,9 @@ data class PulseModuleLayout(
     val features: List<String> = listOf("feature/*", "feature/*/api", "feature/*/impl"),
     val domain: List<String> = listOf("core/domain"),
     val data: List<String> = listOf("core/data"),
-    val sharedUi: List<String> = listOf("core/designsystem", "core/ui"),
+    val sharedUi: List<String> = listOf("core/ui"),
     val support: List<String> = listOf("core/*"),
+    val designSystem: List<String> = listOf("core/designsystem"),
 ) {
     companion object {
         val NowInAndroid: PulseModuleLayout
@@ -169,6 +197,30 @@ fun KoScope.assertKoinModulesLiveInTheApp(layout: PulseModuleLayout = PulseModul
 
 `org.koin.dsl.module` か `org.koin.core.annotation.Module` を import するファイルが、レイアウトの app 層にあることを要求します。どの層にも当てはまらないモジュールのファイルは検査しません。
 
+## assertPulseResourceConventions
+
+```kotlin
+fun KoScope.assertPulseResourceConventions(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+以下の 2 つの文言の検査を実行します。
+
+## assertDomainHoldsNoText
+
+```kotlin
+fun KoScope.assertDomainHoldsNoText(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+domain のファイルの文字列リテラルが、`$value` と `${expression}` のテンプレートを除いたあとに文字を含まないことを要求します。コメントは対象外です。どの層にも当てはまらないモジュールのファイルは検査しません。
+
+## assertComposablesTakeTextFromResources
+
+```kotlin
+fun KoScope.assertComposablesTakeTextFromResources()
+```
+
+`@Preview` 以外のすべての Composable が、`Text(…)` や `text`・`title`・`label`・`placeholder`・`contentDescription` の引数に、文字を含む文字列リテラルを渡さないことを要求します。先にテンプレートを除くので、値を埋め込むだけのリテラルは通ります。
+
 ## クエリ
 
 クエリは上のアサートの土台であり、プロジェクト独自のルールの土台にもなります。型のクエリは対応する型を直接継承・実装している宣言を返し、View のクエリは役割が関数ではなくファイルのパッケージで決まるため、ファイルを返します。
@@ -188,6 +240,7 @@ fun KoScope.assertKoinModulesLiveInTheApp(layout: PulseModuleLayout = PulseModul
 | `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — 名前が `Repository` で終わる class |
 | `pulseRepositoryInterfaces()` | `List<KoInterfaceDeclaration>` — 名前が `Repository` で終わる interface |
 | `pulseRepositories()` | `List<KoBaseDeclaration>` — 上の 2 つを合わせたもの |
+| `pulseUseCases()` | `List<KoClassDeclaration>` — 名前が `UseCase` で終わる class |
 | `pulseKoinModuleFiles()` | `List<KoFileDeclaration>` — Koin モジュールを定義するファイル |
 
 ## スコープ
