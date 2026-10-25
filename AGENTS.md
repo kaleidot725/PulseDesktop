@@ -30,6 +30,9 @@ for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulse
 the entities, use cases and repository interfaces and depends on nothing, `core/data` implements the
 interfaces, and a feature reaches data only through the domain. Dependencies are read from imports.
 The module names are a `PulseModuleLayout`, which a project with names of its own replaces.
+`assertPulseKoinConventions` uses the same layout: a Koin module (`org.koin.dsl.module` or Koin
+Annotations' `@Module`) is declared only in the app module, where the whole graph can be read;
+resolving from Koin is allowed anywhere.
 `assertPulseDomainConventions` checks how a repository (a class or interface named `…Repository`)
 hands out data: a value to follow is a cold `Flow` or a `StateFlow`, and a function that fetches a
 value once returns kotlin-result's `Result<V, E>`. Commands that return nothing are not checked, and a
@@ -106,22 +109,23 @@ PulseDesktop/
 │           ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
 │           │   ├── PulseConventions.kt       # assertPulseMviConventions and the checks it runs
 │           │   ├── PulseDomainConventions.kt # assertPulseDomainConventions: how repositories hand out data
+│           │   ├── PulseKoinConventions.kt   # assertPulseKoinConventions: Koin modules live in the app
 │           │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
 │           │   └── PulseModuleLayout.kt      # which module names play which layer
 │           └── jvmTest/…             # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
-│   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and startKoin
-│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # with every module's Koin module
+│   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and di/:
+│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # every Koin module, started in Main
 │   │       ├── DemoApp.kt
 │   │       └── Main.kt
 │   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
-│   │                                 # PulseCountRepository, the use cases, and domainModule
-│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository and dataModule
+│   │                                 # PulseCountRepository and the use cases; no Koin
+│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository and pulseCountDataStore()
 │   ├── core/designsystem/            # :demo:core:designsystem — PulseDesktopTheme, PulseCard, PulseButton
 │   └── feature/count/                # :demo:feature:count — one feature, screen at its root; reaches
 │                                     # the counts through the domain use cases, never core/data.
-│                                     # countFeatureModule builds the ViewModels and Container;
-│                                     # rememberPulseViewModel still decides how long they live
+│                                     # It resolves its ViewModels from Koin; rememberPulseViewModel
+│                                     # still decides how long they live
 │       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/
 │           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
 │           ├── PulseCountContainer.kt

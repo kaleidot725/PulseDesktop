@@ -2,9 +2,9 @@ package jp.kaleidot725.pulse.demo
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import jp.kaleidot725.pulse.demo.core.data.dataModule
-import jp.kaleidot725.pulse.demo.core.domain.domainModule
-import jp.kaleidot725.pulse.demo.count.countFeatureModule
+import jp.kaleidot725.pulse.demo.di.countFeatureModule
+import jp.kaleidot725.pulse.demo.di.dataModule
+import jp.kaleidot725.pulse.demo.di.domainModule
 import org.koin.core.context.startKoin
 import java.io.File
 
