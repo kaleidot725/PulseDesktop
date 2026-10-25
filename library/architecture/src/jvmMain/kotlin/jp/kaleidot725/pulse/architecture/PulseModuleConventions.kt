@@ -186,7 +186,8 @@ public fun KoScope.assertDomainIsSplitIntoItsPackages(layout: PulseModuleLayout 
  * Every file in the data layer sits in a `repository`, `local` or `model` package.
  *
  * `repository` holds the implementations of the domain's interfaces, `local` the data sources they read and write, and
- * `model` the shapes those sources store, which stay out of the domain.
+ * `model` the shapes those sources store, which stay out of the domain. A data source only persists — it reads, writes
+ * and removes — and the repository decides how a value changes, such as adding one to a count.
  */
 public fun KoScope.assertDataIsSplitIntoItsPackages(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
     assertLayerPackages(
