@@ -49,12 +49,30 @@ class PulseConventionsTest {
 
     /**
      * An unsealed message type compiles, and every `when` over it then needs an `else` branch that quietly swallows the
-     * cases added later.
+     * cases added later. A sealed interface would seal the type just as well, but a sealed class, or a single data class
+     * or data object for a message with one case, is what [assertMessagesAreSealedOrDataTypes] asks for, so the
+     * interfaces and the class and object without `data` are reported by name. The conforming fixture's `Pinged` and
+     * `Cleared` show the single data class and data object passing.
      */
     @Test
-    fun `reports a message interface that is not sealed`() {
+    fun `reports a message that is not a sealed class`() {
         val failure = assertFailsWith<KoAssertionFailedException> { violating.assertMessagesAreSealedOrDataTypes() }
         assertMessageMentions(failure, "OpenAction")
+        assertMessageMentions(failure, "InterfaceEvent")
+        assertMessageMentions(failure, "OpenBroadcast")
+        assertMessageMentions(failure, "LoneUnicast")
+    }
+
+    /**
+     * A case without `data` compares by identity, so two equal messages differ and a log prints a hash instead of the
+     * value. Cases of a nested `sealed class` are checked as well, since that is where a forgotten `data` hides.
+     */
+    @Test
+    fun `reports a message case that is not a data type`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingCases.assertMessagesAreSealedOrDataTypes() }
+        assertMessageMentions(failure, "PlainCase")
+        assertMessageMentions(failure, "OpenCase")
+        assertMessageMentions(failure, "NestedCase")
     }
 
     /**
@@ -136,6 +154,8 @@ class PulseConventionsTest {
     private val conforming get() = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/conforming")
 
     private val violating get() = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/violating")
+
+    private val violatingCases get() = Konsist.scopeFromFile("library/architecture/src/jvmTest/resources/fixture/violating/CaseAction.kt")
 
     private val violatingViews get() = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/violating-view")
 }

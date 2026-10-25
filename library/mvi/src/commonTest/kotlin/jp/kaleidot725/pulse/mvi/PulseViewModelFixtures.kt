@@ -12,10 +12,10 @@ internal data class TestState(
 
 internal data object TestAction : PulseAction
 
-internal sealed interface TestEvent : PulseEvent {
+internal sealed class TestEvent : PulseEvent {
     data class Message(
         val text: String,
-    ) : TestEvent
+    ) : TestEvent()
 }
 
 internal data object TestBroadcast : PulseBroadcast
