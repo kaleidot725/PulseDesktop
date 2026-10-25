@@ -3,6 +3,7 @@ package jp.kaleidot725.pulse.architecture
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.core.exception.KoAssertionFailedException
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /**
@@ -106,6 +107,23 @@ class PulseConventionsTest {
         val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertScreensComposeSections() }
         assertMessageMentions(failure, "BindingScreen")
     }
+
+    /**
+     * A component with no preview cannot be looked at on its own, and one whose preview does not follow
+     * `<Component>_Preview` is not tied to it — the next rename leaves the preview behind. A private helper composable
+     * and a component previewed only under a condition, such as `CounterBadge_Preview_Empty`, both pass.
+     */
+    @Test
+    fun `reports a component without a matching preview`() {
+        assertEquals(emptyList(), conformingPreviewless())
+
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertComponentsHavePreviews() }
+        assertMessageMentions(failure, "UnpreviewedComponent")
+        assertMessageMentions(failure, "MisnamedPreviewComponent")
+    }
+
+    private fun conformingPreviewless(): List<String> =
+        runCatching { conforming.assertComponentsHavePreviews() }.exceptionOrNull()?.message?.let { listOf(it) } ?: emptyList()
 
     private fun assertMessageMentions(
         failure: KoAssertionFailedException,

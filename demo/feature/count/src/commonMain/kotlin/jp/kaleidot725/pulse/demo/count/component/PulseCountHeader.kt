@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseButton
 import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseTextButton
@@ -38,4 +39,16 @@ fun PulseCountHeader(
             PulseTextButton(text = "Refresh view", onClick = onRefresh)
         }
     }
+}
+
+@Preview
+@Composable
+private fun PulseCountHeader_Preview() {
+    PulseCountHeader(depth = 2, onNewArea = {}, onBack = {}, onReset = {}, onRefresh = {})
+}
+
+@Preview
+@Composable
+private fun PulseCountHeader_Preview_FirstArea() {
+    PulseCountHeader(depth = 1, onNewArea = {}, onBack = null, onReset = {}, onRefresh = {})
 }

@@ -45,6 +45,7 @@ public fun KoScope.assertPulseMviConventions() {
     assertSectionsBindOneViewModel()
     assertComponentsAreStateless()
     assertScreensComposeSections()
+    assertComponentsHavePreviews()
 }
 
 /**
@@ -182,6 +183,26 @@ public fun KoScope.assertScreensComposeSections() {
 public fun KoScope.pulseSections(): List<KoFileDeclaration> =
     composableFiles().filter { it.hasPackage("..section..") && !it.hasPackage("..component..") }
 
+/**
+ * Every component has a preview named `<Component>_Preview`, or `<Component>_Preview_<Condition>` for the state it
+ * shows — `PulseTextButton_Preview` or `PulseTextButton_Preview_Disabled`.
+ *
+ * A component takes data and callbacks only, so a preview is all it needs to be seen on its own, and the preview is
+ * the first thing that breaks when the component does. One matching preview is enough; a component with several states
+ * can have one per condition. The name ties the preview to its component, so a renamed component shows up here when
+ * its preview is left behind. Private composables and the previews themselves are not components.
+ */
+public fun KoScope.assertComponentsHavePreviews() {
+    val previews = functions().filter { it.isPreview }.map { it.name }
+    pulseComponents()
+        .flatMap { file -> file.composables() }
+        .filter { !it.isPreview && !it.hasPrivateModifier }
+        .assertTrue(
+            testName = "components have previews",
+            additionalMessage = "Add a @Preview named `<Component>_Preview`, or `<Component>_Preview_<Condition>`.",
+        ) { component -> previews.any { it.isPreviewNameOf(component.name) } }
+}
+
 /** Every file with a composable under a `component` package. */
 public fun KoScope.pulseComponents(): List<KoFileDeclaration> = composableFiles().filter { it.hasPackage("..component..") }
 
@@ -213,6 +234,12 @@ public fun KoScope.pulseMessageObjects(): List<KoObjectDeclaration> = objects().
 private fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
 
 private fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
+
+/** `@Preview` from any package, and multipreview annotations such as `@PreviewLightDark`. */
+private val KoFunctionDeclaration.isPreview: Boolean
+    get() = annotations.any { it.name.substringAfterLast('.').startsWith("Preview") }
+
+private fun String.isPreviewNameOf(component: String): Boolean = Regex("${Regex.escape(component)}_Preview(_\\w+)?").matches(this)
 
 private fun KoFunctionDeclaration.hasViewModelOrContainerParameter(): Boolean =
     parameters.any { it.type.name.endsWith("ViewModel") || it.type.name.endsWith("Container") }
