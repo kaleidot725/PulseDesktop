@@ -53,6 +53,37 @@ class PulseDomainConventionsTest {
     }
 
     /**
+     * A use case in its own package whose functions do real work — combining two flows, deciding over a value — passes,
+     * and a private helper of one line is not counted against it.
+     */
+    @Test
+    fun `passes on use cases that do work of their own`() {
+        val useCases = useCaseScope("conforming")
+
+        assertEquals(listOf("CountTotalUseCase"), useCases.pulseUseCases().map { it.name })
+        useCases.assertPulseDomainConventions()
+    }
+
+    /**
+     * A use case of one line only hands the call on, whether it is written as an expression or as a block, and the
+     * ViewModel could have made that call itself.
+     */
+    @Test
+    fun `reports a use case that is a single line`() {
+        val failure = failureOf(useCaseScope("violating")) { assertUseCasesDoMoreThanOneLine() }
+
+        assertMentions(failure, "PassThroughUseCase", "BlockPassThroughUseCase")
+    }
+
+    /** A use case outside a `usecase` package is mixed in with the entities or the repository interfaces. */
+    @Test
+    fun `reports a use case outside the usecase package`() {
+        val failure = failureOf(useCaseScope("violating")) { assertUseCasesLiveInTheUseCasePackage() }
+
+        assertMentions(failure, "MisplacedUseCase")
+    }
+
+    /**
      * A plain return value hides the failure, `kotlin.Result` hides which failure, and a function without a written
      * return type cannot be told apart from either.
      */
@@ -76,6 +107,8 @@ class PulseDomainConventionsTest {
     }
 
     private fun scope(name: String) = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/repository/$name")
+
+    private fun useCaseScope(name: String) = Konsist.scopeFromDirectory("library/architecture/src/jvmTest/resources/fixture/usecase/$name")
 
     private val conforming get() = scope("conforming")
 }

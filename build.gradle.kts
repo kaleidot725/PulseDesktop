@@ -26,6 +26,10 @@ subprojects {
         ignoreFailures.set(false)
         filter {
             exclude("**/build/**")
+            // Compose resources add the generated Res accessors under build/ to the source sets. The
+            // pattern above only sees paths relative to a source directory, so they are dropped by
+            // absolute path, for the check and the format tasks alike.
+            exclude { it.file.path.contains("${File.separator}build${File.separator}generated${File.separator}") }
         }
     }
 }

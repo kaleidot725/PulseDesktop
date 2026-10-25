@@ -1,8 +1,8 @@
 package fixture.conforming.screen.section
 
 import androidx.compose.runtime.Composable
-import fixture.conforming.CounterState
 import fixture.conforming.CounterViewModel
+import fixture.conforming.state.CounterState
 import fixture.conforming.screen.section.component.CounterLabel
 import jp.kaleidot725.pulse.mvi.PulseContent
 

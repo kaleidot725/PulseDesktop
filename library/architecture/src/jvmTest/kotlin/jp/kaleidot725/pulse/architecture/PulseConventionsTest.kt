@@ -76,6 +76,18 @@ class PulseConventionsTest {
     }
 
     /**
+     * A state or a message left beside the ViewModel, or anywhere else, is one more place to look for what a section and
+     * its Container agree on.
+     */
+    @Test
+    fun `reports a state or a message outside the state package`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violating.assertStatesAndMessagesLiveInTheStatePackage() }
+        assertMessageMentions(failure, "CounterState")
+        assertMessageMentions(failure, "CounterAction")
+        assertMessageMentions(failure, "PlainState")
+    }
+
+    /**
      * The name is how a reader tells a ViewModel from a Container, since both are `ViewModel` subclasses to the
      * compiler.
      */

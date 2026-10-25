@@ -1,11 +1,9 @@
 package jp.kaleidot725.pulse.demo.count.section.area
 
-import jp.kaleidot725.pulse.demo.core.domain.ObservePulseCountUseCase
-import jp.kaleidot725.pulse.demo.core.domain.PulseArea
-import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
-import jp.kaleidot725.pulse.demo.core.domain.ReceivePulseUseCase
-import jp.kaleidot725.pulse.demo.core.domain.ResetPulseCountUseCase
-import jp.kaleidot725.pulse.demo.core.domain.SendPulseUseCase
+import jp.kaleidot725.pulse.demo.core.domain.model.PulseArea
+import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
+import jp.kaleidot725.pulse.demo.core.domain.repository.PulseCountRepository
+import jp.kaleidot725.pulse.demo.core.domain.usecase.ReceivePulseUseCase
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaAction
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaEvent
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaState
@@ -17,17 +15,15 @@ import kotlinx.coroutines.launch
 
 class PulseAreaViewModel(
     private val area: PulseArea,
-    private val observePulseCount: ObservePulseCountUseCase,
-    private val sendPulse: SendPulseUseCase,
+    private val repository: PulseCountRepository,
     private val receivePulse: ReceivePulseUseCase,
-    private val resetPulseCount: ResetPulseCountUseCase,
 ) : PulseViewModel<PulseAreaState, PulseAreaAction, PulseAreaEvent, PulseCountBroadcast, PulseCountUnicast>(
         initialUiState = PulseAreaState(position = area.position),
     ) {
     override fun onSetup() {
         update { copy(setupCount = setupCount + 1) }
         coroutineScope.launch {
-            observePulseCount(area).withIndex().collect { (index, count) -> showCount(count, isFirst = index == 0) }
+            repository.count(area).withIndex().collect { (index, count) -> showCount(count, isFirst = index == 0) }
         }
     }
 
@@ -46,7 +42,7 @@ class PulseAreaViewModel(
 
     private fun pulse() {
         coroutineScope.launch {
-            sendPulse(area)
+            repository.increment(area)
             unicast(PulseCountUnicast.Pulsed(area.position))
         }
     }
@@ -56,7 +52,7 @@ class PulseAreaViewModel(
     }
 
     private fun reset() {
-        coroutineScope.launch { resetPulseCount(area) }
+        coroutineScope.launch { repository.reset(area) }
     }
 
     private fun showCount(

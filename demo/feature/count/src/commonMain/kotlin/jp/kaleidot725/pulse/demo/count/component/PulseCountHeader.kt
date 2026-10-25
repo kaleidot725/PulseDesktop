@@ -10,6 +10,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseButton
 import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseTextButton
+import jp.kaleidot725.pulse.demo.count.resources.Res
+import jp.kaleidot725.pulse.demo.count.resources.area_description
+import jp.kaleidot725.pulse.demo.count.resources.area_title
+import jp.kaleidot725.pulse.demo.count.resources.back
+import jp.kaleidot725.pulse.demo.count.resources.new_area
+import jp.kaleidot725.pulse.demo.count.resources.refresh_view
+import jp.kaleidot725.pulse.demo.count.resources.reset
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PulseCountHeader(
@@ -21,22 +29,20 @@ fun PulseCountHeader(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
-            text = "Area $depth",
+            text = stringResource(Res.string.area_title, depth),
             style = MaterialTheme.typography.headlineMedium,
         )
         Text(
-            text =
-                "Tap a quadrant to pulse it. It counts the tap, and so do the two it shares an " +
-                    "edge with. The diagonal is out of reach.",
+            text = stringResource(Res.string.area_description),
             style = MaterialTheme.typography.bodyMedium,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            PulseButton(text = "New Area", onClick = onNewArea)
+            PulseButton(text = stringResource(Res.string.new_area), onClick = onNewArea)
             if (onBack != null) {
-                PulseTextButton(text = "Back", onClick = onBack)
+                PulseTextButton(text = stringResource(Res.string.back), onClick = onBack)
             }
-            PulseTextButton(text = "Reset", onClick = onReset)
-            PulseTextButton(text = "Refresh view", onClick = onRefresh)
+            PulseTextButton(text = stringResource(Res.string.reset), onClick = onReset)
+            PulseTextButton(text = stringResource(Res.string.refresh_view), onClick = onRefresh)
         }
     }
 }

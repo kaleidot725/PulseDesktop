@@ -17,6 +17,7 @@ kotlin {
                 implementation(project(":demo:core:designsystem"))
                 implementation(project(":library:navigation"))
                 implementation("org.jetbrains.compose.runtime:runtime:1.10.1")
+                implementation("org.jetbrains.compose.components:components-resources:1.10.1")
                 implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.1.1")
                 implementation("io.insert-koin:koin-core:4.2.2")
             }
@@ -27,6 +28,10 @@ kotlin {
             }
         }
     }
+}
+
+compose.resources {
+    packageOfResClass = "jp.kaleidot725.pulse.demo.resources"
 }
 
 compose.desktop {
