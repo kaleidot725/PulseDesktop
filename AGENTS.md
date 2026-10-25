@@ -110,16 +110,18 @@ PulseDesktop/
 │           │   └── PulseModuleLayout.kt      # which module names play which layer
 │           └── jvmTest/…             # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
-│   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and the wiring:
-│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # creates the DataStore repository
+│   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and startKoin
+│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # with every module's Koin module
 │   │       ├── DemoApp.kt
 │   │       └── Main.kt
 │   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
-│   │                                 # PulseCountRepository and the use cases; plain Kotlin
-│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository, counts kept per area
+│   │                                 # PulseCountRepository, the use cases, and domainModule
+│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository and dataModule
 │   ├── core/designsystem/            # :demo:core:designsystem — PulseDesktopTheme, PulseCard, PulseButton
 │   └── feature/count/                # :demo:feature:count — one feature, screen at its root; reaches
-│                                     # the counts through the domain use cases, never core/data
+│                                     # the counts through the domain use cases, never core/data.
+│                                     # countFeatureModule builds the ViewModels and Container;
+│                                     # rememberPulseViewModel still decides how long they live
 │       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/
 │           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
 │           ├── PulseCountContainer.kt
