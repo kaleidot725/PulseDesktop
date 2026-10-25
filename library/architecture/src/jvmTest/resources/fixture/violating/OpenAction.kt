@@ -11,4 +11,4 @@ sealed interface InterfaceEvent : PulseEvent
 
 open class OpenBroadcast : PulseBroadcast
 
-data object LoneUnicast : PulseUnicast
+object LoneUnicast : PulseUnicast

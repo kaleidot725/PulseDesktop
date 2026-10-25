@@ -40,6 +40,8 @@ data class Pinged(
     val text: String,
 ) : PulseEvent
 
+data object Cleared : PulseBroadcast
+
 class CounterViewModel :
     PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(CounterState()) {
     override fun onAction(uiAction: CounterAction) = Unit
