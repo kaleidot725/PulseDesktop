@@ -172,12 +172,14 @@ Dependencies are read from the imports in each file, so what is checked is the c
 
 Inside the domain and the data layer, the package says what a declaration is. A file sits in one of these packages, and any part of its package name may be the one: `com.example.core.domain.model` and `com.example.core.domain.model.area` both count as `model`.
 
+A data source in `local` only persists: it reads, writes and removes what it is given. How a value changes — adding one to a count, deciding what a missing value means — is the repository's.
+
+The table lists the packages of each layer, and a typical layout follows it.
+
 | Layer | Packages |
 |---|---|
 | domain | `model` for the entities, `repository` for the repository interfaces, `usecase` for the use cases |
 | data | `repository` for the repository implementations, `local` for the data sources, `model` for what those sources store |
-
-A typical layout looks like this.
 
 ```
 core/domain/…/domain/
