@@ -240,12 +240,12 @@ public fun KoScope.pulseMessageClasses(): List<KoClassDeclaration> = classes().w
 /** Every object that implements one of the four message markers directly. */
 public fun KoScope.pulseMessageObjects(): List<KoObjectDeclaration> = objects().withParentOf(messageMarkers)
 
-private fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
+internal fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
 
-private fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
+internal fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
 
 /** `@Preview` from any package, and multipreview annotations such as `@PreviewLightDark`. */
-private val KoFunctionDeclaration.isPreview: Boolean
+internal val KoFunctionDeclaration.isPreview: Boolean
     get() = annotations.any { it.name.substringAfterLast('.').startsWith("Preview") }
 
 private fun String.isPreviewNameOf(component: String): Boolean = Regex("${Regex.escape(component)}_Preview(_\\w+)?").matches(this)

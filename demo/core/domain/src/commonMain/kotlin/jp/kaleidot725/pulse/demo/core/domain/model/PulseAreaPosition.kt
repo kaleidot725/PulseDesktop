@@ -1,12 +1,10 @@
 package jp.kaleidot725.pulse.demo.core.domain.model
 
-enum class PulseAreaPosition(
-    val label: String,
-) {
-    TopLeft("Top Left"),
-    TopRight("Top Right"),
-    BottomLeft("Bottom Left"),
-    BottomRight("Bottom Right"),
+enum class PulseAreaPosition {
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
     ;
 
     val neighbors: Set<PulseAreaPosition>

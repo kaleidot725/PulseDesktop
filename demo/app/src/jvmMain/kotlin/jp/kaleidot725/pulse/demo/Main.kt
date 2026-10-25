@@ -5,6 +5,9 @@ import androidx.compose.ui.window.application
 import jp.kaleidot725.pulse.demo.di.countFeatureModule
 import jp.kaleidot725.pulse.demo.di.dataModule
 import jp.kaleidot725.pulse.demo.di.domainModule
+import jp.kaleidot725.pulse.demo.resources.Res
+import jp.kaleidot725.pulse.demo.resources.window_title
+import org.jetbrains.compose.resources.stringResource
 import org.koin.core.context.startKoin
 import java.io.File
 
@@ -22,7 +25,7 @@ fun main() {
     application {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "PulseDesktop - Counter Demo",
+            title = stringResource(Res.string.window_title),
         ) {
             DemoApp()
         }

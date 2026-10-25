@@ -18,6 +18,12 @@ allprojects {
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
+    // Compose resources add the generated Res accessors under build/ to the source sets. The filter
+    // patterns only see paths relative to a source directory, so the tasks drop them by absolute path.
+    tasks.withType<org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask>().configureEach {
+        exclude { it.file.path.contains("${File.separator}build${File.separator}generated${File.separator}") }
+    }
+
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version.set("1.3.1")
         android.set(false)

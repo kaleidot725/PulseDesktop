@@ -15,7 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseCard
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
+import jp.kaleidot725.pulse.demo.count.resource.label
+import jp.kaleidot725.pulse.demo.count.resources.Res
+import jp.kaleidot725.pulse.demo.count.resources.setup_count
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaState
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PulseAreaCell(
@@ -32,7 +36,7 @@ fun PulseAreaCell(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = state.position.label,
+                text = stringResource(state.position.label),
                 style = MaterialTheme.typography.labelLarge,
             )
             Text(
@@ -42,7 +46,7 @@ fun PulseAreaCell(
                 modifier = Modifier.fillMaxWidth(),
             )
             Text(
-                text = "setup ${state.setupCount}",
+                text = stringResource(Res.string.setup_count, state.setupCount),
                 style = MaterialTheme.typography.labelSmall,
             )
         }

@@ -1,0 +1,14 @@
+<resources>
+    <string name="area_title">エリア %1$d</string>
+    <string name="area_description">区画をタップするとパルスが起きます。タップした区画と、辺を共有する 2 つの区画がカウントします。対角の区画には届きません。</string>
+    <string name="new_area">新しいエリア</string>
+    <string name="back">戻る</string>
+    <string name="reset">リセット</string>
+    <string name="refresh_view">ビューを再生成</string>
+    <string name="setup_count">セットアップ %1$d 回</string>
+    <string name="charged">%1$s が %2$d に到達</string>
+    <string name="position_top_left">左上</string>
+    <string name="position_top_right">右上</string>
+    <string name="position_bottom_left">左下</string>
+    <string name="position_bottom_right">右下</string>
+</resources>

@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseArea
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.component.PulseCountHeader
+import jp.kaleidot725.pulse.demo.count.resource.label
+import jp.kaleidot725.pulse.demo.count.resources.Res
+import jp.kaleidot725.pulse.demo.count.resources.charged
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaContent
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaViewModel
 import jp.kaleidot725.pulse.demo.count.state.PulseCountBroadcast
@@ -29,6 +32,7 @@ import jp.kaleidot725.pulse.mvi.PulseHost
 import jp.kaleidot725.pulse.navigation.rememberPulseContainer
 import jp.kaleidot725.pulse.navigation.rememberPulseViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.koin.compose.getKoin
 import org.koin.core.parameter.parametersOf
 
@@ -77,7 +81,7 @@ fun PulseCountHost(
                                     onCharged = { charged ->
                                         coroutineScope.launch {
                                             snackbarHostState.showSnackbar(
-                                                "${charged.position.label} charged at ${charged.count}",
+                                                getString(Res.string.charged, getString(charged.position.label), charged.count),
                                             )
                                         }
                                     },

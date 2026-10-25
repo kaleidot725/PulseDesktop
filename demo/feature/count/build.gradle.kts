@@ -19,10 +19,15 @@ kotlin {
                 implementation("org.jetbrains.compose.material3:material3:1.9.0")
                 implementation("org.jetbrains.compose.runtime:runtime:1.10.1")
                 implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.10.1")
+                implementation("org.jetbrains.compose.components:components-resources:1.10.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
                 implementation("io.insert-koin:koin-core:4.2.2")
                 implementation("io.insert-koin:koin-compose:4.2.2")
             }
         }
     }
+}
+
+compose.resources {
+    packageOfResClass = "jp.kaleidot725.pulse.demo.count.resources"
 }
