@@ -174,12 +174,14 @@ flowchart TB
 
 domain と data の中では、パッケージで宣言の種類を表します。ファイルは次のどれかのパッケージに置きます。パッケージ名のどの部分が当たってもよく、`com.example.core.domain.model` も `com.example.core.domain.model.area` も `model` として扱います。
 
+`local` の DataSource は永続化だけを担い、渡されたものを読む・書く・消すだけです。カウントを 1 増やす、値がないときをどう扱うかといった、値の変え方は Repository が決めます。
+
+各層のパッケージを表に、典型的な構成をその下に示します。
+
 | 層 | パッケージ |
 |---|---|
 | domain | エンティティは `model`、Repository の interface は `repository`、UseCase は `usecase` |
 | data | Repository の実装は `repository`、DataSource は `local`、DataSource が保存する形は `model` |
-
-典型的な構成は次のとおりです。
 
 ```
 core/domain/…/domain/
