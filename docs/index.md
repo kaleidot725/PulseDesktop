@@ -34,5 +34,5 @@ features:
     details: The navigation artifact ties ViewModels and Containers to a back stack entry, so a route keeps its state while it is covered.
   - icon: ✅
     title: Conventions you can test
-    details: The architecture artifact checks the state rules and the screen, section and component split with Konsist, from one test in your own suite.
+    details: The architecture artifact checks the state rules, the screen, section and component split, repositories, module dependencies and Koin with Konsist, from one test in your own suite.
 ---

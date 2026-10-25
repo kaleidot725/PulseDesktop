@@ -226,7 +226,9 @@ fun main() = application {
 ## Running the Demo
 
 The repository includes a pulse grid demo: four areas share one Container, and a tap on one spreads
-to the two it shares an edge with. Clone the repo and run:
+to the two it shares an edge with. It is split into an app, a feature, and a domain, data and design
+system under `core`, wired with Koin, and keeps its counts in a DataStore — the layout the
+[architecture checks](/guide/architecture-checks) describe, which it passes. Clone the repo and run:
 
 ```bash
 ./gradlew :demo:app:run

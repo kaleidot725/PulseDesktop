@@ -55,7 +55,7 @@ PulseDesktop is split into three artifacts, one package each. Only `mvi` is requ
 |---|---|---|
 | `mvi` | where state lives and how sections talk | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces |
 | `navigation` | how long a screen's ViewModels live | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
-| `architecture` | that the code keeps to the conventions | Konsist assertions for the state rules and the screen, section and component split |
+| `architecture` | that the code keeps to the conventions | Konsist assertions for the state rules, the screen, section and component split, component previews, repositories, module dependencies and Koin |
 
 ## Installation
 
