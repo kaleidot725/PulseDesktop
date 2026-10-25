@@ -49,7 +49,7 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 | [`assertComponentsAreStateless`](/api/architecture#assertcomponentsarestateless) | A component takes data and callbacks only |
 | [`assertScreensComposeSections`](/api/architecture#assertscreenscomposesections) | A screen composes sections instead of binding a ViewModel |
 | [`assertComponentsHavePreviews`](/api/architecture#assertcomponentshavepreviews) | Every component has a `<Component>_Preview` |
-| [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls |
-| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks |
+| [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls; a use case lives in `usecase` and is more than one line |
+| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks, and the domain and data are split into packages |
 | [`assertPulseKoinConventions`](/api/architecture#assertpulsekoinconventions) | Koin modules are declared in the app module |
 | [`PulseModuleLayout`](/api/architecture#pulsemodulelayout) | Which module names play which layer |

@@ -89,7 +89,7 @@ Requires every public composable under a `component` package to have a function 
 fun KoScope.assertPulseDomainConventions()
 ```
 
-Runs the two repository checks below. A repository is a class or an interface whose name ends with `Repository`, and classes and interfaces are checked in one pass, so a failure names every offender at once.
+Runs the two repository checks and the two use case checks below. A repository is a class or an interface whose name ends with `Repository`, and classes and interfaces are checked in one pass, so a failure names every offender at once. A use case is a class whose name ends with `UseCase`.
 
 ## assertRepositoriesExposeFlowsOrStateFlows
 
@@ -107,6 +107,22 @@ fun KoScope.assertRepositoriesReturnResultsFromOneShotCalls()
 
 Requires every public function of a repository that returns a value to return a `Flow`, a `StateFlow`, or `com.github.michaelbull.result.Result`, recognised by its import or a fully qualified name. A function returning `Unit`, or with a block body and no written type, is a command and is not checked. An expression body with no written type fails.
 
+## assertUseCasesLiveInTheUseCasePackage
+
+```kotlin
+fun KoScope.assertUseCasesLiveInTheUseCasePackage()
+```
+
+Requires every use case to be in a package with a `usecase` segment.
+
+## assertUseCasesDoMoreThanOneLine
+
+```kotlin
+fun KoScope.assertUseCasesDoMoreThanOneLine()
+```
+
+Requires every public function of a use case to have a body of more than one non-blank line. The body is what follows `=` for an expression body, or what sits between the braces for a block body. Private functions are not checked.
+
 ## assertPulseModuleConventions
 
 ```kotlin
@@ -122,9 +138,12 @@ Runs every module check below with the same layout. Dependencies are the modules
 | `assertCoreDoesNotDependOnFeatures(layout)` | no module outside the app and the features imports from a feature |
 | `assertDomainDependsOnNothing(layout)` | the domain imports only from support modules |
 | `assertDataDependsOnlyOnTheDomain(layout)` | the data layer imports only from the domain and support modules |
-| `assertSharedUiDependsOnlyOnTheDomain(layout)` | the shared UI imports only from the domain, itself and support modules |
+| `assertDesignSystemDependsOnNothing(layout)` | the design system imports only from support modules |
+| `assertSharedUiDependsOnlyOnTheDomain(layout)` | the shared UI imports only from the domain, the design system, itself and support modules |
 | `assertFeaturesReachDataThroughTheDomain(layout)` | a feature imports nothing from the data layer |
-| `assertDomainIsFrameworkFree(layout)` | the domain imports nothing from `androidx.compose`, `androidx.lifecycle` or `jp.kaleidot725.pulse` |
+| `assertDomainIsFrameworkFree(layout)` | the domain imports nothing from `androidx.compose`, `androidx.lifecycle`, `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation` or `jp.kaleidot725.pulse.architecture` |
+| `assertDomainIsSplitIntoItsPackages(layout)` | every domain file is in a package with a `model`, `repository` or `usecase` segment |
+| `assertDataIsSplitIntoItsPackages(layout)` | every data file is in a package with a `repository`, `local` or `model` segment |
 
 ## PulseModuleLayout
 
@@ -134,8 +153,9 @@ data class PulseModuleLayout(
     val features: List<String> = listOf("feature/*", "feature/*/api", "feature/*/impl"),
     val domain: List<String> = listOf("core/domain"),
     val data: List<String> = listOf("core/data"),
-    val sharedUi: List<String> = listOf("core/designsystem", "core/ui"),
+    val sharedUi: List<String> = listOf("core/ui"),
     val support: List<String> = listOf("core/*"),
+    val designSystem: List<String> = listOf("core/designsystem"),
 ) {
     companion object {
         val NowInAndroid: PulseModuleLayout
@@ -188,6 +208,7 @@ The queries are the building blocks of the assertions above, and of rules a proj
 | `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — classes whose name ends with `Repository` |
 | `pulseRepositoryInterfaces()` | `List<KoInterfaceDeclaration>` — interfaces whose name ends with `Repository` |
 | `pulseRepositories()` | `List<KoBaseDeclaration>` — both of the above |
+| `pulseUseCases()` | `List<KoClassDeclaration>` — classes whose name ends with `UseCase` |
 | `pulseKoinModuleFiles()` | `List<KoFileDeclaration>` — files that declare a Koin module |
 
 ## Scopes

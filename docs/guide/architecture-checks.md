@@ -9,8 +9,8 @@ The checks come in four groups, one assertion each. Every group can be used with
 | Assertion | What it checks |
 |---|---|
 | `assertPulseMviConventions()` | the state and message types, the ViewModel and Container names, how the views are split, and that every component has a preview |
-| `assertPulseDomainConventions()` | how a repository hands out its data |
-| `assertPulseModuleConventions()` | which module may depend on which |
+| `assertPulseDomainConventions()` | how a repository hands out its data, and what earns a use case its place |
+| `assertPulseModuleConventions()` | which module may depend on which, and the packages inside the domain and the data layer |
 | `assertPulseKoinConventions()` | where Koin modules are declared |
 
 ## Setup
@@ -107,6 +107,15 @@ These are allowed and are not counted as data the repository hands out.
 - A property holding another repository, or a function such as one a data module exposes, is what the repository uses
 - A private `MutableStateFlow` behind a public `StateFlow` is how the repository changes its own state
 
+## Use cases
+
+A ViewModel may call a repository directly, so a use case is optional. Write one only when it has work of its own, such as combining two flows or deciding whether to act. `assertPulseDomainConventions()` checks the use cases there are. A use case is a class whose name ends with `UseCase`.
+
+| Check | Rule | Why |
+|---|---|---|
+| Use cases have a package | a use case is in a `usecase` package | the entities, the repository interfaces and the use cases are read for different reasons, so each has its own place |
+| Use cases do work of their own | no public function of a use case is a single line | a one-line use case only hands the call on to a repository. It is a class to read and wire for a call the ViewModel can make itself |
+
 ## Modules
 
 `assertPulseModuleConventions()` checks a multi-module app. The modules are named after Now in Android's, and the dependencies point the way Clean Architecture asks.
@@ -119,23 +128,28 @@ Each module belongs to one layer. A module outside these names is not checked.
 |---|---|
 | `app` | the application, which wires everything together |
 | `feature/<name>` | one feature's screens, sections and ViewModels; `feature/<name>/api` and `/impl` count as one feature |
-| `core/domain` | the entities, the use cases, and the repository interfaces the use cases need |
-| `core/data` | the repository implementations, including whatever they store data in |
-| `core/designsystem`, `core/ui` | composables shared between features |
+| `core/domain` | the entities, the repository interfaces, and the use cases when there are any |
+| `core/data` | the repository implementations and the data sources they read |
+| `core/designsystem` | the theme and the building blocks every screen is drawn with |
+| `core/ui` | composables shared between features that draw the domain's entities |
 | any other `core/<name>` | support, such as `core/common` or `core/testing` |
 
 ### Direction
 
 The domain is the centre and depends on nothing. Unlike Now in Android, where the domain module depends on the data module, the domain owns the repository interfaces and `core/data` implements them. A feature reaches data only through the domain, and the app hands it the implementation.
 
+The design system depends on nothing either. Its building blocks take text, numbers and callbacks, so any screen can use them whatever it shows. A composable that takes an entity belongs in `core/ui`, which may use both the domain and the design system.
+
 ```mermaid
 flowchart TB
     app --> feature["feature/*"]
     app --> data["core/data"]
     feature --> domain["core/domain"]
-    feature --> ui["core/ui · designsystem"]
+    feature --> ui["core/ui"]
+    feature --> designsystem["core/designsystem"]
     data --> domain
     ui --> domain
+    ui --> designsystem
 ```
 
 ### Rules
@@ -149,9 +163,32 @@ Dependencies are read from the imports in each file, so what is checked is the c
 | The core never depends on features | no core module imports from a feature |
 | The domain depends on nothing | the domain imports only from support modules |
 | The data layer implements the domain | the data layer imports only from the domain and support |
-| Shared UI only draws | the shared UI imports only from the domain, itself and support |
+| The design system stands alone | the design system imports only from support |
+| Shared UI only draws | the shared UI imports only from the domain, the design system, itself and support |
 | Features reach data through the domain | a feature imports nothing from the data layer |
 | The domain is framework-free | the domain imports nothing from Compose, AndroidX Lifecycle or PulseDesktop |
+
+### Packages
+
+Inside the domain and the data layer, the package says what a declaration is. A file sits in one of these packages, and any part of its package name may be the one: `com.example.core.domain.model` and `com.example.core.domain.model.area` both count as `model`.
+
+| Layer | Packages |
+|---|---|
+| domain | `model` for the entities, `repository` for the repository interfaces, `usecase` for the use cases |
+| data | `repository` for the repository implementations, `local` for the data sources, `model` for what those sources store |
+
+A typical layout looks like this.
+
+```
+core/domain/…/domain/
+├── model/          # PulseArea
+├── repository/     # PulseCountRepository
+└── usecase/        # ReceivePulseUseCase
+core/data/…/data/
+├── local/          # PulseCountLocalDataSource
+├── model/          # what the data source stores, when it differs from the entity
+└── repository/     # DataStorePulseCountRepository
+```
 
 ### Other module names
 
@@ -166,6 +203,7 @@ val layout =
         data = listOf("shared/data"),
         sharedUi = listOf("shared/widget"),
         support = listOf("shared/*"),
+        designSystem = listOf("shared/theme"),
     )
 
 Konsist.scopeFromProduction().assertPulseModuleConventions(layout)

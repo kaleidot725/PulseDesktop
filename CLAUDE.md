@@ -27,8 +27,11 @@ data and callbacks only. Packages decide which is which — `section` and `compo
 free. Every component has a `@Preview` named `<Component>_Preview`, or `<Component>_Preview_<Condition>`
 for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
 `feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: `core/domain` holds
-the entities, use cases and repository interfaces and depends on nothing, `core/data` implements the
-interfaces, and a feature reaches data only through the domain. Dependencies are read from imports.
+the entities (`model`), repository interfaces (`repository`) and any use cases (`usecase`) and depends
+on nothing, `core/data` implements the interfaces (`repository`) over data sources (`local`) and what
+they store (`model`), `core/designsystem` depends on nothing so its building blocks take plain values,
+`core/ui` draws the domain's entities, and a feature reaches data only through the domain.
+Dependencies are read from imports.
 The module names are a `PulseModuleLayout`, which a project with names of its own replaces.
 `assertPulseKoinConventions` uses the same layout: a Koin module (`org.koin.dsl.module` or Koin
 Annotations' `@Module`) is declared only in the app module, where the whole graph can be read;
@@ -36,7 +39,9 @@ resolving from Koin is allowed anywhere.
 `assertPulseDomainConventions` checks how a repository (a class or interface named `…Repository`)
 hands out data: a value to follow is a cold `Flow` or a `StateFlow`, and a function that fetches a
 value once returns kotlin-result's `Result<V, E>`. Commands that return nothing are not checked, and a
-repository may hold other repositories and the functions a data module exposes.
+repository may hold other repositories and the functions a data module exposes. A ViewModel may call a
+repository directly, so a use case (a class named `…UseCase`) is written only when it has work of its
+own: it lives in `usecase`, and no public function of it is a single line.
 
 ## Development Commands
 
@@ -118,12 +123,14 @@ PulseDesktop/
 │   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # every Koin module, started in Main
 │   │       ├── DemoApp.kt
 │   │       └── Main.kt
-│   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
-│   │                                 # PulseCountRepository and the use cases; no Koin
-│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository and pulseCountDataStore()
+│   ├── core/domain/                  # :demo:core:domain — model/ PulseArea, PulseAreaPosition (the neighbour
+│   │                                 # rule), repository/ PulseCountRepository, usecase/ ReceivePulseUseCase;
+│   │                                 # no Koin
+│   ├── core/data/                    # :demo:core:data — repository/ DataStorePulseCountRepository,
+│   │                                 # local/ PulseCountLocalDataSource and pulseCountDataStore()
 │   ├── core/designsystem/            # :demo:core:designsystem — PulseDesktopTheme, PulseCard, PulseButton
 │   └── feature/count/                # :demo:feature:count — one feature, screen at its root; reaches
-│                                     # the counts through the domain use cases, never core/data.
+│                                     # the counts through the domain's repository, never core/data.
 │                                     # It resolves its ViewModels from Koin; rememberPulseViewModel
 │                                     # still decides how long they live
 │       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/

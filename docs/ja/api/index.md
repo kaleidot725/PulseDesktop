@@ -49,7 +49,7 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 | [`assertComponentsAreStateless`](/ja/api/architecture#assertcomponentsarestateless) | Component はデータとコールバックだけを受け取る |
 | [`assertScreensComposeSections`](/ja/api/architecture#assertscreenscomposesections) | Screen は ViewModel を束ねず Section を並べる |
 | [`assertComponentsHavePreviews`](/ja/api/architecture#assertcomponentshavepreviews) | すべての Component に `<Component>_Preview` がある |
-| [`assertPulseDomainConventions`](/ja/api/architecture#assertpulsedomainconventions) | Repository は Flow を公開し、ワンショットの取得は `Result<V, E>` で返す |
-| [`assertPulseModuleConventions`](/ja/api/architecture#assertpulsemoduleconventions) | モジュール間の依存が Clean Architecture の向きに従う |
+| [`assertPulseDomainConventions`](/ja/api/architecture#assertpulsedomainconventions) | Repository は Flow を公開し、ワンショットの取得は `Result<V, E>` で返す。UseCase は `usecase` に置き、1 行にしない |
+| [`assertPulseModuleConventions`](/ja/api/architecture#assertpulsemoduleconventions) | モジュール間の依存が Clean Architecture の向きに従い、domain と data がパッケージで分かれている |
 | [`assertPulseKoinConventions`](/ja/api/architecture#assertpulsekoinconventions) | Koin モジュールは app モジュールで定義する |
 | [`PulseModuleLayout`](/ja/api/architecture#pulsemodulelayout) | どのモジュール名がどの層に当たるか |
