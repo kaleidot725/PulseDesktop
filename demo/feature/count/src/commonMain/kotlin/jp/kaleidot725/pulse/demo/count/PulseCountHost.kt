@@ -19,13 +19,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import jp.kaleidot725.pulse.demo.core.domain.ObservePulseCountUseCase
 import jp.kaleidot725.pulse.demo.core.domain.PulseArea
 import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
-import jp.kaleidot725.pulse.demo.core.domain.PulseCountRepository
-import jp.kaleidot725.pulse.demo.core.domain.ReceivePulseUseCase
-import jp.kaleidot725.pulse.demo.core.domain.ResetPulseCountUseCase
-import jp.kaleidot725.pulse.demo.core.domain.SendPulseUseCase
 import jp.kaleidot725.pulse.demo.count.component.PulseCountHeader
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaContent
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaViewModel
@@ -34,27 +29,23 @@ import jp.kaleidot725.pulse.mvi.PulseHost
 import jp.kaleidot725.pulse.navigation.rememberPulseContainer
 import jp.kaleidot725.pulse.navigation.rememberPulseViewModel
 import kotlinx.coroutines.launch
+import org.koin.compose.getKoin
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun PulseCountHost(
     depth: Int,
-    repository: PulseCountRepository,
     onNewArea: () -> Unit,
     onBack: (() -> Unit)?,
 ) {
+    val koin = getKoin()
     val areas =
         PulseAreaPosition.entries.map { position ->
             rememberPulseViewModel(key = position.name) {
-                PulseAreaViewModel(
-                    area = PulseArea(depth, position),
-                    observePulseCount = ObservePulseCountUseCase(repository),
-                    sendPulse = SendPulseUseCase(repository),
-                    receivePulse = ReceivePulseUseCase(repository),
-                    resetPulseCount = ResetPulseCountUseCase(repository),
-                )
+                koin.get<PulseAreaViewModel> { parametersOf(PulseArea(depth, position)) }
             }
         }
-    val container = rememberPulseContainer { PulseCountContainer(viewModels = areas) }
+    val container = rememberPulseContainer { koin.get<PulseCountContainer> { parametersOf(areas) } }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()

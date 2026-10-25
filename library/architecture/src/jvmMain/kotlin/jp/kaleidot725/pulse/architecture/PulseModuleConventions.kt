@@ -187,7 +187,7 @@ private fun KoFileDeclaration.moduleDependencies(
         .toSet()
 
 /** The layer is read from the directory, so it holds even for a feature named after a trimmed `api` or `impl`. */
-private fun KoFileDeclaration.layerIn(layout: PulseModuleLayout): ModuleLayer? = layout.layerOf(moduleDirectory)
+internal fun KoFileDeclaration.layerIn(layout: PulseModuleLayout): ModuleLayer? = layout.layerOf(moduleDirectory)
 
 /** The directory above the last `src`, where Gradle keeps a module's sources. */
 private val KoFileDeclaration.moduleDirectory: String

@@ -10,7 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":demo:core:domain"))
-                implementation("androidx.datastore:datastore-preferences-core:1.3.0")
+                api("androidx.datastore:datastore-preferences-core:1.3.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
             }
         }
