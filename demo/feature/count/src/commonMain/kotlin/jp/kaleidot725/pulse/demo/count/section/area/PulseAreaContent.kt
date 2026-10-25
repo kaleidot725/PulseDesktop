@@ -47,7 +47,7 @@ fun PulseAreaContent(
 
 @Preview
 @Composable
-private fun PulseAreaContentPreview() {
+private fun PulseAreaContent_Preview() {
     PulseAreaContent(
         state = PulseAreaState(position = PulseAreaPosition.TopLeft, count = 7),
         onAction = {},

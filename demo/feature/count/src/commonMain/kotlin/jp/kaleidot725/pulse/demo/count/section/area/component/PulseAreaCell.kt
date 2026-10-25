@@ -51,7 +51,7 @@ fun PulseAreaCell(
 
 @Preview
 @Composable
-private fun PulseAreaCellPreview() {
+private fun PulseAreaCell_Preview() {
     PulseAreaCell(
         state = PulseAreaState(position = PulseAreaPosition.TopRight, count = 7),
         onPulse = {},
