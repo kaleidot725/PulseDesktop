@@ -69,21 +69,22 @@ public fun KoScope.assertStatesAreDataTypes() {
 
 /**
  * A [PulseAction], [PulseEvent], [PulseBroadcast] or [PulseUnicast] is a `sealed class`, and every case inside it is a
- * `data class` or a `data object`.
+ * `data class` or a `data object`. A message with a single case may instead be one `data class` on its own.
  *
  * Every one of them is consumed by a `when`, in `onAction`, `onReceive`, `onReceived` or an event handler. Sealing the
  * type is what makes that `when` exhaustive, so adding a case turns into a compile error instead of a branch nobody
  * wrote, and `data` is what lets a case print and compare by its value. A case may itself be a `sealed class` to group
  * cases further; its own cases are held to the same rule.
  *
- * One shape for every message keeps them alike: an interface, an `open` class or a lone object implementing the marker
- * is reported, even when it would compile.
+ * Few shapes keep messages alike: an interface, an `open` class or a lone object implementing the marker is reported,
+ * even when it would compile.
  */
 public fun KoScope.assertMessagesAreSealedOrDataTypes() {
     (pulseMessageInterfaces() + pulseMessageClasses() + pulseMessageObjects()).assertTrue(
         testName = "PulseDesktop messages are sealed classes",
-        additionalMessage = "Declare the message as a `sealed class` and make each case inside it a `data class` or `data object`.",
-    ) { it is KoClassDeclaration && it.hasModifier(KoModifier.SEALED) }
+        additionalMessage =
+            "Declare the message as a `sealed class` with `data class` or `data object` cases, or as a single `data class`.",
+    ) { it is KoClassDeclaration && (it.hasModifier(KoModifier.SEALED) || it.hasModifier(KoModifier.DATA)) }
 
     val (caseClasses, caseObjects) = messageCases()
     (caseClasses + caseObjects).assertTrue(

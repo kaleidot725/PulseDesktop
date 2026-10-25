@@ -49,8 +49,9 @@ class PulseConventionsTest {
 
     /**
      * An unsealed message type compiles, and every `when` over it then needs an `else` branch that quietly swallows the
-     * cases added later. A sealed interface or a lone object would seal or compare just as well, but one shape for every
-     * message is what [assertMessagesAreSealedOrDataTypes] asks for, so each of them is reported by name.
+     * cases added later. A sealed interface or a lone object would seal or compare just as well, but a sealed class, or a
+     * single data class for a message with one case, is what [assertMessagesAreSealedOrDataTypes] asks for, so each of
+     * the others is reported by name. The conforming fixture's `Pinged` shows the data class passing.
      */
     @Test
     fun `reports a message that is not a sealed class`() {

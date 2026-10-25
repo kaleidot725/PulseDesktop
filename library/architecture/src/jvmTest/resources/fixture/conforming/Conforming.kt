@@ -36,6 +36,10 @@ sealed class CounterBroadcast : PulseBroadcast {
 
 sealed class CounterUnicast : PulseUnicast
 
+data class Pinged(
+    val text: String,
+) : PulseEvent
+
 class CounterViewModel :
     PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(CounterState()) {
     override fun onAction(uiAction: CounterAction) = Unit
