@@ -4,7 +4,7 @@
 
 型で表せることはコンパイラが弾きます。ViewModel は `onAction` を実装しなければならず、メッセージの型は Container が知っているものに限られます。残るのは型で表せない書き方の習慣で、どれもレビューで見落としやすいものです。
 
-検査は 4 つのグループに分かれていて、グループごとにアサートが 1 つあります。どのグループも単独で使えます。
+検査は 5 つのグループに分かれていて、グループごとにアサートが 1 つあります。どのグループも単独で使えます。
 
 | アサート | 検査する内容 |
 |---|---|
@@ -12,6 +12,7 @@
 | `assertPulseDomainConventions()` | Repository がデータをどう公開するか、UseCase を作ってよいのはどんなときか |
 | `assertPulseModuleConventions()` | どのモジュールがどのモジュールに依存してよいか、domain と data の中のパッケージ |
 | `assertPulseKoinConventions()` | Koin のモジュールをどこで定義するか |
+| `assertPulseResourceConventions()` | ユーザーが読む文言をどこから持ってくるか |
 
 ## セットアップ
 
@@ -35,6 +36,7 @@ class PulseDesktopConventionTest {
         scope.assertPulseDomainConventions()
         scope.assertPulseModuleConventions()
         scope.assertPulseKoinConventions()
+        scope.assertPulseResourceConventions()
     }
 }
 ```
@@ -216,6 +218,29 @@ Konsist.scopeFromProduction().assertPulseModuleConventions(layout)
 | 検査 | ルール | 理由 |
 |---|---|---|
 | Koin モジュールは app に置く | Koin モジュールを定義するファイル（`org.koin.dsl.module` か Koin Annotations の `@Module` を使うもの）は app モジュールにある | app はほかのすべてを知る唯一のモジュールなので、依存の全体を 1 か所で読める。feature や core が自分で Koin モジュールを持つと、その判断の一部を app から奪う |
+
+## 文言
+
+`assertPulseResourceConventions()` は、アプリを翻訳できる状態に保ちます。描画するモジュール（feature、`core/ui`、`core/designsystem`）は、それぞれ自分の文言を Compose Multiplatform の `composeResources` に文字列リソースとして持ち、`stringResource(Res.string.…)` で読みます。翻訳は `values` の隣に置く `values-<言語>` ディレクトリです。モジュールの検査と同じ `PulseModuleLayout` を使います。
+
+| 検査 | ルール | 理由 |
+|---|---|---|
+| domain は文言を持たない | domain の文字列リテラルに文字を含めない | domain に置いたラベルは、それを表示するすべての画面で 1 つの言語になる。domain はケースを型で表し、描画するモジュールが文字列リソースに対応付ける |
+| Composable は文言をリソースから読む | Composable は `Text("…")` や、`text`・`title`・`label`・`placeholder`・`contentDescription` の引数にリテラルを渡さない | そこに書いたリテラルは 1 つの言語でしか読めない。`"$count"` のように値を埋め込むだけのリテラルと、`@Preview` の中は対象外 |
+
+ラベルが必要なエンティティには、描画するモジュールでラベルを付けます。デモでは、エリアの位置に次のようにラベルを付けています。
+
+```kotlin
+// feature/count — domain の enum は自分のラベルを持たない
+internal val PulseAreaPosition.label: StringResource
+    get() =
+        when (this) {
+            PulseAreaPosition.TopLeft -> Res.string.position_top_left
+            PulseAreaPosition.TopRight -> Res.string.position_top_right
+            PulseAreaPosition.BottomLeft -> Res.string.position_bottom_left
+            PulseAreaPosition.BottomRight -> Res.string.position_bottom_right
+        }
+```
 
 ## 検査を選ぶ
 

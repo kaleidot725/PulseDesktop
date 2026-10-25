@@ -52,4 +52,5 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 | [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls; a use case lives in `usecase` and is more than one line |
 | [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks, and the domain and data are split into packages |
 | [`assertPulseKoinConventions`](/api/architecture#assertpulsekoinconventions) | Koin modules are declared in the app module |
+| [`assertPulseResourceConventions`](/api/architecture#assertpulseresourceconventions) | The domain holds no text, and composables read their text from string resources |
 | [`PulseModuleLayout`](/api/architecture#pulsemodulelayout) | Which module names play which layer |

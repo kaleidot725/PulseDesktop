@@ -189,6 +189,30 @@ fun KoScope.assertKoinModulesLiveInTheApp(layout: PulseModuleLayout = PulseModul
 
 `org.koin.dsl.module` か `org.koin.core.annotation.Module` を import するファイルが、レイアウトの app 層にあることを要求します。どの層にも当てはまらないモジュールのファイルは検査しません。
 
+## assertPulseResourceConventions
+
+```kotlin
+fun KoScope.assertPulseResourceConventions(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+以下の 2 つの文言の検査を実行します。
+
+## assertDomainHoldsNoText
+
+```kotlin
+fun KoScope.assertDomainHoldsNoText(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+domain のファイルの文字列リテラルが、`$value` と `${expression}` のテンプレートを除いたあとに文字を含まないことを要求します。コメントは対象外です。どの層にも当てはまらないモジュールのファイルは検査しません。
+
+## assertComposablesTakeTextFromResources
+
+```kotlin
+fun KoScope.assertComposablesTakeTextFromResources()
+```
+
+`@Preview` 以外のすべての Composable が、`Text(…)` や `text`・`title`・`label`・`placeholder`・`contentDescription` の引数に、文字を含む文字列リテラルを渡さないことを要求します。先にテンプレートを除くので、値を埋め込むだけのリテラルは通ります。
+
 ## クエリ
 
 クエリは上のアサートの土台であり、プロジェクト独自のルールの土台にもなります。型のクエリは対応する型を直接継承・実装している宣言を返し、View のクエリは役割が関数ではなくファイルのパッケージで決まるため、ファイルを返します。

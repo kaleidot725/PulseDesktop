@@ -52,4 +52,5 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 | [`assertPulseDomainConventions`](/ja/api/architecture#assertpulsedomainconventions) | Repository は Flow を公開し、ワンショットの取得は `Result<V, E>` で返す。UseCase は `usecase` に置き、1 行にしない |
 | [`assertPulseModuleConventions`](/ja/api/architecture#assertpulsemoduleconventions) | モジュール間の依存が Clean Architecture の向きに従い、domain と data がパッケージで分かれている |
 | [`assertPulseKoinConventions`](/ja/api/architecture#assertpulsekoinconventions) | Koin モジュールは app モジュールで定義する |
+| [`assertPulseResourceConventions`](/ja/api/architecture#assertpulseresourceconventions) | domain は文言を持たず、Composable は文言を文字列リソースから読む |
 | [`PulseModuleLayout`](/ja/api/architecture#pulsemodulelayout) | どのモジュール名がどの層に当たるか |

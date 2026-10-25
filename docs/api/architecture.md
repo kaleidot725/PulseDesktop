@@ -189,6 +189,30 @@ fun KoScope.assertKoinModulesLiveInTheApp(layout: PulseModuleLayout = PulseModul
 
 Requires every file that imports `org.koin.dsl.module` or `org.koin.core.annotation.Module` to be in the app layer of the layout. Files in a module no layer claims are not checked.
 
+## assertPulseResourceConventions
+
+```kotlin
+fun KoScope.assertPulseResourceConventions(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+Runs the two resource checks below.
+
+## assertDomainHoldsNoText
+
+```kotlin
+fun KoScope.assertDomainHoldsNoText(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+Requires no string literal in a domain file to contain a letter once its `$value` and `${expression}` templates are taken out. Comments are skipped. Files in a module no layer claims are not checked.
+
+## assertComposablesTakeTextFromResources
+
+```kotlin
+fun KoScope.assertComposablesTakeTextFromResources()
+```
+
+Requires every composable that is not a `@Preview` to hand no string literal with a letter in it to `Text(…)` or to a `text`, `title`, `label`, `placeholder` or `contentDescription` argument. Templates are taken out first, so a literal that only places values passes.
+
 ## Queries
 
 The queries are the building blocks of the assertions above, and of rules a project writes itself. The type queries return the declarations that extend or implement the matching type directly; the view queries return files, since a role belongs to a file's package rather than to one function.

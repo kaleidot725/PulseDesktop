@@ -111,7 +111,7 @@ an edge with. The counts are kept in a DataStore, so they survive a restart.
 | Module | Holds |
 |---|---|
 | `demo/app` | the window, the back stack, and every Koin module |
-| `demo/feature/count` | the screen, its sections and ViewModels |
+| `demo/feature/count` | the screen, its sections and ViewModels, and its text in English and Japanese |
 | `demo/core/domain` | the areas and the neighbour rule in `model`, the repository interface in `repository`, and the one use case with work of its own in `usecase` |
 | `demo/core/data` | the DataStore-backed repository in `repository`, and the data source in front of DataStore in `local` |
 | `demo/core/designsystem` | the theme, the card and the buttons |

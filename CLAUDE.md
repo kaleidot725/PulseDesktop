@@ -42,6 +42,11 @@ value once returns kotlin-result's `Result<V, E>`. Commands that return nothing 
 repository may hold other repositories and the functions a data module exposes. A ViewModel may call a
 repository directly, so a use case (a class named `…UseCase`) is written only when it has work of its
 own: it lives in `usecase`, and no public function of it is a single line.
+`assertPulseResourceConventions` keeps an app translatable: every module that draws keeps its text in
+its own `composeResources` and reads it with `stringResource`, the domain holds no string literal with
+a letter in it, and a composable hands no literal to `Text` or to a `text`, `title`, `label`,
+`placeholder` or `contentDescription` argument (previews and value-only templates pass). The demo's
+text is in `values` (English) and `values-ja` (Japanese).
 
 ## Development Commands
 
@@ -116,7 +121,8 @@ PulseDesktop/
 │           │   ├── PulseDomainConventions.kt # assertPulseDomainConventions: how repositories hand out data
 │           │   ├── PulseKoinConventions.kt   # assertPulseKoinConventions: Koin modules live in the app
 │           │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
-│           │   └── PulseModuleLayout.kt      # which module names play which layer
+│           │   ├── PulseModuleLayout.kt      # which module names play which layer
+│           │   └── PulseResourceConventions.kt # assertPulseResourceConventions: text comes from string resources
 │           └── jvmTest/…             # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
 │   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and di/:
