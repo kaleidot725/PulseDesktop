@@ -33,7 +33,7 @@ Requires every class and object implementing `PulseState` to carry the `data` mo
 fun KoScope.assertMessagesAreSealedOrDataTypes()
 ```
 
-Requires the type that implements `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` to be a `sealed class`, and every case inside it to be a `data class` or `data object`. A case may be a `sealed class` of its own, and its cases are held to the same rule. A message with a single case may instead be one `data class` that implements the marker directly. An interface, an `open` class or a lone object implementing a marker directly is reported.
+Requires the type that implements `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` to be a `sealed class`, and every case inside it to be a `data class` or `data object`. A case may be a `sealed class` of its own, and its cases are held to the same rule. A message with a single case may instead be one `data class` or `data object` that implements the marker directly. An interface, including a sealed interface, or a class or object without `data` implementing a marker directly is reported.
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 
