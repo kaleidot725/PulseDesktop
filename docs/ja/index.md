@@ -34,5 +34,5 @@ features:
     details: navigation アーティファクトが ViewModel と Container の寿命をバックスタックのエントリに結びつけます。覆われている間もルートの状態は残ります。
   - icon: ✅
     title: 規約をテストで守る
-    details: architecture アーティファクトが、状態の規約と Screen・Section・Component の分け方を Konsist で検査します。自分のテストに 1 本足すだけです。
+    details: architecture アーティファクトが、状態の規約、Screen・Section・Component の分け方、Repository、モジュール間の依存、Koin を Konsist で検査します。自分のテストに 1 本足すだけです。
 ---

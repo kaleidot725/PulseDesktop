@@ -55,7 +55,7 @@ PulseDesktop は 3 つのアーティファクトに分かれていて、それ�
 |---|---|---|
 | `mvi` | 状態をどこに置き、Section どうしがどうやり取りするか | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース |
 | `navigation` | Screen の ViewModel がどれだけ生きるか | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
-| `architecture` | コードが規約を守っているか | 状態の規約と、Screen・Section・Component の分け方を検査する Konsist のアサート |
+| `architecture` | コードが規約を守っているか | 状態の規約、Screen・Section・Component の分け方、Component の Preview、Repository、モジュール間の依存、Koin を検査する Konsist のアサート |
 
 ## インストール
 

@@ -40,7 +40,7 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 
 | アサート | 説明 |
 |---|---|
-| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 以下のすべての検査を順に実行する |
+| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 続く 8 つの検査を順に実行する |
 | [`assertStatesAreDataTypes`](/ja/api/architecture#assertstatesaredatatypes) | `PulseState` は `data class` または `data object` |
 | [`assertMessagesAreSealedOrDataTypes`](/ja/api/architecture#assertmessagesaresealedordatatypes) | メッセージの interface は `sealed`、直接実装する class・object は `data` |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/ja/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` と `…Container` |
@@ -48,3 +48,8 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 | [`assertSectionsBindOneViewModel`](/ja/api/architecture#assertsectionsbindoneviewmodel) | Section は `PulseContent` で ViewModel を束ねる |
 | [`assertComponentsAreStateless`](/ja/api/architecture#assertcomponentsarestateless) | Component はデータとコールバックだけを受け取る |
 | [`assertScreensComposeSections`](/ja/api/architecture#assertscreenscomposesections) | Screen は ViewModel を束ねず Section を並べる |
+| [`assertComponentsHavePreviews`](/ja/api/architecture#assertcomponentshavepreviews) | すべての Component に `<Component>_Preview` がある |
+| [`assertPulseDomainConventions`](/ja/api/architecture#assertpulsedomainconventions) | Repository は Flow を公開し、ワンショットの取得は `Result<V, E>` で返す |
+| [`assertPulseModuleConventions`](/ja/api/architecture#assertpulsemoduleconventions) | モジュール間の依存が Clean Architecture の向きに従う |
+| [`assertPulseKoinConventions`](/ja/api/architecture#assertpulsekoinconventions) | Koin モジュールは app モジュールで定義する |
+| [`PulseModuleLayout`](/ja/api/architecture#pulsemodulelayout) | どのモジュール名がどの層に当たるか |

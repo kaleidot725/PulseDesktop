@@ -10,7 +10,7 @@
 fun KoScope.assertPulseMviConventions()
 ```
 
-以下の検査をすべて順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
+続く 8 つの検査（`assertStatesAreDataTypes` から `assertComponentsHavePreviews` まで）を順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
 
 ## assertStatesAreDataTypes
 
@@ -75,9 +75,103 @@ fun KoScope.assertScreensComposeSections()
 
 `section` にも `component` にも属さない Composable を持つファイル、つまり Screen に、`PulseContent` を呼ばないことを要求します。
 
+## assertComponentsHavePreviews
+
+```kotlin
+fun KoScope.assertComponentsHavePreviews()
+```
+
+`component` パッケージ配下の public な Composable それぞれに、`<Component>_Preview` または `<Component>_Preview_<条件>` という名前で `@Preview`（パッケージは問わず、名前が `Preview` で始まるマルチプレビュー注釈も含む）が付いた関数があることを要求します。Preview はスコープ全体から探します。private な Composable と Preview 自身は対象外です。
+
+## assertPulseDomainConventions
+
+```kotlin
+fun KoScope.assertPulseDomainConventions()
+```
+
+以下の 2 つの Repository の検査を実行します。Repository は名前が `Repository` で終わる class または interface です。class と interface をまとめて検査するので、失敗時は違反したものをすべて一度に挙げます。
+
+## assertRepositoriesExposeFlowsOrStateFlows
+
+```kotlin
+fun KoScope.assertRepositoriesExposeFlowsOrStateFlows()
+```
+
+Repository の public プロパティの型が `Flow` または `StateFlow` であることを要求します。Repository 型や関数型のプロパティは対象外で、型を書いていないプロパティは違反になります。
+
+## assertRepositoriesReturnResultsFromOneShotCalls
+
+```kotlin
+fun KoScope.assertRepositoriesReturnResultsFromOneShotCalls()
+```
+
+値を返す Repository の public 関数が、`Flow`、`StateFlow`、または `com.github.michaelbull.result.Result`（import か完全修飾名で判定）を返すことを要求します。`Unit` を返す関数と、型を書いていないブロック本体の関数はコマンドとして扱い、検査しません。型を書いていない式本体の関数は違反になります。
+
+## assertPulseModuleConventions
+
+```kotlin
+fun KoScope.assertPulseModuleConventions(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+以下のモジュールの検査を、同じレイアウトですべて実行します。依存は、各パッケージを宣言しているモジュールに対応付けたうえで、ファイルが import しているモジュールとして求めます。どの層にも当てはまらないモジュールのファイルは検査しません。
+
+| アサート | 要求すること |
+|---|---|
+| `assertNothingDependsOnTheApp(layout)` | どのモジュールも app から import しない |
+| `assertFeaturesDoNotDependOnEachOther(layout)` | feature はほかの feature から import しない |
+| `assertCoreDoesNotDependOnFeatures(layout)` | app と feature 以外のモジュールは feature から import しない |
+| `assertDomainDependsOnNothing(layout)` | domain は補助モジュールからだけ import する |
+| `assertDataDependsOnlyOnTheDomain(layout)` | data は domain と補助モジュールからだけ import する |
+| `assertSharedUiDependsOnlyOnTheDomain(layout)` | 共有 UI は domain、自身、補助モジュールからだけ import する |
+| `assertFeaturesReachDataThroughTheDomain(layout)` | feature は data から何も import しない |
+| `assertDomainIsFrameworkFree(layout)` | domain は `androidx.compose`、`androidx.lifecycle`、`jp.kaleidot725.pulse` から import しない |
+
+## PulseModuleLayout
+
+```kotlin
+data class PulseModuleLayout(
+    val app: List<String> = listOf("app"),
+    val features: List<String> = listOf("feature/*", "feature/*/api", "feature/*/impl"),
+    val domain: List<String> = listOf("core/domain"),
+    val data: List<String> = listOf("core/data"),
+    val sharedUi: List<String> = listOf("core/designsystem", "core/ui"),
+    val support: List<String> = listOf("core/*"),
+) {
+    companion object {
+        val NowInAndroid: PulseModuleLayout
+    }
+}
+```
+
+モジュールのディレクトリを層に対応付けます。各パターンはモジュールのディレクトリ（`src` の 1 つ上）の末尾と照合し、`*` はちょうど 1 階層を表します。層は宣言順に判定し、最初に当てはまった層に属します。末尾の `api` や `impl` は、その上の feature の一部として扱います。デフォルトは `NowInAndroid` です。
+
+## pulseModule
+
+```kotlin
+fun KoFileDeclaration.pulseModule(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid): String?
+```
+
+ファイルが属するモジュールの名前を、ディレクトリのうちパターンに一致した部分（`core/data` や `feature/counter`）として返します。どの層にも当てはまらない場合は null を返します。
+
+## assertPulseKoinConventions
+
+```kotlin
+fun KoScope.assertPulseKoinConventions(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+以下の Koin の検査を実行します。Koin を使っていないプロジェクトは通ります。
+
+## assertKoinModulesLiveInTheApp
+
+```kotlin
+fun KoScope.assertKoinModulesLiveInTheApp(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid)
+```
+
+`org.koin.dsl.module` か `org.koin.core.annotation.Module` を import するファイルが、レイアウトの app 層にあることを要求します。どの層にも当てはまらないモジュールのファイルは検査しません。
+
 ## クエリ
 
-前半の 7 つは対応する型を直接継承・実装している宣言を返します。後半の 3 つは、役割が関数ではなくファイルのパッケージで決まるため、ファイルを返します。いずれも上のアサートの土台であり、プロジェクト独自のルールの土台にもなります。
+クエリは上のアサートの土台であり、プロジェクト独自のルールの土台にもなります。型のクエリは対応する型を直接継承・実装している宣言を返し、View のクエリは役割が関数ではなくファイルのパッケージで決まるため、ファイルを返します。
 
 | クエリ | 戻り値 |
 |---|---|
@@ -91,6 +185,10 @@ fun KoScope.assertScreensComposeSections()
 | `pulseScreens()` | `List<KoFileDeclaration>` — `section` と `component` のどちらにも属さない Composable を持つファイル |
 | `pulseSections()` | `List<KoFileDeclaration>` — `section` 配下の Composable を持つファイル。内側の `component` を除く |
 | `pulseComponents()` | `List<KoFileDeclaration>` — `component` 配下の Composable を持つファイル |
+| `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — 名前が `Repository` で終わる class |
+| `pulseRepositoryInterfaces()` | `List<KoInterfaceDeclaration>` — 名前が `Repository` で終わる interface |
+| `pulseRepositories()` | `List<KoBaseDeclaration>` — 上の 2 つを合わせたもの |
+| `pulseKoinModuleFiles()` | `List<KoFileDeclaration>` — Koin モジュールを定義するファイル |
 
 ## スコープ
 

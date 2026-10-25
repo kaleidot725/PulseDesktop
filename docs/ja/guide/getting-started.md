@@ -219,7 +219,7 @@ fun main() = application {
 
 ## デモを動かす
 
-リポジトリにはパルスグリッドのデモが含まれています。4 つのエリアが 1 つの Container を共有しています。1 つをタップすると、辺を共有する 2 つに波及します。リポジトリをクローンして実行してください。
+リポジトリにはパルスグリッドのデモが含まれています。4 つのエリアが 1 つの Container を共有しています。1 つをタップすると、辺を共有する 2 つに波及します。デモは app、feature、`core` 配下の domain・data・designsystem に分かれ、Koin で組み立て、カウントを DataStore に保存します。[アーキテクチャ検査](/ja/guide/architecture-checks) が想定する構成で、すべての検査を通ります。リポジトリをクローンして実行してください。
 
 ```bash
 ./gradlew :demo:app:run

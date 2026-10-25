@@ -104,8 +104,17 @@ fun CounterScreen() {
 
 ## Demo
 
-The `demo` module is a grid of four areas sharing one Container; a tap on one spreads to the two
-it shares an edge with.
+The `demo` directory is a small multi-module app built the way the architecture checks expect, and
+it passes all of them. Four areas share one Container, and a tap on one spreads to the two it shares
+an edge with. The counts are kept in a DataStore, so they survive a restart.
+
+| Module | Holds |
+|---|---|
+| `demo/app` | the window, the back stack, and every Koin module |
+| `demo/feature/count` | the screen, its sections and ViewModels |
+| `demo/core/domain` | the areas, the neighbour rule, the repository interface and the use cases |
+| `demo/core/data` | the DataStore-backed repository |
+| `demo/core/designsystem` | the theme, the card and the buttons |
 
 ```bash
 ./gradlew :demo:app:run

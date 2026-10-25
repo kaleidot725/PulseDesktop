@@ -40,7 +40,7 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 
 | Assertion | Description |
 |---|---|
-| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | Every check below, in order |
+| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | The next eight checks, in order |
 | [`assertStatesAreDataTypes`](/api/architecture#assertstatesaredatatypes) | A `PulseState` is a `data class` or `data object` |
 | [`assertMessagesAreSealedOrDataTypes`](/api/architecture#assertmessagesaresealedordatatypes) | A message interface is `sealed`; a class or object implementing one is `data` |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` and `…Container` |
@@ -48,3 +48,8 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 | [`assertSectionsBindOneViewModel`](/api/architecture#assertsectionsbindoneviewmodel) | A section binds its ViewModel with `PulseContent` |
 | [`assertComponentsAreStateless`](/api/architecture#assertcomponentsarestateless) | A component takes data and callbacks only |
 | [`assertScreensComposeSections`](/api/architecture#assertscreenscomposesections) | A screen composes sections instead of binding a ViewModel |
+| [`assertComponentsHavePreviews`](/api/architecture#assertcomponentshavepreviews) | Every component has a `<Component>_Preview` |
+| [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls |
+| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks |
+| [`assertPulseKoinConventions`](/api/architecture#assertpulsekoinconventions) | Koin modules are declared in the app module |
+| [`PulseModuleLayout`](/api/architecture#pulsemodulelayout) | Which module names play which layer |
