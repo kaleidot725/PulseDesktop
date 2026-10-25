@@ -222,7 +222,7 @@ fun main() = application {
 リポジトリにはパルスグリッドのデモが含まれています。4 つのエリアが 1 つの Container を共有しています。1 つをタップすると、辺を共有する 2 つに波及します。リポジトリをクローンして実行してください。
 
 ```bash
-./gradlew :demo:run
+./gradlew :demo:app:run
 ```
 
 ## 次のステップ

@@ -24,7 +24,11 @@ can check in its own test suite that it uses PulseDesktop the way the library ex
 view layout the demo follows: a **screen** at the root of a feature package creates the ViewModels and
 lays out **sections**, a section binds one ViewModel with `PulseContent`, and a **component** takes
 data and callbacks only. Packages decide which is which — `section` and `component` — and names are
-free.
+free. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
+`feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: `core/domain` holds
+the entities, use cases and repository interfaces and depends on nothing, `core/data` implements the
+interfaces, and a feature reaches data only through the domain. Dependencies are read from imports.
+The module names are a `PulseModuleLayout`, which a project with names of its own replaces.
 
 ## Development Commands
 
@@ -34,8 +38,8 @@ free.
 - **Clean build**: `./gradlew clean`
 - **Check code quality**: `./gradlew ktlintCheck` (auto-fix with `./gradlew ktlintFormat`)
 - **Test coverage**: `./gradlew koverHtmlReport` (opens at `build/reports/kover/html/index.html`; XML via `koverXmlReport`)
-- **Publish to local Maven**: `./gradlew :mvi:publishToMavenLocal :navigation:publishToMavenLocal :architecture:publishToMavenLocal`
-- **Run the demo**: `./gradlew :demo:run`
+- **Publish to local Maven**: `./gradlew :library:mvi:publishToMavenLocal :library:navigation:publishToMavenLocal :library:architecture:publishToMavenLocal`
+- **Run the demo**: `./gradlew :demo:app:run`
 
 ## Writing Tests
 
@@ -58,10 +62,10 @@ Put a test in the source set that matches what it needs.
 
 | Source set | Use it for |
 |---|---|
-| `mvi/src/commonTest` | `PulseViewModel` and `PulseContainer` — anything that needs no composition |
-| `mvi/src/jvmTest` | The composables, through `createComposeRule()` from `ui-test-junit4` |
-| `navigation/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
-| `architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
+| `library/mvi/src/commonTest` | `PulseViewModel` and `PulseContainer` — anything that needs no composition |
+| `library/mvi/src/jvmTest` | The composables, through `createComposeRule()` from `ui-test-junit4` |
+| `library/navigation/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
+| `library/architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
 
 ### Coverage
 
@@ -75,31 +79,42 @@ the library. A new public declaration is still expected to arrive with the test 
 
 ```
 PulseDesktop/
-├── mvi/                              # Core artifact: mvi
-│   └── src/
-│       ├── commonMain/kotlin/jp/kaleidot725/pulse/mvi/
-│       │   ├── PulseState.kt         # Marker interface for state
-│       │   ├── PulseAction.kt        # Marker interface for actions
-│       │   ├── PulseEvent.kt         # Marker interface for one-time events
-│       │   ├── PulseBroadcast.kt     # Marker interface for Container to ViewModel messages
-│       │   ├── PulseUnicast.kt       # Marker interface for ViewModel to Container messages
-│       │   ├── PulseViewModel.kt     # Abstract ViewModel: state, actions, events, unicast
-│       │   ├── PulseContainer.kt     # Coordinates ViewModels: broadcast, refresh, close
-│       │   └── PulseContent.kt       # PulseHost and PulseContent composables
-│       └── commonTest/kotlin/…       # PulseViewModelTest, PulseContainerTest
-├── navigation/                       # Optional artifact: navigation
-│   └── src/commonMain/kotlin/jp/kaleidot725/pulse/navigation/
-│       └── PulseNavigation.kt        # rememberPulseViewModel / rememberPulseContainer /
-│                                     # rememberPulseNavEntryDecorators
-├── architecture/                     # Optional artifact: architecture
-│   └── src/
-│       ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
-│       │   └── PulseConventions.kt   # assertPulseMviConventions and the checks it runs
-│       └── jvmTest/…                 # the checks, over conforming and violating fixtures
-├── demo/                             # Pulse grid demo app (Navigation 3)
-│   └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/
-│       ├── DemoApp.kt                # NavDisplay and the back stack
-│       └── count/                    # One feature: screen at its root
+├── library/                          # Everything published; each module is one artifact
+│   ├── mvi/                          # :library:mvi — core artifact: mvi
+│   │   └── src/
+│   │       ├── commonMain/kotlin/jp/kaleidot725/pulse/mvi/
+│   │       │   ├── PulseState.kt     # Marker interface for state
+│   │       │   ├── PulseAction.kt    # Marker interface for actions
+│   │       │   ├── PulseEvent.kt     # Marker interface for one-time events
+│   │       │   ├── PulseBroadcast.kt # Marker interface for Container to ViewModel messages
+│   │       │   ├── PulseUnicast.kt   # Marker interface for ViewModel to Container messages
+│   │       │   ├── PulseViewModel.kt # Abstract ViewModel: state, actions, events, unicast
+│   │       │   ├── PulseContainer.kt # Coordinates ViewModels: broadcast, refresh, close
+│   │       │   └── PulseContent.kt   # PulseHost and PulseContent composables
+│   │       └── commonTest/kotlin/…   # PulseViewModelTest, PulseContainerTest
+│   ├── navigation/                   # :library:navigation — optional artifact: navigation
+│   │   └── src/commonMain/kotlin/jp/kaleidot725/pulse/navigation/
+│   │       └── PulseNavigation.kt    # rememberPulseViewModel / rememberPulseContainer /
+│   │                                 # rememberPulseNavEntryDecorators
+│   └── architecture/                 # :library:architecture — optional artifact: architecture
+│       └── src/
+│           ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
+│           │   ├── PulseConventions.kt       # assertPulseMviConventions and the checks it runs
+│           │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
+│           │   └── PulseModuleLayout.kt      # which module names play which layer
+│           └── jvmTest/…             # the checks, over conforming and violating fixtures
+├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
+│   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and the wiring:
+│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # creates the DataStore repository
+│   │       ├── DemoApp.kt
+│   │       └── Main.kt
+│   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
+│   │                                 # PulseCountRepository and the use cases; plain Kotlin
+│   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository, counts kept per area
+│   ├── core/designsystem/            # :demo:core:designsystem — PulseDesktopTheme, PulseCard, PulseButton
+│   └── feature/count/                # :demo:feature:count — one feature, screen at its root; reaches
+│                                     # the counts through the domain use cases, never core/data
+│       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/
 │           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
 │           ├── PulseCountContainer.kt
 │           ├── component/            # Stateless composables of the screen
@@ -139,7 +154,9 @@ whose sources are in `jvmMain` because Konsist publishes a JVM artifact only.
 ## Key Configuration
 
 - Group ID: `com.github.kaleidot725.PulseDesktop` (what JitPack serves for a multi-module repo)
-- Artifact IDs: `mvi`, `navigation`, `architecture`
+- Artifact IDs: `mvi`, `navigation`, `architecture` — the projects are `:library:mvi`,
+  `:library:navigation` and `:library:architecture`, and JitPack names an artifact after the project,
+  so the `library` directory does not appear in the coordinates
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation`,
   `jp.kaleidot725.pulse.architecture` — one package per artifact, all three beside each other under
   `pulse`. The core package and the `Pulse` class prefix are unchanged by the rename

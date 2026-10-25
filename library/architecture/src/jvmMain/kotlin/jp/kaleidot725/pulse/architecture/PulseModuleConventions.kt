@@ -1,0 +1,196 @@
+package jp.kaleidot725.pulse.architecture
+
+import com.lemonappdev.konsist.api.container.KoScope
+import com.lemonappdev.konsist.api.declaration.KoFileDeclaration
+import com.lemonappdev.konsist.api.verify.assertTrue
+
+/**
+ * Checks the module layout PulseDesktop expects of a multi-module app: modules named after Now in Android's, with the
+ * dependencies between them pointing the way Clean Architecture asks.
+ *
+ * | Module | Layer |
+ * |---|---|
+ * | `app` | the application, which wires everything together |
+ * | `feature/<name>` | one feature's screens, sections and ViewModels |
+ * | `core/domain` | the entities, the use cases, and the repository interfaces the use cases need |
+ * | `core/data` | the repository implementations, including whatever they store data in |
+ * | `core/designsystem`, `core/ui` | composables shared between features |
+ * | any other `core/<name>` | support, such as `core/common` or `core/testing` |
+ *
+ * The domain is the centre and depends on nothing. Unlike Now in Android, where the domain module depends on the data
+ * module, the domain here owns the repository interfaces and `core/data` implements them, so a feature reaches data only
+ * through the domain and `app` hands it the implementation.
+ *
+ * The names are a [PulseModuleLayout], which a project with names of its own replaces. Dependencies are read from
+ * imports, so what is checked is the code that is actually used.
+ *
+ * ```kotlin
+ * class PulseModuleConventionTest {
+ *     @Test
+ *     fun `follows the PulseDesktop module conventions`() {
+ *         Konsist.scopeFromProduction().assertPulseModuleConventions()
+ *     }
+ * }
+ * ```
+ */
+public fun KoScope.assertPulseModuleConventions(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertNothingDependsOnTheApp(layout)
+    assertFeaturesDoNotDependOnEachOther(layout)
+    assertCoreDoesNotDependOnFeatures(layout)
+    assertDomainDependsOnNothing(layout)
+    assertDataDependsOnlyOnTheDomain(layout)
+    assertSharedUiDependsOnlyOnTheDomain(layout)
+    assertFeaturesReachDataThroughTheDomain(layout)
+    assertDomainIsFrameworkFree(layout)
+}
+
+/** No module depends on the app: the application sits on top and wires everything else together. */
+public fun KoScope.assertNothingDependsOnTheApp(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "nothing depends on the app module",
+        additionalMessage = "Move what is needed out of the app into a core module.",
+        checks = { it != ModuleLayer.App },
+        allows = { it != ModuleLayer.App },
+    )
+}
+
+/** A feature depends on no other feature, so each one can be built, tested and removed on its own. */
+public fun KoScope.assertFeaturesDoNotDependOnEachOther(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "features do not depend on each other",
+        additionalMessage = "Move what both features need into a core module, or navigate through the app.",
+        checks = { it == ModuleLayer.Feature },
+        allows = { it != ModuleLayer.Feature },
+    )
+}
+
+/** No core module depends on a feature: features are built from the core, never the other way round. */
+public fun KoScope.assertCoreDoesNotDependOnFeatures(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "core modules do not depend on features",
+        additionalMessage = "Move the code the core module needs out of the feature.",
+        checks = { it != ModuleLayer.App && it != ModuleLayer.Feature },
+        allows = { it != ModuleLayer.Feature },
+    )
+}
+
+/**
+ * The domain depends on no other layer, only on support modules.
+ *
+ * It is the centre: the entities, the use cases and the repository interfaces live here, and the data layer implements
+ * those interfaces — so a use case can be tested without a database.
+ */
+public fun KoScope.assertDomainDependsOnNothing(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "the domain depends on no other layer",
+        additionalMessage = "Declare the interface in the domain and implement it in the data layer.",
+        checks = { it == ModuleLayer.Domain },
+        allows = { it == ModuleLayer.Support },
+    )
+}
+
+/** The data layer depends only on the domain whose repository interfaces it implements. */
+public fun KoScope.assertDataDependsOnlyOnTheDomain(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "the data layer depends only on the domain",
+        additionalMessage = "Remove the dependency on the UI; a ViewModel turns the data into UI state.",
+        checks = { it == ModuleLayer.Data },
+        allows = { it == ModuleLayer.Domain || it == ModuleLayer.Support },
+    )
+}
+
+/** The shared UI depends only on the domain and on itself: it draws the entities it is given and fetches nothing. */
+public fun KoScope.assertSharedUiDependsOnlyOnTheDomain(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "the shared UI depends only on the domain",
+        additionalMessage = "Take the data as a parameter; fetching it belongs to a feature's ViewModel.",
+        checks = { it == ModuleLayer.SharedUi },
+        allows = { it == ModuleLayer.Domain || it == ModuleLayer.SharedUi || it == ModuleLayer.Support },
+    )
+}
+
+/** A feature depends on the domain, never on the data layer: it reaches data through a use case. */
+public fun KoScope.assertFeaturesReachDataThroughTheDomain(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    assertModuleDependencies(
+        layout = layout,
+        testName = "features reach data through the domain",
+        additionalMessage = "Depend on a use case or repository interface in the domain; the app provides the implementation.",
+        checks = { it == ModuleLayer.Feature },
+        allows = { it != ModuleLayer.Data },
+    )
+}
+
+/**
+ * The domain imports nothing from Compose, AndroidX Lifecycle or PulseDesktop.
+ *
+ * The centre is plain Kotlin. A use case that needs Compose can only run where Compose runs, and the reason to have a
+ * domain is that it does not care.
+ */
+public fun KoScope.assertDomainIsFrameworkFree(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    files
+        .filter { it.layerIn(layout) == ModuleLayer.Domain }
+        .assertTrue(
+            testName = "the domain is framework-free",
+            additionalMessage = "Move the framework code to a feature or to the shared UI.",
+        ) { file -> file.imports.none { import -> frameworkPackages.any { import.name.startsWith(it) } } }
+}
+
+/**
+ * The module a file belongs to under [layout], as the part of its directory a pattern matched — `core/data` or
+ * `feature/counter` — or null when no layer claims it.
+ */
+public fun KoFileDeclaration.pulseModule(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid): String? =
+    layout.moduleOf(moduleDirectory)
+
+internal enum class ModuleLayer { App, Feature, Domain, Data, SharedUi, Support }
+
+private fun KoScope.assertModuleDependencies(
+    layout: PulseModuleLayout,
+    testName: String,
+    additionalMessage: String,
+    checks: (ModuleLayer) -> Boolean,
+    allows: (ModuleLayer) -> Boolean,
+) {
+    val packages = packageIndex(layout)
+    files
+        .filter { file -> file.layerIn(layout)?.let(checks) == true }
+        .assertTrue(testName = testName, additionalMessage = additionalMessage) { file ->
+            file.moduleDependencies(packages, own = file.pulseModule(layout)).all { (_, layer) -> allows(layer) }
+        }
+}
+
+/** Every package in the scope, mapped to the module that declares it and that module's layer. */
+private fun KoScope.packageIndex(layout: PulseModuleLayout): Map<String, Pair<String, ModuleLayer>> =
+    files
+        .mapNotNull { file ->
+            val module = file.pulseModule(layout) ?: return@mapNotNull null
+            val layer = file.layerIn(layout) ?: return@mapNotNull null
+            file.packagee?.name?.let { it to (module to layer) }
+        }.toMap()
+
+/** The other modules this file imports from, found by the longest package that prefixes each import. */
+private fun KoFileDeclaration.moduleDependencies(
+    packages: Map<String, Pair<String, ModuleLayer>>,
+    own: String?,
+): Set<Pair<String, ModuleLayer>> =
+    imports
+        .mapNotNull { import ->
+            generateSequence(import.name) { it.substringBeforeLast('.', "").ifEmpty { null } }
+                .firstNotNullOfOrNull(packages::get)
+        }.filter { (module, _) -> module != own }
+        .toSet()
+
+/** The layer is read from the directory, so it holds even for a feature named after a trimmed `api` or `impl`. */
+private fun KoFileDeclaration.layerIn(layout: PulseModuleLayout): ModuleLayer? = layout.layerOf(moduleDirectory)
+
+/** The directory above the last `src`, where Gradle keeps a module's sources. */
+private val KoFileDeclaration.moduleDirectory: String
+    get() = path.replace('\\', '/').substringBeforeLast("/src/")
+
+private val frameworkPackages = listOf("androidx.compose.", "androidx.lifecycle.", "jp.kaleidot725.pulse.")

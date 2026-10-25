@@ -31,9 +31,9 @@ subprojects {
 }
 
 dependencies {
-    kover(project(":mvi"))
-    kover(project(":navigation"))
-    kover(project(":architecture"))
+    kover(project(":library:mvi"))
+    kover(project(":library:navigation"))
+    kover(project(":library:architecture"))
 }
 
 kover {

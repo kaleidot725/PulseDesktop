@@ -12,7 +12,11 @@ plugins {
 
 rootProject.name = "PulseDesktop"
 
-include(":mvi")
-include(":navigation")
-include(":architecture")
-include(":demo")
+include(":library:mvi")
+include(":library:navigation")
+include(":library:architecture")
+include(":demo:app")
+include(":demo:feature:count")
+include(":demo:core:domain")
+include(":demo:core:data")
+include(":demo:core:designsystem")

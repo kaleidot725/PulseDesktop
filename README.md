@@ -108,7 +108,7 @@ The `demo` module is a grid of four areas sharing one Container; a tap on one sp
 it shares an edge with.
 
 ```bash
-./gradlew :demo:run
+./gradlew :demo:app:run
 ```
 
 ## License
