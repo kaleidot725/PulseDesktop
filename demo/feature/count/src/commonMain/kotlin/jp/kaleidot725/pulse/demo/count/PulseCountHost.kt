@@ -19,8 +19,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import jp.kaleidot725.pulse.demo.core.domain.PulseArea
-import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
+import jp.kaleidot725.pulse.demo.core.domain.model.PulseArea
+import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.component.PulseCountHeader
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaContent
 import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaViewModel

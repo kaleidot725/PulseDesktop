@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.demo.core.data
+package jp.kaleidot725.pulse.demo.core.data.local
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory

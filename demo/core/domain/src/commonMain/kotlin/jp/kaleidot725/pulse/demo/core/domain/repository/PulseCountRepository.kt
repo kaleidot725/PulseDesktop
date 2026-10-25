@@ -1,5 +1,6 @@
-package jp.kaleidot725.pulse.demo.core.domain
+package jp.kaleidot725.pulse.demo.core.domain.repository
 
+import jp.kaleidot725.pulse.demo.core.domain.model.PulseArea
 import kotlinx.coroutines.flow.Flow
 
 interface PulseCountRepository {

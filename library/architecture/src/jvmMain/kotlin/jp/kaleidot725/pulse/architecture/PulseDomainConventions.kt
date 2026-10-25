@@ -13,7 +13,7 @@ import com.lemonappdev.konsist.api.provider.modifier.KoVisibilityModifierProvide
 import com.lemonappdev.konsist.api.verify.assertTrue
 
 /**
- * Checks how a repository hands out its data.
+ * Checks how a repository hands out its data, and what earns a use case its place.
  *
  * A repository is a class or an interface whose name ends with `Repository`, and its public surface comes in two kinds:
  *
@@ -22,6 +22,10 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  *
  * A function that returns nothing is a command and is left alone. A repository may hold other repositories and the
  * functions a data module exposes, so properties of those types are not counted as data it hands out.
+ *
+ * A use case is a class whose name ends with `UseCase`. A ViewModel may use a repository directly, so a use case is
+ * written only when it has work of its own: it lives in a `usecase` package, and none of its functions is a single
+ * line that hands the call on.
  *
  * ```kotlin
  * class PulseDomainConventionTest {
@@ -35,6 +39,8 @@ import com.lemonappdev.konsist.api.verify.assertTrue
 public fun KoScope.assertPulseDomainConventions() {
     assertRepositoriesExposeFlowsOrStateFlows()
     assertRepositoriesReturnResultsFromOneShotCalls()
+    assertUseCasesLiveInTheUseCasePackage()
+    assertUseCasesDoMoreThanOneLine()
 }
 
 /**
@@ -67,6 +73,31 @@ public fun KoScope.assertRepositoriesReturnResultsFromOneShotCalls() {
     ) { repository -> repository.publicFunctions().all { it.returnsFlowOrResult() } }
 }
 
+/** A use case lives in a `usecase` package, apart from the entities and the repository interfaces. */
+public fun KoScope.assertUseCasesLiveInTheUseCasePackage() {
+    pulseUseCases().assertTrue(
+        testName = "use cases live in a usecase package",
+        additionalMessage = "Move the use case into a package named `usecase`.",
+    ) { it.resideInPackage("..usecase..") }
+}
+
+/**
+ * No public function of a use case is a single line.
+ *
+ * A use case whose body is one line only hands the call on to a repository, and the ViewModel can make that call
+ * itself. It is a file to read and a class to wire for nothing, so it is not written: a use case is for combining,
+ * filtering or deciding something the repository does not.
+ */
+public fun KoScope.assertUseCasesDoMoreThanOneLine() {
+    pulseUseCases().assertTrue(
+        testName = "use cases do more than one line",
+        additionalMessage = "Call the repository from the ViewModel instead, or give the use case work of its own.",
+    ) { useCase -> useCase.publicFunctions().none { it.bodyLineCount() <= 1 } }
+}
+
+/** Every class whose name ends with `UseCase`. */
+public fun KoScope.pulseUseCases(): List<KoClassDeclaration> = classes().withNameEndingWith("UseCase")
+
 /** Every class and interface whose name ends with `Repository`, checked together so one report names them all. */
 public fun KoScope.pulseRepositories(): List<KoBaseDeclaration> = pulseRepositoryClasses() + pulseRepositoryInterfaces()
 
@@ -91,6 +122,34 @@ private fun KoBaseDeclaration.publicFunctions(): List<KoFunctionDeclaration> =
         is KoClassDeclaration -> functions(includeNested = false, includeLocal = false).filter { it.isPublic }
         else -> (this as KoInterfaceDeclaration).functions(includeNested = false, includeLocal = false)
     }
+
+/**
+ * The non-blank lines of a function's body: what follows `=` for an expression body, or what sits between the braces
+ * for a block body. A function without a body counts as none.
+ */
+private fun KoFunctionDeclaration.bodyLineCount(): Int {
+    val text = text
+    var depth = 0
+    var index = text.indexOf('(')
+    if (index < 0) return 0
+    while (index < text.length) {
+        when (text[index]) {
+            '(' -> depth++
+            ')' -> if (--depth == 0) break
+        }
+        index++
+    }
+    val rest = text.substring(index + 1)
+    val start = rest.indexOfFirst { it == '=' || it == '{' }
+    if (start < 0) return 0
+    val body =
+        if (rest[start] == '=') {
+            rest.substring(start + 1)
+        } else {
+            rest.substring(start + 1, rest.lastIndexOf('}').coerceAtLeast(start + 1))
+        }
+    return body.lines().count { it.isNotBlank() }
+}
 
 private fun KoPropertyDeclaration.isFollowable(): Boolean {
     val type = type ?: return false

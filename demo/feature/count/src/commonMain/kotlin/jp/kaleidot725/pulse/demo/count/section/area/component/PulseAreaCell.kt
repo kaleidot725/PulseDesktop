@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseCard
-import jp.kaleidot725.pulse.demo.core.domain.PulseAreaPosition
+import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.section.area.state.PulseAreaState
 
 @Composable

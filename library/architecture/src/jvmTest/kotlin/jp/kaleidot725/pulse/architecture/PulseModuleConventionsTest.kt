@@ -127,6 +127,33 @@ class PulseModuleConventionsTest {
         assertReports("UiKnowsTheData") { assertSharedUiDependsOnlyOnTheDomain() }
     }
 
+    /**
+     * A design system that takes an entity can only draw that entity, so the building blocks stop being shared by
+     * every screen; such a composable belongs in `core/ui`.
+     */
+    @Test
+    fun `reports a design system that depends on the domain`() {
+        assertReports("DesignSystemKnowsTheDomain") { assertDesignSystemDependsOnNothing() }
+    }
+
+    /** The shared UI may use the design system, which is how `CounterCard` draws a `PulseButton`. */
+    @Test
+    fun `lets the shared UI use the design system`() {
+        conforming.assertSharedUiDependsOnlyOnTheDomain()
+    }
+
+    /** An entity left at the root of the domain is mixed in with the repository interfaces and the use cases. */
+    @Test
+    fun `reports a domain file outside the model, repository and usecase packages`() {
+        assertReports("UnsortedEntity") { assertDomainIsSplitIntoItsPackages() }
+    }
+
+    /** A class left at the root of the data layer cannot be told apart from a repository or a data source. */
+    @Test
+    fun `reports a data file outside the repository, local and model packages`() {
+        assertReports("UnsortedCache") { assertDataIsSplitIntoItsPackages() }
+    }
+
     /** A feature that holds a repository implementation skips the use cases, and the domain rules with them. */
     @Test
     fun `reports a feature that reaches the data layer`() {
