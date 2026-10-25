@@ -40,7 +40,7 @@ public data class PulseModuleLayout(
     public val domain: List<String> = listOf("core/domain"),
     /**
      * The repository implementations in `repository`, the data sources they read in `local`, and the shapes those
-     * sources store in `model`.
+     * sources store in `model`. A data source only persists; the repository decides how a value changes.
      */
     public val data: List<String> = listOf("core/data"),
     /** The composables shared between features that draw the domain's entities. */
