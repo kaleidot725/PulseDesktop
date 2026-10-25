@@ -37,8 +37,8 @@ sealed class CounterBroadcast : PulseBroadcast {
 }
 
 // Unicast: ViewModel から Container へ送るメッセージ
-sealed interface CounterUnicast : PulseUnicast {
-    data object ResetRequested : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data object ResetRequested : CounterUnicast()
 }
 ```
 

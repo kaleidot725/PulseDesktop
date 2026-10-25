@@ -77,11 +77,11 @@ sealed class AppBroadcast : PulseBroadcast {
 interface PulseUnicast
 ```
 
-Marks a class as a unicast message. A child `PulseViewModel` emits it to its parent `PulseContainer`. Implement with a `sealed interface` or `sealed class`.
+Marks a class as a unicast message. A child `PulseViewModel` emits it to its parent `PulseContainer`. Implement with a `sealed class`.
 
 ```kotlin
-sealed interface AppUnicast : PulseUnicast {
-    data object SaveRequested : AppUnicast
-    data class ItemSelected(val id: String) : AppUnicast
+sealed class AppUnicast : PulseUnicast {
+    data object SaveRequested : AppUnicast()
+    data class ItemSelected(val id: String) : AppUnicast()
 }
 ```

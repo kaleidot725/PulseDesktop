@@ -164,8 +164,8 @@ fun close()
 ## 例
 
 ```kotlin
-sealed interface CounterUnicast : PulseUnicast {
-    data object ResetRequested : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data object ResetRequested : CounterUnicast()
 }
 
 class CounterViewModel(
@@ -199,8 +199,8 @@ class CounterViewModel(
 ```
 
 ```kotlin
-sealed interface CounterUnicast : PulseUnicast {
-    data object ResetRequested : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data object ResetRequested : CounterUnicast()
 }
 
 class CounterViewModel(

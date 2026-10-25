@@ -46,7 +46,7 @@ class PulseDesktopConventionTest {
 | 検査 | ルール | 理由 |
 |---|---|---|
 | State は data 型 | `PulseState` は `data class` または `data object` | `StateFlow` は直前と等しい値を流さず、Compose は引数が等しい Composable をスキップする。`equals` がないと更新ごとに画面全体が再コンポジションされる |
-| メッセージは sealed | Action・Event・Broadcast・Unicast の interface は `sealed`、直接実装する class・object は `data` | どれも `when` で処理される。sealed にしてあれば、ケースの追加がコンパイルエラーになる |
+| メッセージは sealed class | Action・Event・Broadcast・Unicast は `sealed class`、その中の各ケースは `data class` か `data object` | どれも `when` で処理される。sealed にしてあればケースの追加がコンパイルエラーになり、`data` にしてあればケースが値で比較・表示される |
 | 名前は基底クラスに従う | `PulseViewModel` は `…ViewModel`、`PulseContainer` は `…Container` | コンパイラにとってはどちらも `ViewModel` のサブクラスなので、どちらなのかを示すのは名前だけ |
 | データは State に置く | ViewModel と Container は `var` プロパティを持たない | State の外の `var` は変更しても emission が起きず、何も再コンポジションされない |
 

@@ -167,8 +167,8 @@ Cancels the work started in `onSetup()` for good. Unlike `cancel()`, it does not
 ## Example
 
 ```kotlin
-sealed interface CounterUnicast : PulseUnicast {
-    data object ResetRequested : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data object ResetRequested : CounterUnicast()
 }
 
 class CounterViewModel(
@@ -202,8 +202,8 @@ class CounterViewModel(
 ```
 
 ```kotlin
-sealed interface CounterUnicast : PulseUnicast {
-    data object ResetRequested : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data object ResetRequested : CounterUnicast()
 }
 
 class CounterViewModel(

@@ -6,11 +6,11 @@ Use it when handling an action and coordinating the follow-up are split. The chi
 
 ## Defining a Unicast
 
-Implement `PulseUnicast` with a sealed interface or sealed class. The Unicast type is shared by the Container and every ViewModel registered in it. This generic pairing means a ViewModel cannot emit a Unicast type that the Container does not understand.
+Implement `PulseUnicast` with a sealed class whose cases are data classes or data objects. The Unicast type is shared by the Container and every ViewModel registered in it. This generic pairing means a ViewModel cannot emit a Unicast type that the Container does not understand.
 
 ```kotlin
-sealed interface CounterUnicast : PulseUnicast {
-    data class CounterUpdated(val count: Int) : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data class CounterUpdated(val count: Int) : CounterUnicast()
 }
 ```
 
@@ -84,8 +84,8 @@ sealed class CounterBroadcast : PulseBroadcast {
     data class CounterUpdated(val count: Int) : CounterBroadcast()
 }
 
-sealed interface CounterUnicast : PulseUnicast {
-    data class CounterUpdated(val count: Int) : CounterUnicast
+sealed class CounterUnicast : PulseUnicast {
+    data class CounterUpdated(val count: Int) : CounterUnicast()
 }
 ```
 
