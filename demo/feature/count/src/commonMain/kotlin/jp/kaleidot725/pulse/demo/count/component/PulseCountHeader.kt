@@ -8,8 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseButton
-import jp.kaleidot725.pulse.demo.core.designsystem.component.PulseTextButton
+import jp.kaleidot725.pulse.demo.core.designsystem.button.PulseButton
+import jp.kaleidot725.pulse.demo.core.designsystem.button.PulseTextButton
 import jp.kaleidot725.pulse.demo.count.resources.Res
 import jp.kaleidot725.pulse.demo.count.resources.area_description
 import jp.kaleidot725.pulse.demo.count.resources.area_title

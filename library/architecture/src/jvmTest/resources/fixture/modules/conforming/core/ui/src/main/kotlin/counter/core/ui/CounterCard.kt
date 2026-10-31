@@ -1,7 +1,7 @@
 package counter.core.ui
 
 import androidx.compose.runtime.Composable
-import counter.core.designsystem.PulseButton
+import counter.core.designsystem.button.PulseButton
 import counter.core.domain.model.Counter
 
 @Composable

@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.demo.core.designsystem.component
+package jp.kaleidot725.pulse.demo.core.designsystem.card
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding

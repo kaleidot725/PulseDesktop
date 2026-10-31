@@ -1,4 +1,4 @@
-package counter.core.designsystem
+package counter.core.designsystem.button
 
 import androidx.compose.runtime.Composable
 
