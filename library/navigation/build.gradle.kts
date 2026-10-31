@@ -22,7 +22,7 @@ kotlin {
     jvmToolchain(17)
 
     sourceSets {
-        val commonMain by getting {
+        val jvmMain by getting {
             dependencies {
                 api(project(":library:mvi"))
                 api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
@@ -30,15 +30,11 @@ kotlin {
                 api("org.jetbrains.androidx.navigation3:navigation3-ui:1.1.1")
             }
         }
-        val commonTest by getting {
+        val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-            }
-            val jvmTest by getting {
-                dependencies {
-                    implementation(compose.desktop.currentOs)
-                    implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.1")
-                }
+                implementation(compose.desktop.currentOs)
+                implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.1")
             }
         }
     }
