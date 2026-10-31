@@ -14,7 +14,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  * | `feature/<name>` | one feature's screens, sections and ViewModels |
  * | `core/domain` | the entities (`model`), the repository interfaces (`repository`) and any use cases (`usecase`) |
  * | `core/data` | the repository implementations (`repository`), their data sources (`local`) and what those store (`model`) |
- * | `core/designsystem` | the theme and the building blocks every screen is drawn with, knowing nothing of the domain |
+ * | `core/designsystem` | the theme and the building blocks every screen is drawn with, one package per kind (`button`, `theme`), knowing nothing of the domain |
  * | `core/ui` | composables shared between features that draw the domain's entities |
  * | any other `core/<name>` | support, such as `core/common` or `core/testing` |
  *
@@ -47,6 +47,7 @@ public fun KoScope.assertPulseModuleConventions(layout: PulseModuleLayout = Puls
     assertDomainIsFrameworkFree(layout)
     assertDomainIsSplitIntoItsPackages(layout)
     assertDataIsSplitIntoItsPackages(layout)
+    assertDesignSystemIsSplitByKind(layout)
 }
 
 /** No module depends on the app: the application sits on top and wires everything else together. */
@@ -199,6 +200,30 @@ public fun KoScope.assertDataIsSplitIntoItsPackages(layout: PulseModuleLayout = 
 }
 
 /**
+ * Every file in the design system sits in a package named after the kind of building block it holds — `button`, `card`,
+ * `theme` — not at the module's root or under a catch-all such as `component`.
+ *
+ * Everything in a design system is a building block, so a package called `component` or `widget` says nothing about
+ * what is inside it, and it fills up until finding a button means reading the whole list. A package per kind tells a
+ * reader where a button is, and shows when two of them do the same job.
+ *
+ * The root is the package named after the module's directory, `designsystem` for `core/designsystem`. These are not
+ * the components of the MVI conventions, which are the stateless parts of one screen; those still live in a `component`
+ * package inside a feature.
+ */
+public fun KoScope.assertDesignSystemIsSplitByKind(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
+    files
+        .filter { it.layerIn(layout) == ModuleLayer.DesignSystem }
+        .assertTrue(
+            testName = "the design system is split into a package per kind",
+            additionalMessage = "Move the file into a package named after what it is, such as `button`, `card` or `theme`.",
+        ) { file ->
+            val kinds = file.packagesBelowModuleRoot()
+            kinds.isNotEmpty() && kinds.none { it in catchAllPackages }
+        }
+}
+
+/**
  * The module a file belongs to under [layout], as the part of its directory a pattern matched — `core/data` or
  * `feature/counter` — or null when no layer claims it.
  */
@@ -210,6 +235,19 @@ internal enum class ModuleLayer { App, Feature, Domain, Data, DesignSystem, Shar
 private val domainPackages = listOf("model", "repository", "usecase")
 
 private val dataPackages = listOf("repository", "local", "model")
+
+/** Package names that say a declaration is a building block, which everything in a design system is, and not which. */
+private val catchAllPackages = listOf("component", "components", "widget", "widgets", "composable", "composables", "common")
+
+/**
+ * The packages below the one named after the module's directory, so `button` for `counter.core.designsystem.button` in
+ * `core/designsystem`. When no package is named after the directory, every package counts.
+ */
+private fun KoFileDeclaration.packagesBelowModuleRoot(): List<String> {
+    val packages = packagee?.name?.split('.').orEmpty()
+    val root = moduleDirectory.substringAfterLast('/').filter { it.isLetterOrDigit() }.lowercase()
+    return packages.drop(packages.indexOfLast { it.lowercase() == root } + 1)
+}
 
 private fun KoScope.assertLayerPackages(
     layout: PulseModuleLayout,

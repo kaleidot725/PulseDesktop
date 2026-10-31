@@ -154,6 +154,21 @@ class PulseModuleConventionsTest {
         assertReports("UnsortedCache") { assertDataIsSplitIntoItsPackages() }
     }
 
+    /**
+     * A `component` package in a design system holds every building block it has, so it says nothing about which one
+     * a reader is looking for; [assertDesignSystemIsSplitByKind] asks for a package named after the kind instead.
+     */
+    @Test
+    fun `reports a design system file in a catch-all component package`() {
+        assertReports("CatchAllChip") { assertDesignSystemIsSplitByKind() }
+    }
+
+    /** A building block left at the root of the design system is not sorted into any kind. */
+    @Test
+    fun `reports a design system file at the root of the module`() {
+        assertReports("UnsortedDivider") { assertDesignSystemIsSplitByKind() }
+    }
+
     /** A feature that holds a repository implementation skips the use cases, and the domain rules with them. */
     @Test
     fun `reports a feature that reaches the data layer`() {

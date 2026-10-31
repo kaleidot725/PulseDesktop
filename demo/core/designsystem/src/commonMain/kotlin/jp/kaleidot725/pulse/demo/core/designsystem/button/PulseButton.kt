@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.demo.core.designsystem.component
+package jp.kaleidot725.pulse.demo.core.designsystem.button
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
