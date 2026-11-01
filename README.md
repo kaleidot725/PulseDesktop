@@ -24,9 +24,11 @@ Read [What is PulseDesktop?](https://kaleidot725.github.io/PulseDesktop/guide/) 
 
 ## Installation
 
-PulseDesktop publishes three artifacts, one package each. `mvi` is the library; the other two are
-optional. `navigation` scopes ViewModels to a Navigation 3 back stack entry, and `architecture` checks
-in your own tests that the code follows the conventions.
+PulseDesktop publishes three artifacts for the desktop, one package each. `mvi` is the library; the
+other two are optional. `navigation` scopes ViewModels to a Navigation 3 back stack entry, and
+`architecture` checks in your own tests that the code follows the conventions. An Android app uses
+`mvi-android` instead of `mvi`, as [Android](https://kaleidot725.github.io/PulseDesktop/guide/android)
+describes.
 
 Add JitPack to `settings.gradle.kts`, then the dependencies to `build.gradle.kts`, replacing
 `<version>` with a tag from [Releases](https://github.com/kaleidot725/PulseDesktop/releases).
@@ -101,6 +103,7 @@ fun CounterHost() {
 | `mvi` | `jp.kaleidot725.pulse.mvi` | [Architecture](https://kaleidot725.github.io/PulseDesktop/guide/architecture) |
 | `navigation` | `jp.kaleidot725.pulse.navigation` | [Navigation 3](https://kaleidot725.github.io/PulseDesktop/guide/navigation3) |
 | `architecture` | `jp.kaleidot725.pulse.architecture` | [Architecture checks](https://kaleidot725.github.io/PulseDesktop/guide/architecture-checks) |
+| `mvi-android` | `jp.kaleidot725.pulse.mvi` | [Android](https://kaleidot725.github.io/PulseDesktop/guide/android) |
 
 ## Demo
 

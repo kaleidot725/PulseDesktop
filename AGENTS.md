@@ -4,8 +4,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-PulseDesktop is a Kotlin MVI (Model-View-Intent) library for Compose Desktop. It publishes a JVM target
-only — Android and iOS support was dropped so the library stays straightforward on the desktop.
+PulseDesktop is a Kotlin MVI (Model-View-Intent) library for Compose Desktop. Its desktop artifacts
+publish a JVM target only. Android gets a separate artifact, `mvi-android`, a plain Android library
+that keeps `PulseState`, `PulseAction`, `PulseEvent`, `PulseViewModel<State, Action, Event>` and
+`PulseContent` in the same package and leaves out the Container, `PulseHost`, Broadcast and Unicast,
+since a phone screen is one ViewModel.
 
 ### Purpose
 
@@ -51,7 +54,8 @@ repository may hold other repositories and the functions a data module exposes.
 - **Clean build**: `./gradlew clean`
 - **Check code quality**: `./gradlew ktlintCheck` (auto-fix with `./gradlew ktlintFormat`)
 - **Test coverage**: `./gradlew koverHtmlReport` (opens at `build/reports/kover/html/index.html`; XML via `koverXmlReport`)
-- **Publish to local Maven**: `./gradlew :library:mvi:publishToMavenLocal :library:navigation:publishToMavenLocal :library:architecture:publishToMavenLocal`
+- **Publish to local Maven**: `./gradlew :library:mvi:publishToMavenLocal :library:navigation:publishToMavenLocal :library:architecture:publishToMavenLocal :library:mvi-android:publishToMavenLocal`
+- **Run the Android tests**: `./gradlew :library:mvi-android:testDebugUnitTest` (`allTests` covers the JVM modules only)
 - **Run the demo**: `./gradlew :demo:app:run`
 
 ## Writing Tests
@@ -78,6 +82,7 @@ Put a test in the source set that matches what it needs.
 | `library/mvi/src/jvmTest` | `PulseViewModel` and `PulseContainer`, and the composables through `createComposeRule()` from `ui-test-junit4` |
 | `library/navigation/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
 | `library/architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
+| `library/mvi-android/src/test` | The Android `PulseViewModel`, and `PulseContent` under Robolectric |
 
 ### Coverage
 
@@ -108,15 +113,20 @@ PulseDesktop/
 │   │   └── src/jvmMain/kotlin/jp/kaleidot725/pulse/navigation/
 │   │       └── PulseNavigation.kt    # rememberPulseViewModel / rememberPulseContainer /
 │   │                                 # rememberPulseNavEntryDecorators
-│   └── architecture/                 # :library:architecture — optional artifact: architecture
+│   ├── architecture/                 # :library:architecture — optional artifact: architecture
+│   │   └── src/
+│   │       ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
+│   │       │   ├── PulseConventions.kt       # assertPulseMviConventions and the checks it runs
+│   │       │   ├── PulseDomainConventions.kt # assertPulseDomainConventions: how repositories hand out data
+│   │       │   ├── PulseKoinConventions.kt   # assertPulseKoinConventions: Koin modules live in the app
+│   │       │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
+│   │       │   └── PulseModuleLayout.kt      # which module names play which layer
+│   │       └── jvmTest/…             # the checks, over conforming and violating fixtures
+│   └── mvi-android/                  # :library:mvi-android — Android artifact: mvi-android
 │       └── src/
-│           ├── jvmMain/kotlin/jp/kaleidot725/pulse/architecture/
-│           │   ├── PulseConventions.kt       # assertPulseMviConventions and the checks it runs
-│           │   ├── PulseDomainConventions.kt # assertPulseDomainConventions: how repositories hand out data
-│           │   ├── PulseKoinConventions.kt   # assertPulseKoinConventions: Koin modules live in the app
-│           │   ├── PulseModuleConventions.kt # assertPulseModuleConventions: multi-module layout
-│           │   └── PulseModuleLayout.kt      # which module names play which layer
-│           └── jvmTest/…             # the checks, over conforming and violating fixtures
+│           ├── main/kotlin/jp/kaleidot725/pulse/mvi/   # the same package as mvi: PulseState, PulseAction,
+│           │                                           # PulseEvent, PulseViewModel and PulseContent
+│           └── test/…                # PulseViewModelTest, PulseContentTest (Robolectric)
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
 │   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and di/:
 │   │   └── src/jvmMain/kotlin/jp/kaleidot725/pulse/demo/   # every Koin module, started in Main
@@ -166,14 +176,15 @@ resources in `commonMain`.
 - **Lifecycle Version**: 2.10.0
 - **Navigation 3 Version**: 1.1.1 (`navigation` module only)
 - **Konsist Version**: 0.17.3 (`architecture` module only)
+- **Android Gradle Plugin**: 8.13.2, compileSdk 36, minSdk 26 (`mvi-android` module only)
 - **JVM Toolchain**: Java 17
 - **Code Style**: Official Kotlin code style with explicit API mode
 
 ## Key Configuration
 
 - Group ID: `com.github.kaleidot725.PulseDesktop` (what JitPack serves for a multi-module repo)
-- Artifact IDs: `mvi`, `navigation`, `architecture` — the projects are `:library:mvi`,
-  `:library:navigation` and `:library:architecture`, and JitPack names an artifact after the project,
+- Artifact IDs: `mvi`, `navigation`, `architecture`, `mvi-android` — the projects are `:library:mvi`,
+  `:library:navigation`, `:library:architecture` and `:library:mvi-android`, and JitPack names an artifact after the project,
   so the `library` directory does not appear in the coordinates
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation`,
   `jp.kaleidot725.pulse.architecture` — one package per artifact, all three beside each other under
