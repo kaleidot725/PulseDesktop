@@ -10,7 +10,7 @@
 fun KoScope.assertPulseMviConventions()
 ```
 
-続く 9 つの検査（`assertStatesAreDataTypes` から `assertComponentsHavePreviews` まで）を順に実行します。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
+続く 12 の検査（`assertStatesAreDataTypes` から `assertSectionsAndComponentsHavePreviews` まで）を順に実行します。何も返さない Composable だけを View として数えるので、`stringResource` でラベルを読むような値を返す Composable は、View の検査の対象外です。最初に失敗した検査で例外が投げられるので、1 回の実行で報告されるのは 1 件です。
 
 ## assertStatesAreDataTypes
 
@@ -35,13 +35,13 @@ fun KoScope.assertMessagesAreSealedOrDataTypes()
 
 `PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast` を実装する型は `sealed class` に、その中の各ケースは `data class` か `data object` にすることを要求します。ケース自体を `sealed class` にしてさらに分けることもでき、その中のケースにも同じルールが適用されます。ケースが 1 つだけのメッセージは、マーカーを直接実装する 1 つの `data class` か `data object` にしてもかまいません。マーカーを直接実装する interface（sealed interface を含む）と、`data` のない class・object は報告されます。
 
-## assertStatesAndMessagesLiveInTheStatePackage
+## assertStatesAndMessagesLiveInContracts
 
 ```kotlin
-fun KoScope.assertStatesAndMessagesLiveInTheStatePackage()
+fun KoScope.assertStatesAndMessagesLiveInContracts()
 ```
 
-`PulseState`・`PulseAction`・`PulseEvent`・`PulseBroadcast`・`PulseUnicast` を直接実装する class・object・interface が、`state` という部分を含むパッケージにあることを要求します。sealed なメッセージの中にネストしたケースは、個別には検査しません。
+`PulseState`、`PulseAction`、`PulseEvent`、`PulseBroadcast`、`PulseUnicast` を直接実装する class・object・interface が、`PulseViewModel` か `PulseContainer` のサブクラスと同じパッケージにある、名前が `Contracts` で終わるファイルに置かれていることを要求します。sealed なメッセージの内側のケースは個別には検査しません。
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 
@@ -59,37 +59,61 @@ fun KoScope.assertViewModelsHoldTheirDataInTheirState()
 
 `PulseViewModel` と `PulseContainer` のサブクラスが `var` プロパティを宣言していないことを要求します。
 
-## assertSectionsBindOneViewModel
+## assertViewModelsLiveInContents
 
 ```kotlin
-fun KoScope.assertSectionsBindOneViewModel()
+fun KoScope.assertViewModelsLiveInContents()
 ```
 
-`section` パッケージ配下の Composable を持つすべてのファイルに `PulseContent` の呼び出しを要求します。判定はファイル単位なので、Section の隣に置かれる stateless なオーバーロードや `@Preview` は問題ありません。
+`PulseViewModel` のサブクラスが、`content` を含み、`section` も `component` も含まないパッケージにあることを要求します。
 
-## assertComponentsAreStateless
+## assertContainersLiveAtTheFeatureRoot
 
 ```kotlin
-fun KoScope.assertComponentsAreStateless()
+fun KoScope.assertContainersLiveAtTheFeatureRoot()
 ```
 
-`component` パッケージ配下のすべての Composable に、型名が `ViewModel` または `Container` で終わる引数がないこと、そしてそのファイルが `PulseContent` も `PulseHost` も呼ばないことを要求します。
+`PulseContainer` のサブクラスが feature のルート、つまり `content` パッケージを持つパッケージにあることを要求します。
 
-## assertScreensComposeSections
+## assertHostsComposeContents
 
 ```kotlin
-fun KoScope.assertScreensComposeSections()
+fun KoScope.assertHostsComposeContents()
 ```
 
-`section` にも `component` にも属さない Composable を持つファイル、つまり Screen に、`PulseContent` を呼ばないことを要求します。
+feature のルートにある Composable を持つファイル、つまり Host に、名前が `Host` で終わることと、`PulseContent` を呼ばないことを要求します。
 
-## assertComponentsHavePreviews
+## assertViewsHaveARole
 
 ```kotlin
-fun KoScope.assertComponentsHavePreviews()
+fun KoScope.assertViewsHaveARole()
 ```
 
-`component` パッケージ配下の public な Composable それぞれに、`<Component>_Preview` または `<Component>_Preview_<条件>` という名前で `@Preview`（パッケージは問わず、名前が `Preview` で始まるマルチプレビュー注釈も含む）が付いた関数があることを要求します。Preview はスコープ全体から探します。private な Composable と Preview 自身は対象外です。
+feature の中でルートより下にある Composable を持つファイルが、`content`・`section`・`component` のどれかの下にあることを要求します。
+
+## assertContentsBindAViewModel
+
+```kotlin
+fun KoScope.assertContentsBindAViewModel()
+```
+
+`content` パッケージ配下で、`section` と `component` の外にある Composable を持つファイルに、`PulseContent` の呼び出しを要求します。
+
+## assertSectionsAndComponentsArePure
+
+```kotlin
+fun KoScope.assertSectionsAndComponentsArePure()
+```
+
+`section` と `component` パッケージ配下のすべての Composable に、型名が `ViewModel` または `Container` で終わる引数がないこと、そしてそのファイルが `PulseContent` も `PulseHost` も呼ばないことを要求します。
+
+## assertSectionsAndComponentsHavePreviews
+
+```kotlin
+fun KoScope.assertSectionsAndComponentsHavePreviews()
+```
+
+`section` と `component` パッケージ配下の public な Composable それぞれに、`<Name>_Preview` または `<Name>_Preview_<条件>` という名前で `@Preview`（パッケージは問わず、名前が `Preview` で始まるマルチプレビュー注釈も含む）が付いた関数があることを要求します。Preview はスコープ全体から探します。private な Composable と Preview 自身は対象外です。
 
 ## assertPulseDomainConventions
 
@@ -152,6 +176,7 @@ fun KoScope.assertPulseModuleConventions(layout: PulseModuleLayout = PulseModule
 | `assertDomainIsFrameworkFree(layout)` | domain は `androidx.compose`、`androidx.lifecycle`、`jp.kaleidot725.pulse.mvi`、`jp.kaleidot725.pulse.navigation`、`jp.kaleidot725.pulse.architecture` から import しない |
 | `assertDomainIsSplitIntoItsPackages(layout)` | domain のファイルは `model`・`repository`・`usecase` のどれかを含むパッケージにある |
 | `assertDataIsSplitIntoItsPackages(layout)` | data のファイルは `repository`・`local`・`model` のどれかを含むパッケージにある |
+| `assertDesignSystemIsSplitByKind(layout)` | designsystem のファイルは、モジュールのディレクトリと同じ名前のパッケージより下にあり、`component`・`widget`・`composable`・`common` のような何でも入る名前のパッケージにない |
 
 ## PulseModuleLayout
 
@@ -234,7 +259,9 @@ fun KoScope.assertComposablesTakeTextFromResources()
 | `pulseMessageInterfaces()` | `List<KoInterfaceDeclaration>` — 4 つのメッセージマーカーのいずれかを実装した interface |
 | `pulseMessageClasses()` | `List<KoClassDeclaration>` — 同じマーカーを実装した class |
 | `pulseMessageObjects()` | `List<KoObjectDeclaration>` — 同じマーカーを実装した object |
-| `pulseScreens()` | `List<KoFileDeclaration>` — `section` と `component` のどちらにも属さない Composable を持つファイル |
+| `pulseFeatureRoots()` | `Set<String>` — `content` パッケージを持つパッケージ。feature ごとに 1 つ |
+| `pulseHosts()` | `List<KoFileDeclaration>` — feature のルートにある Composable を持つファイル |
+| `pulseContents()` | `List<KoFileDeclaration>` — `content` 配下で、`section` と `component` の外にある Composable を持つファイル |
 | `pulseSections()` | `List<KoFileDeclaration>` — `section` 配下の Composable を持つファイル。内側の `component` を除く |
 | `pulseComponents()` | `List<KoFileDeclaration>` — `component` 配下の Composable を持つファイル |
 | `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — 名前が `Repository` で終わる class |

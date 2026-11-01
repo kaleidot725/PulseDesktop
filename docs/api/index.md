@@ -40,18 +40,21 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 
 | Assertion | Description |
 |---|---|
-| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | The next nine checks, in order |
+| [`assertPulseMviConventions`](/api/architecture#assertpulsemviconventions) | The next twelve checks, in order |
 | [`assertStatesAreDataTypes`](/api/architecture#assertstatesaredatatypes) | A `PulseState` is a `data class` or `data object` |
 | [`assertMessagesAreSealedOrDataTypes`](/api/architecture#assertmessagesaresealedordatatypes) | A message is a `sealed class` with `data class` / `data object` cases, or a single `data class` / `data object` |
-| [`assertStatesAndMessagesLiveInTheStatePackage`](/api/architecture#assertstatesandmessagesliveinthestatepackage) | States and messages are in a `state` package |
+| [`assertStatesAndMessagesLiveInContracts`](/api/architecture#assertstatesandmessagesliveincontracts) | States and messages are in a `…Contracts.kt` beside their ViewModel or Container |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` and `…Container` |
 | [`assertViewModelsHoldTheirDataInTheirState`](/api/architecture#assertviewmodelsholdtheirdataintheirstate) | No `var` property on a ViewModel or Container |
-| [`assertSectionsBindOneViewModel`](/api/architecture#assertsectionsbindoneviewmodel) | A section binds its ViewModel with `PulseContent` |
-| [`assertComponentsAreStateless`](/api/architecture#assertcomponentsarestateless) | A component takes data and callbacks only |
-| [`assertScreensComposeSections`](/api/architecture#assertscreenscomposesections) | A screen composes sections instead of binding a ViewModel |
-| [`assertComponentsHavePreviews`](/api/architecture#assertcomponentshavepreviews) | Every component has a `<Component>_Preview` |
+| [`assertViewModelsLiveInContents`](/api/architecture#assertviewmodelsliveincontents) | A ViewModel lives under `content` |
+| [`assertContainersLiveAtTheFeatureRoot`](/api/architecture#assertcontainersliveatthefeatureroot) | A Container lives at the feature root |
+| [`assertHostsComposeContents`](/api/architecture#asserthostscomposecontents) | A host is named `…Host` and composes contents instead of binding a ViewModel |
+| [`assertViewsHaveARole`](/api/architecture#assertviewshavearole) | A composable in a feature is a host, a content, a section or a component |
+| [`assertContentsBindAViewModel`](/api/architecture#assertcontentsbindaviewmodel) | A content binds its ViewModel with `PulseContent` |
+| [`assertSectionsAndComponentsArePure`](/api/architecture#assertsectionsandcomponentsarepure) | Sections and components take data and callbacks only |
+| [`assertSectionsAndComponentsHavePreviews`](/api/architecture#assertsectionsandcomponentshavepreviews) | Every section and component has a `<Name>_Preview` |
 | [`assertPulseDomainConventions`](/api/architecture#assertpulsedomainconventions) | A repository exposes flows and returns `Result<V, E>` from one-shot calls; a use case lives in `usecase` and is more than one line |
-| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks, and the domain and data are split into packages |
+| [`assertPulseModuleConventions`](/api/architecture#assertpulsemoduleconventions) | Modules depend on each other the way Clean Architecture asks, and the domain, data and design system are split into packages |
 | [`assertPulseKoinConventions`](/api/architecture#assertpulsekoinconventions) | Koin modules are declared in the app module |
 | [`assertPulseResourceConventions`](/api/architecture#assertpulseresourceconventions) | The domain holds no text, and composables read their text from string resources |
 | [`PulseModuleLayout`](/api/architecture#pulsemodulelayout) | Which module names play which layer |

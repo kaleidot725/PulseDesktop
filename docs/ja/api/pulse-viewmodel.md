@@ -13,7 +13,7 @@ abstract class PulseViewModel<
 )
 ```
 
-1 画面または 1 セクションの UI 状態を管理する抽象基底クラスです。
+1 つの Content の UI 状態を管理する抽象基底クラスです。
 
 親の Container へメッセージを送る必要があるときは `unicast()` を使います。
 

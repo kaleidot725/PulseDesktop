@@ -10,7 +10,7 @@ For what the checks mean and why they exist, see the [architecture checks guide]
 fun KoScope.assertPulseMviConventions()
 ```
 
-Runs the nine checks that follow, from `assertStatesAreDataTypes` to `assertComponentsHavePreviews`, in order. The first failing check throws, so a run reports one problem at a time.
+Runs the twelve checks that follow, from `assertStatesAreDataTypes` to `assertSectionsAndComponentsHavePreviews`, in order. A composable counts as a view only when it returns nothing; one that returns a value, such as a label read with `stringResource`, is skipped by every view check. The first failing check throws, so a run reports one problem at a time.
 
 ## assertStatesAreDataTypes
 
@@ -35,13 +35,13 @@ fun KoScope.assertMessagesAreSealedOrDataTypes()
 
 Requires the type that implements `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` to be a `sealed class`, and every case inside it to be a `data class` or `data object`. A case may be a `sealed class` of its own, and its cases are held to the same rule. A message with a single case may instead be one `data class` or `data object` that implements the marker directly. An interface, including a sealed interface, or a class or object without `data` implementing a marker directly is reported.
 
-## assertStatesAndMessagesLiveInTheStatePackage
+## assertStatesAndMessagesLiveInContracts
 
 ```kotlin
-fun KoScope.assertStatesAndMessagesLiveInTheStatePackage()
+fun KoScope.assertStatesAndMessagesLiveInContracts()
 ```
 
-Requires every class, object or interface that implements `PulseState`, `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` directly to be in a package with a `state` segment. Cases nested inside a sealed message are not checked on their own.
+Requires every class, object or interface that implements `PulseState`, `PulseAction`, `PulseEvent`, `PulseBroadcast` or `PulseUnicast` directly to be in a file whose name ends with `Contracts`, in the package of a `PulseViewModel` or `PulseContainer` subclass. Cases nested inside a sealed message are not checked on their own.
 
 ## assertViewModelsAndContainersAreNamedAfterTheirBase
 
@@ -59,37 +59,61 @@ fun KoScope.assertViewModelsHoldTheirDataInTheirState()
 
 Requires every `PulseViewModel` and `PulseContainer` subclass to declare no `var` property.
 
-## assertSectionsBindOneViewModel
+## assertViewModelsLiveInContents
 
 ```kotlin
-fun KoScope.assertSectionsBindOneViewModel()
+fun KoScope.assertViewModelsLiveInContents()
 ```
 
-Requires every file with a composable under a `section` package to call `PulseContent`. The check is per file, so the stateless overload and the `@Preview` beside a section are fine.
+Requires every `PulseViewModel` subclass to be in a package with a `content` segment and with neither a `section` nor a `component` segment.
 
-## assertComponentsAreStateless
+## assertContainersLiveAtTheFeatureRoot
 
 ```kotlin
-fun KoScope.assertComponentsAreStateless()
+fun KoScope.assertContainersLiveAtTheFeatureRoot()
 ```
 
-Requires every composable under a `component` package to take no parameter whose type name ends in `ViewModel` or `Container`, and the file to call neither `PulseContent` nor `PulseHost`.
+Requires every `PulseContainer` subclass to be in a feature root, a package that a `content` package sits in.
 
-## assertScreensComposeSections
+## assertHostsComposeContents
 
 ```kotlin
-fun KoScope.assertScreensComposeSections()
+fun KoScope.assertHostsComposeContents()
 ```
 
-Requires every file with a composable outside both a `section` and a `component` package — a screen — not to call `PulseContent`.
+Requires every file with a composable in a feature root — a host — to have a name ending in `Host`, and not to call `PulseContent`.
 
-## assertComponentsHavePreviews
+## assertViewsHaveARole
 
 ```kotlin
-fun KoScope.assertComponentsHavePreviews()
+fun KoScope.assertViewsHaveARole()
 ```
 
-Requires every public composable under a `component` package to have a function annotated `@Preview` — from any package, or a multipreview annotation whose name starts with `Preview` — named `<Component>_Preview` or `<Component>_Preview_<Condition>`. Previews are looked for across the whole scope. Private composables and the previews themselves are skipped.
+Requires every file with a composable inside a feature, below its root, to be under a `content`, `section` or `component` package.
+
+## assertContentsBindAViewModel
+
+```kotlin
+fun KoScope.assertContentsBindAViewModel()
+```
+
+Requires every file with a composable under a `content` package, outside its `section` and `component` packages, to call `PulseContent`.
+
+## assertSectionsAndComponentsArePure
+
+```kotlin
+fun KoScope.assertSectionsAndComponentsArePure()
+```
+
+Requires every composable under a `section` or `component` package to take no parameter whose type name ends in `ViewModel` or `Container`, and the file to call neither `PulseContent` nor `PulseHost`.
+
+## assertSectionsAndComponentsHavePreviews
+
+```kotlin
+fun KoScope.assertSectionsAndComponentsHavePreviews()
+```
+
+Requires every public composable under a `section` or `component` package to have a function annotated `@Preview` — from any package, or a multipreview annotation whose name starts with `Preview` — named `<Name>_Preview` or `<Name>_Preview_<Condition>`. Previews are looked for across the whole scope. Private composables and the previews themselves are skipped.
 
 ## assertPulseDomainConventions
 
@@ -152,6 +176,7 @@ Runs every module check below with the same layout. Dependencies are the modules
 | `assertDomainIsFrameworkFree(layout)` | the domain imports nothing from `androidx.compose`, `androidx.lifecycle`, `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation` or `jp.kaleidot725.pulse.architecture` |
 | `assertDomainIsSplitIntoItsPackages(layout)` | every domain file is in a package with a `model`, `repository` or `usecase` segment |
 | `assertDataIsSplitIntoItsPackages(layout)` | every data file is in a package with a `repository`, `local` or `model` segment |
+| `assertDesignSystemIsSplitByKind(layout)` | every design system file is in a package below the one named after the module's directory, and none of its packages is a catch-all such as `component`, `widget`, `composable` or `common` |
 
 ## PulseModuleLayout
 
@@ -234,7 +259,9 @@ The queries are the building blocks of the assertions above, and of rules a proj
 | `pulseMessageInterfaces()` | `List<KoInterfaceDeclaration>` — interfaces implementing one of the four message markers |
 | `pulseMessageClasses()` | `List<KoClassDeclaration>` — classes implementing one of the four message markers |
 | `pulseMessageObjects()` | `List<KoObjectDeclaration>` — objects implementing one of the four message markers |
-| `pulseScreens()` | `List<KoFileDeclaration>` — files with a composable outside a `section` and a `component` package |
+| `pulseFeatureRoots()` | `Set<String>` — the packages a `content` package sits in, one per feature |
+| `pulseHosts()` | `List<KoFileDeclaration>` — files with a composable in a feature root |
+| `pulseContents()` | `List<KoFileDeclaration>` — files with a composable under a `content` package, outside its `section` and `component` packages |
 | `pulseSections()` | `List<KoFileDeclaration>` — files with a composable under a `section` package, components inside it excluded |
 | `pulseComponents()` | `List<KoFileDeclaration>` — files with a composable under a `component` package |
 | `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — classes whose name ends with `Repository` |

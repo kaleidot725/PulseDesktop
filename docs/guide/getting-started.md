@@ -15,7 +15,10 @@ dependencies {
 
 ## 1. Define State, Action, Event, Broadcast, and Unicast
 
-Start by defining the five types that describe your feature:
+Start by defining the five types that describe your feature. They live in Contracts files beside
+the class that uses them: State, Action and Event in `content/counter/CounterContentContracts.kt`
+beside the ViewModel, and Broadcast and Unicast in `CounterContracts.kt` beside the Container. They
+are shown together here:
 
 ```kotlin
 // State: the UI data rendered by your Composable
@@ -110,20 +113,21 @@ fun main() = application {
             val viewModel = rememberPulseViewModel { CounterViewModel(CounterRepository()) }
             val container = rememberPulseContainer { CounterContainer(viewModels = listOf(viewModel)) }
 
-            CounterScreen(container = container, viewModel = viewModel)
+            CounterHost(container = container, viewModel = viewModel)
         }
     }
 }
 ```
 
-### Screen composable
+### Host composable
 
-The screen is what the route shows, and it sits at the root of the feature package. It wraps the
-layout with `PulseHost` to enable refresh and broadcast, and places the sections inside:
+The host is what the route shows. It sits at the root of the feature package in a file named
+`CounterHost.kt`, beside `CounterContainer`, wraps the layout with `PulseHost` to enable refresh and
+broadcast, and places the contents inside:
 
 ```kotlin
 @Composable
-fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
+fun CounterHost(container: CounterContainer, viewModel: CounterViewModel) {
     PulseHost(container = container) { onRefresh, onBroadcast ->
         Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(modifier = Modifier.align(Alignment.TopEnd)) {
@@ -143,10 +147,11 @@ fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
 }
 ```
 
-### Section composable
+### Content composable
 
-A section is the part one ViewModel answers for, and it lives in a `section` package. It binds that
-ViewModel with `PulseContent`, which observes the state and handles the events:
+A content is the part one ViewModel answers for, and it lives in `content/counter`, beside
+`CounterViewModel`. It binds that ViewModel with `PulseContent`, which observes the state and
+handles the events:
 
 ```kotlin
 @Composable
@@ -214,7 +219,7 @@ fun main() = application {
                             val viewModel = rememberPulseViewModel { CounterViewModel(CounterRepository()) }
                             val container = rememberPulseContainer { CounterContainer(viewModels = listOf(viewModel)) }
 
-                            CounterScreen(container = container, viewModel = viewModel)
+                            CounterHost(container = container, viewModel = viewModel)
                         }
                     },
             )
