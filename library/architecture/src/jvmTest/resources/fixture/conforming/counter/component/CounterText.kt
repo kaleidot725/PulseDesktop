@@ -1,4 +1,4 @@
-package fixture.conforming.counter.text
+package fixture.conforming.counter.component
 
 import androidx.compose.runtime.Composable
 

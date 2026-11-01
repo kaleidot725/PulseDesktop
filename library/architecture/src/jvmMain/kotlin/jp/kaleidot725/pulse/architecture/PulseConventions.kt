@@ -54,7 +54,8 @@ import jp.kaleidot725.pulse.mvi.PulseViewModel
  * ```
  *
  * The packages decide the roles and the names are free, except for the host, whose file is named `…Host`. The root of a
- * feature is the package its `content` package sits in.
+ * feature is the package its `content` package sits in, and `content`, `section` and `component` are the only packages
+ * under it.
  *
  * Each check is also public on its own, so a project that disagrees with one can call the rest.
  */
@@ -67,7 +68,7 @@ public fun KoScope.assertPulseMviConventions() {
     assertViewModelsLiveInContents()
     assertContainersLiveAtTheFeatureRoot()
     assertHostsComposeContents()
-    assertViewsHaveARole()
+    assertFeaturePackagesHaveARole()
     assertContentsBindAViewModel()
     assertSectionsAndComponentsArePure()
     assertSectionsAndComponentsHavePreviews()
@@ -222,11 +223,28 @@ public fun KoScope.assertHostsComposeContents() {
 }
 
 /**
- * Inside a feature, a composable is the host at its root or sits under a `content`, `section` or `component` package.
+ * Inside a feature, every file sits at its root or under a `content`, `section` or `component` package.
  *
- * Those four are the only roles, so a composable in any other package of a feature is one whose role nobody decided. A
- * composable that returns a value, such as a label read with `stringResource`, draws nothing and may live anywhere.
+ * Those are the only packages a feature has, so a reader knows where to look before opening one. A package of its own,
+ * such as `text` for the labels a feature reads, is one more place nobody decided on; a pure helper the whole feature
+ * uses, composable or not, belongs in `component`. Code a build generates, such as the `Res` class of Compose resources,
+ * is not the feature's own and is skipped.
  */
+public fun KoScope.assertFeaturePackagesHaveARole() {
+    val roots = pulseFeatureRoots()
+    files
+        .filter { file -> !file.isGenerated && roots.any { root -> file.packagee?.name?.startsWith("$root.") == true } }
+        .assertTrue(
+            testName = "files in a feature are at its root or under content, section or component",
+            additionalMessage = "Move the file into a `content`, `section` or `component` package.",
+        ) { it.isContent || it.isPure }
+}
+
+/** Inside a feature, a composable is the host at its root or sits under a `content`, `section` or `component` package. */
+@Deprecated(
+    "Checks only composables; assertFeaturePackagesHaveARole checks every file of a feature.",
+    ReplaceWith("assertFeaturePackagesHaveARole()"),
+)
 public fun KoScope.assertViewsHaveARole() {
     val roots = pulseFeatureRoots()
     viewFiles()
@@ -345,6 +363,10 @@ internal fun KoScope.viewFiles(): List<KoFileDeclaration> = files.filter { it.vi
 /** The composables that return nothing, which are the ones that draw; one that returns a value is a template. */
 internal fun KoFileDeclaration.views(): List<KoFunctionDeclaration> =
     composables().filter { it.returnType?.name.let { type -> type == null || type == "Unit" } }
+
+/** Under a `build/generated` directory, where Gradle plugins write the code they generate. */
+private val KoFileDeclaration.isGenerated: Boolean
+    get() = path.replace('\\', '/').contains("/build/generated/")
 
 private val KoFileDeclaration.isPure: Boolean
     get() = hasPackage("..section..") || hasPackage("..component..")
