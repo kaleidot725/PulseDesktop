@@ -22,23 +22,19 @@ kotlin {
     jvmToolchain(17)
 
     sourceSets {
-        val commonMain by getting {
+        val jvmMain by getting {
             dependencies {
                 api("org.jetbrains.compose.runtime:runtime:1.10.1")
                 api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.10.0")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
             }
         }
-        val commonTest by getting {
+        val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-            }
-            val jvmTest by getting {
-                dependencies {
-                    implementation(compose.desktop.currentOs)
-                    implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.1")
-                }
+                implementation(compose.desktop.currentOs)
+                implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.1")
             }
         }
     }

@@ -9,7 +9,7 @@ kotlin {
     jvmToolchain(17)
 
     sourceSets {
-        val commonMain by getting {
+        val jvmMain by getting {
             dependencies {
                 implementation("org.jetbrains.compose.foundation:foundation:1.10.1")
                 implementation("org.jetbrains.compose.material3:material3:1.9.0")

@@ -7,7 +7,7 @@ kotlin {
     jvmToolchain(17)
 
     sourceSets {
-        val commonMain by getting {
+        val jvmMain by getting {
             dependencies {
                 implementation(project(":demo:core:domain"))
                 api("androidx.datastore:datastore-preferences-core:1.3.0")

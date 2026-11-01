@@ -20,7 +20,6 @@ kotlin {
     jvmToolchain(17)
 
     sourceSets {
-        // Konsist publishes a JVM artifact only, so the assertions cannot live in commonMain.
         val jvmMain by getting {
             dependencies {
                 api(project(":library:mvi"))

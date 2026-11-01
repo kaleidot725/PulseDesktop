@@ -9,7 +9,7 @@ kotlin {
     jvmToolchain(17)
 
     sourceSets {
-        val commonMain by getting {
+        val jvmMain by getting {
             dependencies {
                 implementation(project(":demo:core:domain"))
                 implementation(project(":demo:core:designsystem"))
@@ -30,4 +30,5 @@ kotlin {
 
 compose.resources {
     packageOfResClass = "jp.kaleidot725.pulse.demo.count.resources"
+    generateResClass = always
 }
