@@ -70,8 +70,7 @@ Put a test in the source set that matches what it needs.
 
 | Source set | Use it for |
 |---|---|
-| `library/mvi/src/commonTest` | `PulseViewModel` and `PulseContainer` — anything that needs no composition |
-| `library/mvi/src/jvmTest` | The composables, through `createComposeRule()` from `ui-test-junit4` |
+| `library/mvi/src/jvmTest` | `PulseViewModel` and `PulseContainer`, and the composables through `createComposeRule()` from `ui-test-junit4` |
 | `library/navigation/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
 | `library/architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
 
@@ -90,7 +89,7 @@ PulseDesktop/
 ├── library/                          # Everything published; each module is one artifact
 │   ├── mvi/                          # :library:mvi — core artifact: mvi
 │   │   └── src/
-│   │       ├── commonMain/kotlin/jp/kaleidot725/pulse/mvi/
+│   │       ├── jvmMain/kotlin/jp/kaleidot725/pulse/mvi/
 │   │       │   ├── PulseState.kt     # Marker interface for state
 │   │       │   ├── PulseAction.kt    # Marker interface for actions
 │   │       │   ├── PulseEvent.kt     # Marker interface for one-time events
@@ -99,9 +98,9 @@ PulseDesktop/
 │   │       │   ├── PulseViewModel.kt # Abstract ViewModel: state, actions, events, unicast
 │   │       │   ├── PulseContainer.kt # Coordinates ViewModels: broadcast, refresh, close
 │   │       │   └── PulseContent.kt   # PulseHost and PulseContent composables
-│   │       └── commonTest/kotlin/…   # PulseViewModelTest, PulseContainerTest
+│   │       └── jvmTest/kotlin/…      # PulseViewModelTest, PulseContainerTest, PulseContentTest
 │   ├── navigation/                   # :library:navigation — optional artifact: navigation
-│   │   └── src/commonMain/kotlin/jp/kaleidot725/pulse/navigation/
+│   │   └── src/jvmMain/kotlin/jp/kaleidot725/pulse/navigation/
 │   │       └── PulseNavigation.kt    # rememberPulseViewModel / rememberPulseContainer /
 │   │                                 # rememberPulseNavEntryDecorators
 │   └── architecture/                 # :library:architecture — optional artifact: architecture
@@ -115,7 +114,7 @@ PulseDesktop/
 │           └── jvmTest/…             # the checks, over conforming and violating fixtures
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
 │   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and di/:
-│   │   └── src/{commonMain,jvmMain}/kotlin/jp/kaleidot725/pulse/demo/   # every Koin module, started in Main
+│   │   └── src/jvmMain/kotlin/jp/kaleidot725/pulse/demo/   # every Koin module, started in Main
 │   │       ├── DemoApp.kt
 │   │       └── Main.kt
 │   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
@@ -126,7 +125,7 @@ PulseDesktop/
 │                                     # the counts through the domain use cases, never core/data.
 │                                     # It resolves its ViewModels from Koin; rememberPulseViewModel
 │                                     # still decides how long they live
-│       └── src/commonMain/kotlin/jp/kaleidot725/pulse/demo/count/
+│       └── src/jvmMain/kotlin/jp/kaleidot725/pulse/demo/count/
 │           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
 │           ├── PulseCountContainer.kt
 │           ├── component/            # Stateless composables of the screen
@@ -146,9 +145,10 @@ PulseDesktop/
 └── gradle.properties
 ```
 
-Sources sit in `commonMain` even though `jvm()` is the only target. Keeping the source set makes
-re-adding a target a build-file change rather than a file move. The exception is `architecture`,
-whose sources are in `jvmMain` because Konsist publishes a JVM artifact only.
+Sources sit in `jvmMain` and tests in `jvmTest`, because `jvm()` is the only target: with no second
+platform, `commonMain` would be a layer with nothing on the other side. A module with compose
+resources sets `generateResClass = always`, since the plugin generates `Res` on its own only for
+resources in `commonMain`.
 
 ## Technical Details
 
