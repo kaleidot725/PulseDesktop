@@ -15,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.designsystem.card.PulseCard
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
+import jp.kaleidot725.pulse.demo.count.component.label
 import jp.kaleidot725.pulse.demo.count.content.area.PulseAreaState
-import jp.kaleidot725.pulse.demo.count.resource.label
 import jp.kaleidot725.pulse.demo.count.resources.Res
 import jp.kaleidot725.pulse.demo.count.resources.setup_count
 import org.jetbrains.compose.resources.stringResource

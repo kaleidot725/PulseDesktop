@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseArea
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.component.PulseCountHeader
+import jp.kaleidot725.pulse.demo.count.component.label
 import jp.kaleidot725.pulse.demo.count.content.area.PulseAreaContent
 import jp.kaleidot725.pulse.demo.count.content.area.PulseAreaViewModel
-import jp.kaleidot725.pulse.demo.count.resource.label
 import jp.kaleidot725.pulse.demo.count.resources.Res
 import jp.kaleidot725.pulse.demo.count.resources.charged
 import jp.kaleidot725.pulse.mvi.PulseHost

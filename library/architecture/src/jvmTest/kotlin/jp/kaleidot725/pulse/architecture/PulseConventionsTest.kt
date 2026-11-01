@@ -151,13 +151,26 @@ class PulseConventionsTest {
     }
 
     /**
-     * A composable in a package of the feature that is none of the four roles is one nobody placed; a composable that
-     * only returns a value, such as the conforming fixture's `countLabel`, passes.
+     * A package of its own inside a feature, such as `text`, is one more place nobody decided on, whether it holds a
+     * composable or only a helper; the conforming fixture keeps its `countLabel` in `component` and passes.
      */
     @Test
-    fun `reports a composable in a feature without a role`() {
+    fun `reports a file in a feature package without a role`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertFeaturePackagesHaveARole() }
+        assertMessageMentions(failure, "StrayView")
+        assertMessageMentions(failure, "StrayLabels")
+    }
+
+    /**
+     * The check [assertFeaturePackagesHaveARole] replaces still reports a stray composable for a project that calls it,
+     * and only the composable: a helper beside it is the newer check's to catch.
+     */
+    @Suppress("DEPRECATION")
+    @Test
+    fun `still reports a stray composable through the deprecated role check`() {
         val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertViewsHaveARole() }
         assertMessageMentions(failure, "StrayView")
+        check(!failure.message.orEmpty().contains("StrayLabels")) { "Expected only composables, but it said: ${failure.message}" }
     }
 
     /**

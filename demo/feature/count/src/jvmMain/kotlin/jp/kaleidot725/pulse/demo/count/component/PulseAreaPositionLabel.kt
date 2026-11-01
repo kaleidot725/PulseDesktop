@@ -1,4 +1,4 @@
-package jp.kaleidot725.pulse.demo.count.resource
+package jp.kaleidot725.pulse.demo.count.component
 
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseAreaPosition
 import jp.kaleidot725.pulse.demo.count.resources.Res
