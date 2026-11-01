@@ -23,8 +23,11 @@ jobs:
         with:
           ruby-version: '3'
       - name: Install danger
+        # danger asks for git >= 1.13 with no upper bound, and git 6 no longer defines Git::Base where danger reads it.
+        # Installing git 5 first and danger with --conservative keeps it.
         run: |
-          gem install danger danger-junit danger-checkstyle_format
+          gem install git -v 5.6.0
+          gem install --conservative danger danger-junit danger-checkstyle_format
       - name: Run test
         run: |
           ./gradlew allTests
