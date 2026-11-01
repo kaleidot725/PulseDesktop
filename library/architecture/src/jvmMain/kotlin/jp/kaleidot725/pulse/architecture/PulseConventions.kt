@@ -35,18 +35,42 @@ import jp.kaleidot725.pulse.mvi.PulseViewModel
  * }
  * ```
  *
+ * A feature is laid out as a **host**, the **contents** under it, and the **sections** and **components** they draw with:
+ *
+ * ```
+ * counter/
+ * ├── CounterHost.kt          # creates the ViewModels and the Container, lays the contents out
+ * ├── CounterContainer.kt
+ * ├── CounterContracts.kt     # the Container's broadcasts and unicasts
+ * ├── content/
+ * │   └── total/
+ * │       ├── TotalContent.kt     # binds TotalViewModel with PulseContent
+ * │       ├── TotalViewModel.kt
+ * │       ├── TotalContracts.kt   # the ViewModel's state, actions and events
+ * │       ├── section/            # pure composables only this content draws with
+ * │       └── component/
+ * ├── section/                # pure: a part of the screen, drawn from a state and callbacks
+ * └── component/              # pure: a small building block
+ * ```
+ *
+ * The packages decide the roles and the names are free, except for the host, whose file is named `…Host`. The root of a
+ * feature is the package its `content` package sits in.
+ *
  * Each check is also public on its own, so a project that disagrees with one can call the rest.
  */
 public fun KoScope.assertPulseMviConventions() {
     assertStatesAreDataTypes()
     assertMessagesAreSealedOrDataTypes()
-    assertStatesAndMessagesLiveInTheStatePackage()
+    assertStatesAndMessagesLiveInContracts()
     assertViewModelsAndContainersAreNamedAfterTheirBase()
     assertViewModelsHoldTheirDataInTheirState()
-    assertSectionsBindOneViewModel()
-    assertComponentsAreStateless()
-    assertScreensComposeSections()
-    assertComponentsHavePreviews()
+    assertViewModelsLiveInContents()
+    assertContainersLiveAtTheFeatureRoot()
+    assertHostsComposeContents()
+    assertViewsHaveARole()
+    assertContentsBindAViewModel()
+    assertSectionsAndComponentsArePure()
+    assertSectionsAndComponentsHavePreviews()
 }
 
 /**
@@ -103,18 +127,21 @@ public fun KoScope.assertMessagesAreSealedOrDataTypes() {
 }
 
 /**
- * A [PulseState], [PulseAction], [PulseEvent], [PulseBroadcast] or [PulseUnicast] lives in a `state` package.
+ * A [PulseState], [PulseAction], [PulseEvent], [PulseBroadcast] or [PulseUnicast] lives in a `…Contracts.kt` file in the
+ * package of a ViewModel or a Container.
  *
- * These types are what a ViewModel and its Container agree on, and a reader looks for them in one place: beside the
- * ViewModel of a section, in `…section/foo/state`, or beside the Container of a screen, in `…/state`. Only the type
- * that implements the marker is checked; the cases inside a sealed class are in the same file.
+ * These types are what a ViewModel or a Container agrees on with the UI and with each other, so a reader finds them in
+ * one file beside the class that uses them: `TotalContracts.kt` beside `TotalViewModel`, `CounterContracts.kt` beside
+ * `CounterContainer`. Only the type that implements the marker is checked; the cases inside a sealed class are in the
+ * same file.
  */
-public fun KoScope.assertStatesAndMessagesLiveInTheStatePackage() {
+public fun KoScope.assertStatesAndMessagesLiveInContracts() {
+    val owners = (pulseViewModels() + pulseContainers()).mapNotNull { it.containingFile.packagee?.name }.toSet()
     (pulseStateClasses() + pulseStateObjects() + pulseMessageInterfaces() + pulseMessageClasses() + pulseMessageObjects())
         .assertTrue(
-            testName = "states and messages live in a state package",
-            additionalMessage = "Move the type into the `state` package beside the ViewModel or Container that uses it.",
-        ) { it.resideInPackage("..state..") }
+            testName = "states and messages live in a Contracts file beside their ViewModel or Container",
+            additionalMessage = "Move the type into the `…Contracts.kt` file beside the ViewModel or Container that uses it.",
+        ) { it.containingFile.name.endsWith("Contracts") && it.containingFile.packagee?.name in owners }
 }
 
 /**
@@ -149,91 +176,145 @@ public fun KoScope.assertViewModelsHoldTheirDataInTheirState() {
 }
 
 /**
- * A composable under a `section` package binds a ViewModel with [PulseContent].
+ * A [PulseViewModel] lives under a `content` package, outside its `section` and `component` packages.
  *
- * A section is the piece of a screen that one ViewModel answers for: it takes the ViewModel, hands the state and
- * `onAction` down to components, and is the only place the two meet. A file in a `section` package that never calls
- * [PulseContent] is either a component in the wrong package or a section that reads its ViewModel directly.
- *
- * The check is per file, so the stateless overload and the `@Preview` that usually sit beside a section are fine.
+ * A ViewModel answers for one content, so it sits beside the composable that binds it, and the sections and components
+ * below it never see it.
  */
-public fun KoScope.assertSectionsBindOneViewModel() {
-    pulseSections().assertTrue(
-        testName = "sections bind their ViewModel with PulseContent",
-        additionalMessage = "Call `PulseContent` here, or move this composable to a `component` package.",
+public fun KoScope.assertViewModelsLiveInContents() {
+    pulseViewModels().assertTrue(
+        testName = "ViewModels live in a content package",
+        additionalMessage = "Move the ViewModel into `content/<name>`, beside the content that binds it.",
+    ) { it.containingFile.isContent }
+}
+
+/**
+ * A [PulseContainer] lives at the root of a feature, the package its `content` package sits in.
+ *
+ * The Container coordinates every ViewModel of the feature, so it sits beside the host that creates it rather than in
+ * any one content.
+ */
+public fun KoScope.assertContainersLiveAtTheFeatureRoot() {
+    val roots = pulseFeatureRoots()
+    pulseContainers().assertTrue(
+        testName = "Containers live at the root of their feature",
+        additionalMessage = "Move the Container beside the host, in the package that holds `content`.",
+    ) { it.containingFile.packagee?.name in roots }
+}
+
+/**
+ * A composable at the root of a feature is its host: the file is named `…Host` and binds no ViewModel itself.
+ *
+ * The host is what a route shows. It creates the ViewModels and the Container, passes the Container's `refresh` and
+ * `broadcast` around, and lays the contents out. Binding a ViewModel there instead of in a content is what grows it into
+ * the file that knows everything.
+ */
+public fun KoScope.assertHostsComposeContents() {
+    pulseHosts().assertTrue(
+        testName = "hosts are named Host",
+        additionalMessage = "Name the file `…Host`, or move the composable into `content`, `section` or `component`.",
+    ) { it.name.endsWith("Host") }
+
+    pulseHosts().assertTrue(
+        testName = "hosts compose contents instead of binding a ViewModel",
+        additionalMessage = "Move the `PulseContent` call into a composable under a `content` package.",
+    ) { !it.text.contains("PulseContent(") }
+}
+
+/**
+ * Inside a feature, a composable is the host at its root or sits under a `content`, `section` or `component` package.
+ *
+ * Those four are the only roles, so a composable in any other package of a feature is one whose role nobody decided. A
+ * composable that returns a value, such as a label read with `stringResource`, draws nothing and may live anywhere.
+ */
+public fun KoScope.assertViewsHaveARole() {
+    val roots = pulseFeatureRoots()
+    viewFiles()
+        .filter { file -> roots.any { root -> file.packagee?.name?.startsWith("$root.") == true } }
+        .assertTrue(
+            testName = "composables in a feature are a host, a content, a section or a component",
+            additionalMessage = "Move the composable into a `content`, `section` or `component` package.",
+        ) { it.isContent || it.isPure }
+}
+
+/**
+ * A composable under a `content` package binds a ViewModel with [PulseContent].
+ *
+ * A content is the part of a screen that one ViewModel answers for, and the only place a ViewModel and the UI meet: it
+ * takes the ViewModel and hands the state and `onAction` to a section. A content that never calls [PulseContent] is a
+ * section in the wrong package.
+ */
+public fun KoScope.assertContentsBindAViewModel() {
+    pulseContents().assertTrue(
+        testName = "contents bind their ViewModel with PulseContent",
+        additionalMessage = "Call `PulseContent` here, or move this composable to a `section` or `component` package.",
     ) { it.text.contains("PulseContent(") }
 }
 
 /**
- * A composable under a `component` package takes no ViewModel and binds nothing.
+ * A composable under a `section` or `component` package takes no ViewModel and binds nothing.
  *
- * Components are the leaves: they take data and callbacks, which is what makes them reusable between sections and
- * previewable on their own. A ViewModel parameter ties a component to one section, and a [PulseContent] inside one hides
- * a second binding where nobody looks for it.
+ * Sections and components are pure: they take data and callbacks, which is what makes them previewable on their own. A
+ * section draws a part of the screen from one content's state and a component is a small building block; the checks
+ * are the same and only the role differs. Either may live at the root of a feature or inside one content.
  */
-public fun KoScope.assertComponentsAreStateless() {
-    pulseComponents().assertTrue(
-        testName = "components take no ViewModel or Container",
-        additionalMessage = "Pass the state and the callbacks the component needs instead of the ViewModel.",
-    ) { file -> file.composables().none { it.hasViewModelOrContainerParameter() } }
+public fun KoScope.assertSectionsAndComponentsArePure() {
+    val pure = pulseSections() + pulseComponents()
+    pure.assertTrue(
+        testName = "sections and components take no ViewModel or Container",
+        additionalMessage = "Pass the state and the callbacks it needs instead of the ViewModel.",
+    ) { file -> file.views().none { it.hasViewModelOrContainerParameter() } }
 
-    pulseComponents().assertTrue(
-        testName = "components do not bind a ViewModel themselves",
-        additionalMessage = "Move the `PulseContent` or `PulseHost` call to the section or the screen above.",
-    ) { it.text.contains("PulseContent(").not() && it.text.contains("PulseHost(").not() }
+    pure.assertTrue(
+        testName = "sections and components do not bind a ViewModel",
+        additionalMessage = "Move the `PulseContent` or `PulseHost` call to the content or the host above.",
+    ) { !it.text.contains("PulseContent(") && !it.text.contains("PulseHost(") }
 }
 
 /**
- * A screen composes sections rather than binding a ViewModel itself.
- *
- * A screen is what a route shows: it creates the ViewModels and the Container, lays the sections out, and passes the
- * Container's `refresh` and `broadcast` around. Binding a ViewModel there instead of in a section is what grows a screen
- * into the file that knows everything.
- *
- * Screens are recognised by where they are not: a composable that is in neither a `section` nor a `component` package.
- */
-public fun KoScope.assertScreensComposeSections() {
-    pulseScreens().assertTrue(
-        testName = "screens compose sections instead of binding a ViewModel",
-        additionalMessage = "Move the `PulseContent` call into a composable under a `section` package.",
-    ) { it.text.contains("PulseContent(").not() }
-}
-
-/**
- * Every file with a composable under a `section` package, except those under a `component` package inside it.
- *
- * A component that belongs to one section usually lives next to it, in `…section/foo/component`. Being a component wins:
- * it is checked as one, not as the section around it.
- */
-public fun KoScope.pulseSections(): List<KoFileDeclaration> =
-    composableFiles().filter { it.hasPackage("..section..") && !it.hasPackage("..component..") }
-
-/**
- * Every component has a preview named `<Component>_Preview`, or `<Component>_Preview_<Condition>` for the state it
+ * Every section and component has a preview named `<Name>_Preview`, or `<Name>_Preview_<Condition>` for the state it
  * shows — `PulseTextButton_Preview` or `PulseTextButton_Preview_Disabled`.
  *
- * A component takes data and callbacks only, so a preview is all it needs to be seen on its own, and the preview is
- * the first thing that breaks when the component does. One matching preview is enough; a component with several states
- * can have one per condition. The name ties the preview to its component, so a renamed component shows up here when
- * its preview is left behind. Private composables and the previews themselves are not components.
+ * A section or a component takes data and callbacks only, so a preview is all it needs to be seen on its own, and the
+ * preview is the first thing that breaks when it does. One matching preview is enough; one with several states can have
+ * one per condition. The name ties the preview to what it shows, so a rename shows up here when the preview is left
+ * behind. Private composables, composables that return a value, and the previews themselves are not counted.
  */
-public fun KoScope.assertComponentsHavePreviews() {
+public fun KoScope.assertSectionsAndComponentsHavePreviews() {
     val previews = functions().filter { it.isPreview }.map { it.name }
-    pulseComponents()
-        .flatMap { file -> file.composables() }
+    (pulseSections() + pulseComponents())
+        .flatMap { file -> file.views() }
         .filter { !it.isPreview && !it.hasPrivateModifier }
         .assertTrue(
-            testName = "components have previews",
-            additionalMessage = "Add a @Preview named `<Component>_Preview`, or `<Component>_Preview_<Condition>`.",
-        ) { component -> previews.any { it.isPreviewNameOf(component.name) } }
+            testName = "sections and components have previews",
+            additionalMessage = "Add a @Preview named `<Name>_Preview`, or `<Name>_Preview_<Condition>`.",
+        ) { view -> previews.any { it.isPreviewNameOf(view.name) } }
 }
 
-/** Every file with a composable under a `component` package. */
-public fun KoScope.pulseComponents(): List<KoFileDeclaration> = composableFiles().filter { it.hasPackage("..component..") }
+/** The packages a `content` package sits in: the root of each feature. */
+public fun KoScope.pulseFeatureRoots(): Set<String> =
+    files
+        .mapNotNull { file ->
+            val packages = file.packagee?.name?.split('.') ?: return@mapNotNull null
+            val content = packages.indexOf("content")
+            if (content > 0) packages.take(content).joinToString(".") else null
+        }.toSet()
 
-/** Every file with a composable outside a `section` or a `component` package. */
-public fun KoScope.pulseScreens(): List<KoFileDeclaration> =
-    composableFiles().filter { !it.hasPackage("..section..") && !it.hasPackage("..component..") }
+/** Every file with a composable at the root of a feature. */
+public fun KoScope.pulseHosts(): List<KoFileDeclaration> {
+    val roots = pulseFeatureRoots()
+    return viewFiles().filter { it.packagee?.name in roots }
+}
+
+/** Every file with a composable under a `content` package, outside its `section` and `component` packages. */
+public fun KoScope.pulseContents(): List<KoFileDeclaration> = viewFiles().filter { it.isContent }
+
+/** Every file with a composable under a `section` package, except those under a `component` package inside it. */
+public fun KoScope.pulseSections(): List<KoFileDeclaration> =
+    viewFiles().filter { it.hasPackage("..section..") && !it.hasPackage("..component..") }
+
+/** Every file with a composable under a `component` package. */
+public fun KoScope.pulseComponents(): List<KoFileDeclaration> = viewFiles().filter { it.hasPackage("..component..") }
 
 /** Every class that extends [PulseViewModel] directly. */
 public fun KoScope.pulseViewModels(): List<KoClassDeclaration> = classes().withParentOf(PulseViewModel::class)
@@ -257,6 +338,19 @@ public fun KoScope.pulseMessageClasses(): List<KoClassDeclaration> = classes().w
 public fun KoScope.pulseMessageObjects(): List<KoObjectDeclaration> = objects().withParentOf(messageMarkers)
 
 internal fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
+
+/** Files with a composable that draws, as opposed to one that only returns a value. */
+internal fun KoScope.viewFiles(): List<KoFileDeclaration> = files.filter { it.views().isNotEmpty() }
+
+/** The composables that return nothing, which are the ones that draw; one that returns a value is a template. */
+internal fun KoFileDeclaration.views(): List<KoFunctionDeclaration> =
+    composables().filter { it.returnType?.name.let { type -> type == null || type == "Unit" } }
+
+private val KoFileDeclaration.isPure: Boolean
+    get() = hasPackage("..section..") || hasPackage("..component..")
+
+private val KoFileDeclaration.isContent: Boolean
+    get() = hasPackage("..content..") && !isPure
 
 internal fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
 
