@@ -83,13 +83,22 @@ fun KoScope.assertHostsComposeContents()
 
 Requires every file with a composable in a feature root — a host — to have a name ending in `Host`, and not to call `PulseContent`.
 
+## assertFeaturePackagesHaveARole
+
+```kotlin
+fun KoScope.assertFeaturePackagesHaveARole()
+```
+
+Requires every file inside a feature, below its root, to be under a `content`, `section` or `component` package, whether it holds a composable or not. Files under a `build/generated` directory are skipped.
+
 ## assertViewsHaveARole
 
 ```kotlin
+@Deprecated
 fun KoScope.assertViewsHaveARole()
 ```
 
-Requires every file with a composable inside a feature, below its root, to be under a `content`, `section` or `component` package.
+Deprecated in favour of `assertFeaturePackagesHaveARole`, and no longer run by `assertPulseMviConventions`. Requires every file with a composable inside a feature, below its root, to be under a `content`, `section` or `component` package.
 
 ## assertContentsBindAViewModel
 

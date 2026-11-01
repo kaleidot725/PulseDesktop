@@ -83,13 +83,22 @@ fun KoScope.assertHostsComposeContents()
 
 feature のルートにある Composable を持つファイル、つまり Host に、名前が `Host` で終わることと、`PulseContent` を呼ばないことを要求します。
 
+## assertFeaturePackagesHaveARole
+
+```kotlin
+fun KoScope.assertFeaturePackagesHaveARole()
+```
+
+feature の中でルートより下にあるファイルが、Composable を持つかどうかにかかわらず、`content`・`section`・`component` のどれかの下にあることを要求します。`build/generated` ディレクトリの下のファイルは対象外です。
+
 ## assertViewsHaveARole
 
 ```kotlin
+@Deprecated
 fun KoScope.assertViewsHaveARole()
 ```
 
-feature の中でルートより下にある Composable を持つファイルが、`content`・`section`・`component` のどれかの下にあることを要求します。
+`assertFeaturePackagesHaveARole` に置き換えられた非推奨の検査で、`assertPulseMviConventions` からは呼ばれません。feature の中でルートより下にある Composable を持つファイルが、`content`・`section`・`component` のどれかの下にあることを要求します。
 
 ## assertContentsBindAViewModel
 

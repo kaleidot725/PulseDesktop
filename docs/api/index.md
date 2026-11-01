@@ -49,7 +49,7 @@ PulseDesktop exposes a small, focused API surface. One package per artifact: `mv
 | [`assertViewModelsLiveInContents`](/api/architecture#assertviewmodelsliveincontents) | A ViewModel lives under `content` |
 | [`assertContainersLiveAtTheFeatureRoot`](/api/architecture#assertcontainersliveatthefeatureroot) | A Container lives at the feature root |
 | [`assertHostsComposeContents`](/api/architecture#asserthostscomposecontents) | A host is named `…Host` and composes contents instead of binding a ViewModel |
-| [`assertViewsHaveARole`](/api/architecture#assertviewshavearole) | A composable in a feature is a host, a content, a section or a component |
+| [`assertFeaturePackagesHaveARole`](/api/architecture#assertfeaturepackageshavearole) | A file in a feature is at its root or under `content`, `section` or `component` |
 | [`assertContentsBindAViewModel`](/api/architecture#assertcontentsbindaviewmodel) | A content binds its ViewModel with `PulseContent` |
 | [`assertSectionsAndComponentsArePure`](/api/architecture#assertsectionsandcomponentsarepure) | Sections and components take data and callbacks only |
 | [`assertSectionsAndComponentsHavePreviews`](/api/architecture#assertsectionsandcomponentshavepreviews) | Every section and component has a `<Name>_Preview` |
