@@ -2,7 +2,7 @@ package jp.kaleidot725.pulse.demo.di
 
 import jp.kaleidot725.pulse.demo.core.domain.model.PulseArea
 import jp.kaleidot725.pulse.demo.count.PulseCountContainer
-import jp.kaleidot725.pulse.demo.count.section.area.PulseAreaViewModel
+import jp.kaleidot725.pulse.demo.count.content.area.PulseAreaViewModel
 import org.koin.dsl.module
 
 val countFeatureModule =

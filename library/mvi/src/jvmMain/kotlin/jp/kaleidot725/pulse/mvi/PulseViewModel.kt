@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Owns the state of one screen or component: holds [UiState], handles [UiAction], emits [Event] and
+ * Owns the state of one part of a screen, a content: holds [UiState], handles [UiAction], emits [Event] and
  * [Unicast], and receives [Broadcast] from its [PulseContainer].
  *
  * A [ViewModel], so anything that creates ViewModels can create it — `viewModel()`,

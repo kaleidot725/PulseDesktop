@@ -16,6 +16,12 @@ class PulseConventionsTest {
      */
     @Test
     fun `passes on code that follows the conventions`() {
+        assertEquals(setOf("fixture.conforming.counter"), conforming.pulseFeatureRoots())
+        assertEquals(listOf("CounterHost"), conforming.pulseHosts().map { it.name })
+        assertEquals(listOf("TotalContent"), conforming.pulseContents().map { it.name })
+        assertEquals(listOf("TotalSection"), conforming.pulseSections().map { it.name })
+        assertEquals(listOf("CounterLabel"), conforming.pulseComponents().map { it.name })
+
         conforming.assertPulseMviConventions()
     }
 
@@ -76,15 +82,17 @@ class PulseConventionsTest {
     }
 
     /**
-     * A state or a message left beside the ViewModel, or anywhere else, is one more place to look for what a section and
-     * its Container agree on.
+     * A state or a message outside a `…Contracts.kt` file, or in one that no ViewModel or Container sits beside, is one
+     * more place to look for what a content and its Container agree on; [assertStatesAndMessagesLiveInContracts] asks
+     * for the file beside the class that uses them.
      */
     @Test
-    fun `reports a state or a message outside the state package`() {
-        val failure = assertFailsWith<KoAssertionFailedException> { violating.assertStatesAndMessagesLiveInTheStatePackage() }
+    fun `reports a state or a message outside a Contracts file beside its owner`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violating.assertStatesAndMessagesLiveInContracts() }
         assertMessageMentions(failure, "CounterState")
         assertMessageMentions(failure, "CounterAction")
         assertMessageMentions(failure, "PlainState")
+        assertMessageMentions(failure, "OrphanState")
     }
 
     /**
@@ -110,50 +118,86 @@ class PulseConventionsTest {
     }
 
     /**
-     * A section that binds nothing is a component that ended up in the wrong package, and the mistake is invisible
-     * until someone looks for where the ViewModel is read.
+     * A ViewModel outside `content` is one the sections below could reach, and one a reader has to search the feature
+     * for.
      */
     @Test
-    fun `reports a section that binds no ViewModel`() {
-        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertSectionsBindOneViewModel() }
-        assertMessageMentions(failure, "SilentSection")
+    fun `reports a ViewModel outside a content package`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertViewModelsLiveInContents() }
+        assertMessageMentions(failure, "StrayViewModel")
+    }
+
+    /** A Container inside one content hides what coordinates the whole feature. */
+    @Test
+    fun `reports a Container away from the feature root`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertContainersLiveAtTheFeatureRoot() }
+        assertMessageMentions(failure, "StrayContainer")
     }
 
     /**
-     * A component that takes a ViewModel cannot be reused by another section or previewed on its own, which is the whole
-     * reason it was split out.
+     * The host is the one composable at the root of a feature, so its name says what it is, and binding a ViewModel
+     * there is how it grows into the file that knows everything.
      */
     @Test
-    fun `reports a component that takes a ViewModel`() {
-        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertComponentsAreStateless() }
+    fun `reports a host that is misnamed or binds a ViewModel`() {
+        val misnamed = assertFailsWith<KoAssertionFailedException> { violatingViews.assertHostsComposeContents() }
+        assertMessageMentions(misnamed, "MisnamedScreen")
+
+        val binding =
+            assertFailsWith<KoAssertionFailedException> {
+                violatingViews.slice { it.name != "MisnamedScreen" }.assertHostsComposeContents()
+            }
+        assertMessageMentions(binding, "BindingHost")
+    }
+
+    /**
+     * A composable in a package of the feature that is none of the four roles is one nobody placed; a composable that
+     * only returns a value, such as the conforming fixture's `countLabel`, passes.
+     */
+    @Test
+    fun `reports a composable in a feature without a role`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertViewsHaveARole() }
+        assertMessageMentions(failure, "StrayView")
+    }
+
+    /**
+     * A content that binds nothing is a section that ended up in the wrong package, and the mistake is invisible until
+     * someone looks for where the ViewModel is read.
+     */
+    @Test
+    fun `reports a content that binds no ViewModel`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertContentsBindAViewModel() }
+        assertMessageMentions(failure, "SilentContent")
+    }
+
+    /**
+     * A section or a component that takes a ViewModel cannot be previewed on its own, which is the whole reason it was
+     * split out, and one that binds is a content in the wrong package.
+     */
+    @Test
+    fun `reports a section or a component that is not pure`() {
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertSectionsAndComponentsArePure() }
+        assertMessageMentions(failure, "BoundSection")
         assertMessageMentions(failure, "BoundComponent")
     }
 
     /**
-     * A screen that binds its own ViewModel is how a screen grows into the file that knows everything.
+     * A section or a component with no preview cannot be looked at on its own, and one whose preview does not follow
+     * `<Name>_Preview` is not tied to it — the next rename leaves the preview behind. A private helper composable and a
+     * component previewed only under a condition, such as `CounterBadge_Preview_Empty`, both pass.
      */
     @Test
-    fun `reports a screen that binds a ViewModel`() {
-        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertScreensComposeSections() }
-        assertMessageMentions(failure, "BindingScreen")
-    }
-
-    /**
-     * A component with no preview cannot be looked at on its own, and one whose preview does not follow
-     * `<Component>_Preview` is not tied to it — the next rename leaves the preview behind. A private helper composable
-     * and a component previewed only under a condition, such as `CounterBadge_Preview_Empty`, both pass.
-     */
-    @Test
-    fun `reports a component without a matching preview`() {
+    fun `reports a section or a component without a matching preview`() {
         assertEquals(emptyList(), conformingPreviewless())
 
-        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertComponentsHavePreviews() }
+        val failure = assertFailsWith<KoAssertionFailedException> { violatingViews.assertSectionsAndComponentsHavePreviews() }
+        assertMessageMentions(failure, "UnpreviewedSection")
         assertMessageMentions(failure, "UnpreviewedComponent")
         assertMessageMentions(failure, "MisnamedPreviewComponent")
     }
 
     private fun conformingPreviewless(): List<String> =
-        runCatching { conforming.assertComponentsHavePreviews() }.exceptionOrNull()?.message?.let { listOf(it) } ?: emptyList()
+        runCatching { conforming.assertSectionsAndComponentsHavePreviews() }.exceptionOrNull()?.message?.let { listOf(it) } ?: emptyList()
 
     private fun assertMessageMentions(
         failure: KoAssertionFailedException,

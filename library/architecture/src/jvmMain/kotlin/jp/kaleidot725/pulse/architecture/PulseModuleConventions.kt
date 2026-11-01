@@ -11,7 +11,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  * | Module | Layer |
  * |---|---|
  * | `app` | the application, which wires everything together |
- * | `feature/<name>` | one feature's screens, sections and ViewModels |
+ * | `feature/<name>` | one feature's host, contents, sections, components and ViewModels |
  * | `core/domain` | the entities (`model`), the repository interfaces (`repository`) and any use cases (`usecase`) |
  * | `core/data` | the repository implementations (`repository`), their data sources (`local`) and what those store (`model`) |
  * | `core/designsystem` | the theme and the building blocks every screen is drawn with, one package per kind (`button`, `theme`), knowing nothing of the domain |
@@ -208,7 +208,7 @@ public fun KoScope.assertDataIsSplitIntoItsPackages(layout: PulseModuleLayout = 
  * reader where a button is, and shows when two of them do the same job.
  *
  * The root is the package named after the module's directory, `designsystem` for `core/designsystem`. These are not
- * the components of the MVI conventions, which are the stateless parts of one screen; those still live in a `component`
+ * the components of the MVI conventions, which are the pure parts of one feature; those still live in a `component`
  * package inside a feature.
  */
 public fun KoScope.assertDesignSystemIsSplitByKind(layout: PulseModuleLayout = PulseModuleLayout.NowInAndroid) {
