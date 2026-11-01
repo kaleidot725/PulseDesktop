@@ -40,18 +40,21 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 
 | アサート | 説明 |
 |---|---|
-| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 続く 9 つの検査を順に実行する |
+| [`assertPulseMviConventions`](/ja/api/architecture#assertpulsemviconventions) | 続く 12 の検査を順に実行する |
 | [`assertStatesAreDataTypes`](/ja/api/architecture#assertstatesaredatatypes) | `PulseState` は `data class` または `data object` |
 | [`assertMessagesAreSealedOrDataTypes`](/ja/api/architecture#assertmessagesaresealedordatatypes) | メッセージは `data class` / `data object` のケースを持つ `sealed class`、または単独の `data class` / `data object` |
-| [`assertStatesAndMessagesLiveInTheStatePackage`](/ja/api/architecture#assertstatesandmessagesliveinthestatepackage) | State とメッセージは `state` パッケージに置く |
+| [`assertStatesAndMessagesLiveInContracts`](/ja/api/architecture#assertstatesandmessagesliveincontracts) | State とメッセージは ViewModel か Container の隣の `…Contracts.kt` に置く |
 | [`assertViewModelsAndContainersAreNamedAfterTheirBase`](/ja/api/architecture#assertviewmodelsandcontainersarenamedaftertheirbase) | `…ViewModel` と `…Container` |
 | [`assertViewModelsHoldTheirDataInTheirState`](/ja/api/architecture#assertviewmodelsholdtheirdataintheirstate) | ViewModel と Container は `var` プロパティを持たない |
-| [`assertSectionsBindOneViewModel`](/ja/api/architecture#assertsectionsbindoneviewmodel) | Section は `PulseContent` で ViewModel を束ねる |
-| [`assertComponentsAreStateless`](/ja/api/architecture#assertcomponentsarestateless) | Component はデータとコールバックだけを受け取る |
-| [`assertScreensComposeSections`](/ja/api/architecture#assertscreenscomposesections) | Screen は ViewModel を束ねず Section を並べる |
-| [`assertComponentsHavePreviews`](/ja/api/architecture#assertcomponentshavepreviews) | すべての Component に `<Component>_Preview` がある |
+| [`assertViewModelsLiveInContents`](/ja/api/architecture#assertviewmodelsliveincontents) | ViewModel は `content` の下に置く |
+| [`assertContainersLiveAtTheFeatureRoot`](/ja/api/architecture#assertcontainersliveatthefeatureroot) | Container は feature のルートに置く |
+| [`assertHostsComposeContents`](/ja/api/architecture#asserthostscomposecontents) | Host は `…Host` という名前で、ViewModel を束ねず Content を並べる |
+| [`assertViewsHaveARole`](/ja/api/architecture#assertviewshavearole) | feature の中の Composable は Host・Content・Section・Component のどれか |
+| [`assertContentsBindAViewModel`](/ja/api/architecture#assertcontentsbindaviewmodel) | Content は `PulseContent` で ViewModel を束ねる |
+| [`assertSectionsAndComponentsArePure`](/ja/api/architecture#assertsectionsandcomponentsarepure) | Section と Component はデータとコールバックだけを受け取る |
+| [`assertSectionsAndComponentsHavePreviews`](/ja/api/architecture#assertsectionsandcomponentshavepreviews) | すべての Section と Component に `<Name>_Preview` がある |
 | [`assertPulseDomainConventions`](/ja/api/architecture#assertpulsedomainconventions) | Repository は Flow を公開し、ワンショットの取得は `Result<V, E>` で返す。UseCase は `usecase` に置き、1 行にしない |
-| [`assertPulseModuleConventions`](/ja/api/architecture#assertpulsemoduleconventions) | モジュール間の依存が Clean Architecture の向きに従い、domain と data がパッケージで分かれている |
+| [`assertPulseModuleConventions`](/ja/api/architecture#assertpulsemoduleconventions) | モジュール間の依存が Clean Architecture の向きに従い、domain・data・designsystem がパッケージで分かれている |
 | [`assertPulseKoinConventions`](/ja/api/architecture#assertpulsekoinconventions) | Koin モジュールは app モジュールで定義する |
 | [`assertPulseResourceConventions`](/ja/api/architecture#assertpulseresourceconventions) | domain は文言を持たず、Composable は文言を文字列リソースから読む |
 | [`PulseModuleLayout`](/ja/api/architecture#pulsemodulelayout) | どのモジュール名がどの層に当たるか |

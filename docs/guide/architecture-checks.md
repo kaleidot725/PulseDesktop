@@ -8,7 +8,7 @@ The checks come in five groups, one assertion each. Every group can be used with
 
 | Assertion | What it checks |
 |---|---|
-| `assertPulseMviConventions()` | the state and message types, the ViewModel and Container names, how the views are split, and that every component has a preview |
+| `assertPulseMviConventions()` | the state and message types and where they live, the ViewModel and Container names and places, how a feature is split into a host, contents, sections and components, and that every section and component has a preview |
 | `assertPulseDomainConventions()` | how a repository hands out its data, and what earns a use case its place |
 | `assertPulseModuleConventions()` | which module may depend on which, and the packages inside the domain and the data layer |
 | `assertPulseKoinConventions()` | where Koin modules are declared |
@@ -43,48 +43,53 @@ class PulseDesktopConventionTest {
 
 ## Declarations
 
-`assertPulseMviConventions()` runs nine checks: five about the declarations and four about the views. A failure names the declaration and says how to fix it.
+`assertPulseMviConventions()` runs twelve checks: five about the declarations and seven about the views. A failure names the declaration and says how to fix it.
 
 | Check | Rule | Why |
 |---|---|---|
 | States are data types | a `PulseState` is a `data class` or `data object` | `StateFlow` drops an emission equal to the last one, and Compose skips a composable whose arguments are equal. Without `equals` the screen recomposes on every update |
 | Messages are sealed classes | an Action, Event, Broadcast or Unicast is a `sealed class`, and each case inside it is a `data class` or `data object`; a message with one case may be a single `data class` or `data object`, and an interface is never one | each one is consumed by a `when`. Sealing is what turns a new case into a compile error instead of a branch nobody wrote, and `data` lets a case compare and print by its value |
-| States and messages share a package | a `PulseState`, Action, Event, Broadcast or Unicast is in a `state` package | they are what a ViewModel and its Container agree on, so a reader finds them in one place: `…section/foo/state` beside a section's ViewModel, or `…/state` beside a screen's Container |
+| States and messages live in Contracts | a `PulseState`, Action, Event, Broadcast or Unicast is in a `…Contracts.kt` file in the package of a ViewModel or Container | they are what a ViewModel or a Container agrees on, so a reader finds them in one file beside the class that uses them: `PulseAreaContracts.kt` beside `PulseAreaViewModel`, `PulseCountContracts.kt` beside `PulseCountContainer` |
 | Names follow the base class | a `PulseViewModel` is named `…ViewModel`, a `PulseContainer` is named `…Container` | both are `ViewModel` subclasses to the compiler, so the name is what tells a reader which one this is |
 | Data lives in the state | a ViewModel and a Container declare no `var` property | a `var` beside the state changes without an emission, so nothing recomposes |
 
 ## Views
 
-A **screen** is what a route shows: it creates the ViewModels and the Container and lays the parts out. A **section** is the part one ViewModel answers for. A **component** is a leaf that takes data and callbacks.
+A feature is split into four roles. The **host** is what a route shows: it creates the ViewModels and the Container and lays the contents out. A **content** is the part one ViewModel answers for and binds it with `PulseContent`. A **section** draws a part of the screen from a state and callbacks, and a **component** is a small building block. Sections and components are both pure; only their role differs.
 
-The package decides which is which, so function names stay free. A screen sits at the root of its feature package, a section under `section`, a component under `component`. Being a component wins over the section around it, because a section's own components normally live inside it.
+The package decides which is which, so names stay free except the host's. The root of a feature is the package its `content` package sits in, and it holds the host (a file named `…Host`), the Container and the Container's Contracts. Each content has a package of its own under `content`, with its ViewModel and Contracts beside it. Sections and components may sit at the root of the feature or inside the one content that uses them. A composable that only returns a value, such as a label read with `stringResource`, is not a view and may live anywhere.
 
 ```
 count/
-├── PulseCountHost.kt          # screen
+├── PulseCountHost.kt          # host
 ├── PulseCountContainer.kt
-├── component/                 # components of the screen
+├── PulseCountContracts.kt     # the Container's broadcasts and unicasts
+├── component/                 # components shared by the feature
 │   └── PulseCountHeader.kt
-├── section/
-│   └── area/
-│       ├── PulseAreaContent.kt    # section
-│       ├── PulseAreaViewModel.kt
-│       ├── component/             # components of the section
-│       │   └── PulseAreaCell.kt
-│       └── state/
-└── state/
+└── content/
+    └── area/
+        ├── PulseAreaContent.kt    # content
+        ├── PulseAreaViewModel.kt
+        ├── PulseAreaContracts.kt  # the ViewModel's state, actions and events
+        ├── section/               # sections of this content
+        │   └── PulseAreaSection.kt
+        └── component/             # components of this content
+            └── PulseAreaCell.kt
 ```
 
 | Check | Rule | Why |
 |---|---|---|
-| Sections bind one ViewModel | a file with a composable under `section` calls `PulseContent` | the section is the only place the ViewModel and the UI meet. A file that binds nothing is a component in the wrong package |
-| Components are stateless | a composable under `component` takes no `…ViewModel` or `…Container` parameter, and calls neither `PulseContent` nor `PulseHost` | data and callbacks are what make a component reusable between sections and previewable on its own |
-| Screens compose sections | a composable outside both packages does not call `PulseContent` | binding a ViewModel in the screen instead of a section is how a screen grows into the file that knows everything |
-| Components have previews | every public composable under `component` has a matching `@Preview` | a preview is all a component needs to be seen on its own, and it is the first thing that breaks when the component does |
+| ViewModels live in contents | a `PulseViewModel` is under `content`, outside `section` and `component` | a ViewModel answers for one content, so it sits beside the composable that binds it and the pure parts below never see it |
+| Containers live at the feature root | a `PulseContainer` is in the package that holds `content` | the Container coordinates every content of the feature, so it sits beside the host that creates it |
+| Hosts compose contents | a composable at the feature root is in a file named `…Host` and does not call `PulseContent` | binding a ViewModel in the host instead of a content is how a host grows into the file that knows everything |
+| Views have a role | inside a feature, a composable is the host or sits under `content`, `section` or `component` | a composable in any other package is one whose role nobody decided |
+| Contents bind a ViewModel | a file with a composable under `content`, outside `section` and `component`, calls `PulseContent` | the content is the only place a ViewModel and the UI meet. A file that binds nothing is a section in the wrong package |
+| Sections and components are pure | a composable under `section` or `component` takes no `…ViewModel` or `…Container` parameter, and calls neither `PulseContent` nor `PulseHost` | data and callbacks are what make them previewable on their own and reusable |
+| Sections and components have previews | every public composable under `section` or `component` has a matching `@Preview` | a preview is all a pure composable needs to be seen on its own, and it is the first thing that breaks when the composable does |
 
 ### Preview names
 
-A preview matches its component by name: `<Component>_Preview`, or `<Component>_Preview_<Condition>` for a particular state. One match is enough, and a component with several states can have one per condition. A preview named any other way does not count, which is how a renamed component left without its preview is caught.
+A preview matches its section or component by name: `<Name>_Preview`, or `<Name>_Preview_<Condition>` for a particular state. One match is enough, and one with several states can have one per condition. A preview named any other way does not count, which is how a renamed composable left without its preview is caught.
 
 | Preview | Matches `PulseTextButton` |
 |---|---|
@@ -130,7 +135,7 @@ Each module belongs to one layer. A module outside these names is not checked.
 | Module | Layer |
 |---|---|
 | `app` | the application, which wires everything together |
-| `feature/<name>` | one feature's screens, sections and ViewModels; `feature/<name>/api` and `/impl` count as one feature |
+| `feature/<name>` | one feature's host, contents, sections, components and ViewModels; `feature/<name>/api` and `/impl` count as one feature |
 | `core/domain` | the entities, the repository interfaces, and the use cases when there are any |
 | `core/data` | the repository implementations and the data sources they read |
 | `core/designsystem` | the theme and the building blocks every screen is drawn with |
@@ -170,6 +175,7 @@ Dependencies are read from the imports in each file, so what is checked is the c
 | Shared UI only draws | the shared UI imports only from the domain, the design system, itself and support |
 | Features reach data through the domain | a feature imports nothing from the data layer |
 | The domain is framework-free | the domain imports nothing from Compose, AndroidX Lifecycle or PulseDesktop |
+| The design system is split by kind | every file of the design system is in a package named after its kind |
 
 ### Packages
 
@@ -177,12 +183,15 @@ Inside the domain and the data layer, the package says what a declaration is. A 
 
 A data source in `local` only persists: it reads, writes and removes what it is given. How a value changes — adding one to a count, deciding what a missing value means — is the repository's.
 
+The design system is split by kind instead. Everything in it is a building block, so a package called `component` says nothing about what is inside it; a package per kind tells a reader where a button is. The root is the package named after the module's directory, `designsystem` for `core/designsystem`, and no file sits directly in it.
+
 The table lists the packages of each layer, and a typical layout follows it.
 
 | Layer | Packages |
 |---|---|
 | domain | `model` for the entities, `repository` for the repository interfaces, `usecase` for the use cases |
 | data | `repository` for the repository implementations, `local` for the data sources, `model` for what those sources store |
+| design system | one package per kind, such as `button`, `card` or `theme`; never a catch-all such as `component`, `components`, `widget`, `widgets`, `composable`, `composables` or `common` |
 
 ```
 core/domain/…/domain/
@@ -193,6 +202,10 @@ core/data/…/data/
 ├── local/          # PulseCountLocalDataSource
 ├── model/          # what the data source stores, when it differs from the entity
 └── repository/     # DataStorePulseCountRepository
+core/designsystem/…/designsystem/
+├── button/         # PulseButton, PulseTextButton
+├── card/           # PulseCard
+└── theme/          # PulseDesktopTheme
 ```
 
 ### Other module names
@@ -261,7 +274,7 @@ fun `follows the conventions we agreed on`() {
 
 ## Writing your own rules
 
-The queries behind the checks are public too, so a project can add rules of its own on top of them. `pulseViewModels()`, `pulseContainers()`, `pulseStateClasses()`, `pulseStateObjects()`, `pulseMessageInterfaces()`, `pulseMessageClasses()` and `pulseMessageObjects()` return the declarations that extend or implement the matching type. `pulseScreens()`, `pulseSections()` and `pulseComponents()` return the files that hold composables of each role. `pulseRepositoryClasses()`, `pulseRepositoryInterfaces()` and `pulseRepositories()` return the repositories, `pulseKoinModuleFiles()` the files that declare Koin modules, and `pulseModule(layout)` names the module a file belongs to.
+The queries behind the checks are public too, so a project can add rules of its own on top of them. `pulseViewModels()`, `pulseContainers()`, `pulseStateClasses()`, `pulseStateObjects()`, `pulseMessageInterfaces()`, `pulseMessageClasses()` and `pulseMessageObjects()` return the declarations that extend or implement the matching type. `pulseFeatureRoots()` returns the root package of each feature, and `pulseHosts()`, `pulseContents()`, `pulseSections()` and `pulseComponents()` return the files that hold composables of each role. `pulseRepositoryClasses()`, `pulseRepositoryInterfaces()` and `pulseRepositories()` return the repositories, `pulseKoinModuleFiles()` the files that declare Koin modules, and `pulseModule(layout)` names the module a file belongs to.
 
 ```kotlin
 @Test

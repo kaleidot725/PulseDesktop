@@ -13,7 +13,7 @@ dependencies {
 
 ## 1. State・Action・Event・Broadcast・Unicast を定義する
 
-まず、機能を表す 5 つの型を定義します。
+まず、機能を表す 5 つの型を定義します。これらは使うクラスの隣の Contracts ファイルに置きます。State・Action・Event は ViewModel の隣の `content/counter/CounterContentContracts.kt` に、Broadcast・Unicast は Container の隣の `CounterContracts.kt` に置きます。ここではまとめて示します。
 
 ```kotlin
 // State: Composable が描画する UI データ
@@ -108,19 +108,19 @@ fun main() = application {
             val viewModel = rememberPulseViewModel { CounterViewModel(CounterRepository()) }
             val container = rememberPulseContainer { CounterContainer(viewModels = listOf(viewModel)) }
 
-            CounterScreen(container = container, viewModel = viewModel)
+            CounterHost(container = container, viewModel = viewModel)
         }
     }
 }
 ```
 
-### Screen の Composable
+### Host の Composable
 
-Screen はルートが表示するもので、feature パッケージのルートに置きます。レイアウトを `PulseHost` で包んで Refresh と Broadcast を使えるようにし、その中に Section を配置します。
+Host はルートが表示するもので、feature パッケージのルートに `CounterHost.kt` として、`CounterContainer` の隣に置きます。レイアウトを `PulseHost` で包んで Refresh と Broadcast を使えるようにし、その中に Content を配置します。
 
 ```kotlin
 @Composable
-fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
+fun CounterHost(container: CounterContainer, viewModel: CounterViewModel) {
     PulseHost(container = container) { onRefresh, onBroadcast ->
         Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Row(modifier = Modifier.align(Alignment.TopEnd)) {
@@ -140,9 +140,9 @@ fun CounterScreen(container: CounterContainer, viewModel: CounterViewModel) {
 }
 ```
 
-### Section の Composable
+### Content の Composable
 
-Section は 1 つの ViewModel が受け持つ部分で、`section` パッケージに置きます。その ViewModel を `PulseContent` で束ね、State を観測して Event を処理します。
+Content は 1 つの ViewModel が受け持つ部分で、`content/counter` に `CounterViewModel` と並べて置きます。その ViewModel を `PulseContent` で束ね、State を観測して Event を処理します。
 
 ```kotlin
 @Composable
@@ -208,7 +208,7 @@ fun main() = application {
                             val viewModel = rememberPulseViewModel { CounterViewModel(CounterRepository()) }
                             val container = rememberPulseContainer { CounterContainer(viewModels = listOf(viewModel)) }
 
-                            CounterScreen(container = container, viewModel = viewModel)
+                            CounterHost(container = container, viewModel = viewModel)
                         }
                     },
             )

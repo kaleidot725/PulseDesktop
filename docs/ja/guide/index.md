@@ -10,36 +10,37 @@ PulseDesktop は **Compose Desktop** のアプリを作るためのフレーム�
 
 ## ウィンドウの分け方
 
-ウィンドウは 3 種類の Composable から組み立てます。どれに当たるかは、Composable を置くパッケージで決まります。
+ウィンドウは 4 種類の Composable から組み立てます。どれに当たるかは、Composable を置くパッケージで決まります。
 
 | 役割 | 何をするか | 置き場所 |
 |---|---|---|
-| **Screen** | ルートが表示するもの。ViewModel と Container を生成し、Section を配置する | feature パッケージのルート |
-| **Section** | 1 つの ViewModel が受け持つ部分。その ViewModel を `PulseContent` で束ねる | `section` パッケージ |
-| **Component** | 末端。データとコールバックだけを受け取るので、使い回せて単体で Preview できる | `component` パッケージ |
+| **Host** | ルートが表示するもの。ViewModel と Container を生成し、Content を配置する | feature パッケージのルートの `…Host` という名前のファイル |
+| **Content** | 1 つの ViewModel が受け持つ部分。その ViewModel を `PulseContent` で束ねる | `content/<名前>`。ViewModel の隣 |
+| **Section** | State とコールバックから描く画面の一部。単体で Preview できる | `section` パッケージ |
+| **Component** | 小さな部品。データとコールバックだけを受け取るので、使い回せて単体で Preview できる | `component` パッケージ |
 
-## Section どうしの連携
+## Content どうしの連携
 
-Section をつなぐのは、Screen が持つ Container です。Section 間のメッセージは 3 つの機能が運びます。
+Content をつなぐのは、Host が持つ Container です。Content 間のメッセージは 3 つの機能が運びます。
 
 | 機能 | 説明 |
 |---|---|
-| **Broadcast** | Container から、すべての Section の ViewModel へ型付きメッセージを一度に届ける |
-| **Unicast** | ある Section の ViewModel から、Container へ型付きメッセージを送る |
+| **Broadcast** | Container から、すべての Content の ViewModel へ型付きメッセージを一度に届ける |
+| **Unicast** | ある Content の ViewModel から、Container へ型付きメッセージを送る |
 | **View Refresh** | どの ViewModel の状態も失わずに、Container 配下のビューツリーを作り直す |
 
 ## ウィンドウの例
 
-下のウィンドウでは、エディタが変更を Unicast で伝え、Container がそれを 3 つの Section すべてに Broadcast します。どう反応するかは、それぞれの Section が自分で決めます。
+下のウィンドウでは、エディタが変更を Unicast で伝え、Container がそれを 3 つの Content すべてに Broadcast します。どう反応するかは、それぞれの Content が自分で決めます。
 
 ```mermaid
 flowchart TB
-    PC["PulseContainer<br/><i>Screen が保持する</i>"]
+    PC["PulseContainer<br/><i>Host が保持する</i>"]
     subgraph W["Window"]
         direction LR
-        A["SideBar Section<br/><i>SideBarViewModel</i>"]
-        B["Editor Section<br/><i>EditorViewModel</i>"]
-        C["Inspector Section<br/><i>InspectorViewModel</i>"]
+        A["SideBar Content<br/><i>SideBarViewModel</i>"]
+        B["Editor Content<br/><i>EditorViewModel</i>"]
+        C["Inspector Content<br/><i>InspectorViewModel</i>"]
     end
     B -- "unicast" --> PC
     PC -- "broadcast" --> A
@@ -53,9 +54,9 @@ PulseDesktop は 3 つのアーティファクトに分かれていて、それ�
 
 | アーティファクト | 何を決めるか | 内容 |
 |---|---|---|
-| `mvi` | 状態をどこに置き、Section どうしがどうやり取りするか | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース |
-| `navigation` | Screen の ViewModel がどれだけ生きるか | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
-| `architecture` | コードが規約を守っているか | 状態の規約、Screen・Section・Component の分け方、Component の Preview、Repository、モジュール間の依存、Koin を検査する Konsist のアサート |
+| `mvi` | 状態をどこに置き、Content どうしがどうやり取りするか | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース |
+| `navigation` | Host の ViewModel がどれだけ生きるか | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
+| `architecture` | コードが規約を守っているか | 状態の規約、Host・Content・Section・Component の分け方、Preview、Repository、モジュール間の依存、Koin を検査する Konsist のアサート |
 
 ## インストール
 
@@ -101,6 +102,6 @@ dependencies {
 
 - [はじめかた](/ja/guide/getting-started) — 最初のカウンターアプリを作る
 - [アーキテクチャ](/ja/guide/architecture) — 状態がどう流れるかを理解する
-- [Container](/ja/guide/container) — Section をまとめて動かす
+- [Container](/ja/guide/container) — Content をまとめて動かす
 - [Navigation 3](/ja/guide/navigation3) — ViewModel をバックスタックエントリにスコープする
 - [アーキテクチャ検査](/ja/guide/architecture-checks) — 規約に従っているかを自分のテストで検査する

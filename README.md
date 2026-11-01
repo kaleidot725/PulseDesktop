@@ -10,13 +10,13 @@
 [![](https://jitpack.io/v/kaleidot725/PulseDesktop.svg)](https://jitpack.io/#kaleidot725/PulseDesktop)
 
 PulseDesktop is a framework for Compose Desktop apps. A desktop window shows many panels at once, so
-PulseDesktop gives each **section** of a screen its own `PulseViewModel` and puts one
-`PulseContainer` above them. **Broadcast** reaches every section, **Unicast** sends a message up from
+PulseDesktop gives each **content** of a screen its own `PulseViewModel` and puts one
+`PulseContainer` above them. **Broadcast** reaches every content, **Unicast** sends a message up from
 one, and **Refresh** rebuilds the view without losing state.
 
-Around that, it decides how a window is split. A **screen** creates the ViewModels and lays out the
-sections, a section binds one ViewModel with `PulseContent`, and a **component** takes data and
-callbacks only. Your own tests can check that the code keeps to it.
+Around that, it decides how a window is split. A **host** creates the ViewModels and lays out the
+contents, a content binds one ViewModel with `PulseContent`, and **sections** and **components** take
+data and callbacks only. Your own tests can check that the code keeps to it.
 
 Read [What is PulseDesktop?](https://kaleidot725.github.io/PulseDesktop/guide/) for the idea behind it.
 
@@ -57,8 +57,8 @@ dependencies {
 
 ## Getting started
 
-A ViewModel handles actions and updates its state. A section binds it to the UI with
-`PulseContent`, and the screen creates the ViewModel and places the section. The full walkthrough,
+A ViewModel handles actions and updates its state. A content binds it to the UI with
+`PulseContent`, and the host creates the ViewModel and places the content. The full walkthrough,
 including the Container, is in
 [Getting Started](https://kaleidot725.github.io/PulseDesktop/guide/getting-started).
 
@@ -73,9 +73,9 @@ class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEven
     }
 }
 
-// counter/section/CounterSection.kt
+// counter/content/total/TotalContent.kt
 @Composable
-fun CounterSection(viewModel: CounterViewModel) {
+fun TotalContent(viewModel: CounterViewModel) {
     PulseContent(viewModel = viewModel) { state, onAction ->
         Button(onClick = { onAction(CounterAction.Increment) }) {
             Text("${state.count}")
@@ -83,12 +83,12 @@ fun CounterSection(viewModel: CounterViewModel) {
     }
 }
 
-// counter/CounterScreen.kt
+// counter/CounterHost.kt
 @Composable
-fun CounterScreen() {
+fun CounterHost() {
     val viewModel = rememberPulseViewModel { CounterViewModel() }
 
-    CounterSection(viewModel = viewModel)
+    TotalContent(viewModel = viewModel)
 }
 ```
 
@@ -111,10 +111,10 @@ an edge with. The counts are kept in a DataStore, so they survive a restart.
 | Module | Holds |
 |---|---|
 | `demo/app` | the window, the back stack, and every Koin module |
-| `demo/feature/count` | the screen, its sections and ViewModels, and its text in English and Japanese |
+| `demo/feature/count` | the host, its content, section and components, the ViewModel, and its text in English and Japanese |
 | `demo/core/domain` | the areas and the neighbour rule in `model`, the repository interface in `repository`, and the one use case with work of its own in `usecase` |
 | `demo/core/data` | the DataStore-backed repository in `repository`, and the data source in front of DataStore in `local` |
-| `demo/core/designsystem` | the theme, the card and the buttons |
+| `demo/core/designsystem` | the theme, the card and the buttons, one package per kind |
 
 ```bash
 ./gradlew :demo:app:run

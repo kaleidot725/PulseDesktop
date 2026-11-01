@@ -13,7 +13,7 @@ abstract class PulseViewModel<
 )
 ```
 
-Abstract base class for managing the UI state of a single screen or section.
+Abstract base class for managing the UI state of a single content.
 
 Use `unicast()` when the ViewModel needs to send messages up to its parent Container.
 

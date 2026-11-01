@@ -21,10 +21,14 @@ artifact adds `rememberPulseViewModel` / `rememberPulseContainer`, and
 
 The `architecture` artifact publishes the conventions themselves as Konsist assertions, so an app
 can check in its own test suite that it uses PulseDesktop the way the library expects. Among them is the
-view layout the demo follows: a **screen** at the root of a feature package creates the ViewModels and
-lays out **sections**, a section binds one ViewModel with `PulseContent`, and a **component** takes
-data and callbacks only. Packages decide which is which — `section` and `component` — and names are
-free. Every component has a `@Preview` named `<Component>_Preview`, or `<Component>_Preview_<Condition>`
+view layout the demo follows: a feature's root holds the **host** (a file named `…Host`), which
+creates the ViewModels and the Container and lays out **contents**, beside the Container. A content,
+under `content/<name>`, binds one ViewModel with `PulseContent`, and its ViewModel sits beside it.
+**Sections** and **components** are pure composables that take data and callbacks only, at the
+feature root or inside one content; only their role differs. Packages decide which is which —
+`content`, `section` and `component` — and names are free except the host's. States and messages
+live in a `…Contracts.kt` file beside the ViewModel or Container that uses them. Every section and
+component has a `@Preview` named `<Name>_Preview`, or `<Name>_Preview_<Condition>`
 for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
 `feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: `core/domain` holds
 the entities, use cases and repository interfaces and depends on nothing, `core/data` implements the
@@ -120,21 +124,22 @@ PulseDesktop/
 │   ├── core/domain/                  # :demo:core:domain — PulseArea, PulseAreaPosition (the neighbour rule),
 │   │                                 # PulseCountRepository and the use cases; no Koin
 │   ├── core/data/                    # :demo:core:data — DataStorePulseCountRepository and pulseCountDataStore()
-│   ├── core/designsystem/            # :demo:core:designsystem — PulseDesktopTheme, PulseCard, PulseButton
-│   └── feature/count/                # :demo:feature:count — one feature, screen at its root; reaches
+│   ├── core/designsystem/            # :demo:core:designsystem — theme/, card/, button/: one package per kind
+│   └── feature/count/                # :demo:feature:count — one feature, host at its root; reaches
 │                                     # the counts through the domain use cases, never core/data.
 │                                     # It resolves its ViewModels from Koin; rememberPulseViewModel
 │                                     # still decides how long they live
 │       └── src/jvmMain/kotlin/jp/kaleidot725/pulse/demo/count/
-│           ├── PulseCountHost.kt     # Screen: creates the ViewModels and Container
+│           ├── PulseCountHost.kt     # Host: creates the ViewModels and Container, lays out contents
 │           ├── PulseCountContainer.kt
-│           ├── component/            # Stateless composables of the screen
-│           ├── section/area/         # Section: one ViewModel bound with PulseContent
-│           │   ├── PulseAreaContent.kt
-│           │   ├── PulseAreaViewModel.kt
-│           │   ├── component/        # Stateless composables of the section
-│           │   └── state/
-│           └── state/
+│           ├── PulseCountContracts.kt # the Container's Broadcast and Unicast
+│           ├── component/            # Pure composables shared by the feature
+│           └── content/area/         # Content: one ViewModel bound with PulseContent
+│               ├── PulseAreaContent.kt
+│               ├── PulseAreaViewModel.kt
+│               ├── PulseAreaContracts.kt # the ViewModel's State, Action and Event
+│               ├── section/          # Pure composables of this content
+│               └── component/
 │       # Four areas share a Container: an area counts its own tap and announces
 │       # it as a Unicast, the Container broadcasts it back to all four, and each
 │       # decides what to do — the origin ignores the copy of its own tap

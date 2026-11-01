@@ -8,7 +8,7 @@
 
 | アサート | 検査する内容 |
 |---|---|
-| `assertPulseMviConventions()` | State とメッセージの型、ViewModel と Container の名前、View の分け方、すべての Component に Preview があること |
+| `assertPulseMviConventions()` | State とメッセージの型と置き場所、ViewModel と Container の名前と置き場所、feature を Host・Content・Section・Component に分けること、すべての Section と Component に Preview があること |
 | `assertPulseDomainConventions()` | Repository がデータをどう公開するか、UseCase を作ってよいのはどんなときか |
 | `assertPulseModuleConventions()` | どのモジュールがどのモジュールに依存してよいか、domain と data の中のパッケージ |
 | `assertPulseKoinConventions()` | Koin のモジュールをどこで定義するか |
@@ -43,48 +43,53 @@ class PulseDesktopConventionTest {
 
 ## 宣言
 
-`assertPulseMviConventions()` は 9 つの検査を実行します。5 つは宣言について、4 つは View についてのものです。失敗したときは、該当する宣言の名前と直し方を出します。
+`assertPulseMviConventions()` は 12 の検査を実行します。5 つは宣言について、7 つは View についてのものです。失敗したときは、該当する宣言の名前と直し方を出します。
 
 | 検査 | ルール | 理由 |
 |---|---|---|
 | State は data 型 | `PulseState` は `data class` または `data object` | `StateFlow` は直前と等しい値を流さず、Compose は引数が等しい Composable をスキップする。`equals` がないと更新ごとに画面全体が再コンポジションされる |
 | メッセージは sealed class | Action・Event・Broadcast・Unicast は `sealed class`、その中の各ケースは `data class` か `data object`。ケースが 1 つなら単独の `data class` か `data object` でもよく、interface は使わない | どれも `when` で処理される。sealed にしてあればケースの追加がコンパイルエラーになり、`data` にしてあればケースが値で比較・表示される |
-| State とメッセージは state に置く | `PulseState`・Action・Event・Broadcast・Unicast は `state` パッケージにある | ViewModel と Container が取り決める型なので、1 か所で見つかるようにする。Section の ViewModel なら `…section/foo/state`、Screen の Container なら `…/state` |
+| State とメッセージは Contracts に置く | `PulseState`・Action・Event・Broadcast・Unicast は、ViewModel か Container と同じパッケージの `…Contracts.kt` にある | ViewModel や Container が取り決める型なので、使うクラスの隣の 1 ファイルで見つかるようにする。`PulseAreaViewModel` なら `PulseAreaContracts.kt`、`PulseCountContainer` なら `PulseCountContracts.kt` |
 | 名前は基底クラスに従う | `PulseViewModel` は `…ViewModel`、`PulseContainer` は `…Container` | コンパイラにとってはどちらも `ViewModel` のサブクラスなので、どちらなのかを示すのは名前だけ |
 | データは State に置く | ViewModel と Container は `var` プロパティを持たない | State の外の `var` は変更しても emission が起きず、何も再コンポジションされない |
 
 ## View
 
-**Screen** はルートが表示するもので、ViewModel と Container を生成し、各パーツを配置します。**Section** は 1 つの ViewModel が受け持つ部分です。**Component** は末端で、データとコールバックだけを受け取ります。
+feature は 4 つの役割に分けます。**Host** はルートが表示するもので、ViewModel と Container を生成し、Content を配置します。**Content** は 1 つの ViewModel が受け持つ部分で、その ViewModel を `PulseContent` で束ねます。**Section** は State とコールバックから画面の一部を描き、**Component** は小さな部品です。Section と Component はどちらも純粋な Composable で、違うのは役割だけです。
 
-どれに当たるかを決めるのはパッケージなので、関数名は自由です。Screen は feature パッケージのルート、Section は `section` 配下、Component は `component` 配下に置きます。Section の内側にある `component` は Component として扱われます。Section 専用の Component は、その Section の中に置くのが自然だからです。
+どれに当たるかはパッケージで決まるので、Host 以外の名前は自由です。feature のルートは `content` パッケージを持つパッケージで、そこに Host（`…Host` という名前のファイル）、Container、Container の Contracts を置きます。Content は `content` の下にそれぞれのパッケージを持ち、ViewModel と Contracts をその隣に置きます。Section と Component は、feature のルートにも、それを使う Content の中にも置けます。`stringResource` でラベルを読むだけのような、値を返す Composable は View ではないので、どこに置いてもかまいません。
 
 ```
 count/
-├── PulseCountHost.kt          # Screen
+├── PulseCountHost.kt          # Host
 ├── PulseCountContainer.kt
-├── component/                 # Screen の Component
+├── PulseCountContracts.kt     # Container の Broadcast と Unicast
+├── component/                 # feature 全体で使う Component
 │   └── PulseCountHeader.kt
-├── section/
-│   └── area/
-│       ├── PulseAreaContent.kt    # Section
-│       ├── PulseAreaViewModel.kt
-│       ├── component/             # Section の Component
-│       │   └── PulseAreaCell.kt
-│       └── state/
-└── state/
+└── content/
+    └── area/
+        ├── PulseAreaContent.kt    # Content
+        ├── PulseAreaViewModel.kt
+        ├── PulseAreaContracts.kt  # ViewModel の State・Action・Event
+        ├── section/               # この Content の Section
+        │   └── PulseAreaSection.kt
+        └── component/             # この Content の Component
+            └── PulseAreaCell.kt
 ```
 
 | 検査 | ルール | 理由 |
 |---|---|---|
-| Section は ViewModel を 1 つ束ねる | `section` 配下の Composable を持つファイルは `PulseContent` を呼ぶ | ViewModel と UI が出会うのは Section だけ。何も束ねていないファイルは、置き場所を間違えた Component |
-| Component は stateless | `component` 配下の Composable は `…ViewModel` や `…Container` を引数に取らず、`PulseContent` も `PulseHost` も呼ばない | データとコールバックだけで済むから、ほかの Section でも使え、単体で Preview できる |
-| Screen は Section を並べる | どちらのパッケージにも属さない Composable は `PulseContent` を呼ばない | Section ではなく Screen で束ねると、Screen がすべてを知るファイルに育つ |
-| Component には Preview がある | `component` 配下の public な Composable には、対応する `@Preview` がある | Component は Preview があれば単体で確認でき、Component が壊れたときに最初に気づける |
+| ViewModel は Content に置く | `PulseViewModel` は `content` の下で、`section` と `component` の外にある | ViewModel は 1 つの Content を受け持つので、それを束ねる Composable の隣に置き、下の純粋な部分からは見えないようにする |
+| Container は feature のルートに置く | `PulseContainer` は `content` を持つパッケージにある | Container は feature のすべての Content をまとめるので、それを生成する Host の隣に置く |
+| Host は Content を並べる | feature のルートにある Composable は `…Host` という名前のファイルにあり、`PulseContent` を呼ばない | Content ではなく Host で束ねると、Host がすべてを知るファイルに育つ |
+| View には役割がある | feature の中の Composable は、Host か、`content`・`section`・`component` のどれかの下にある | それ以外のパッケージにある Composable は、役割が決まっていない |
+| Content は ViewModel を束ねる | `content` の下で `section` と `component` の外にある Composable を持つファイルは `PulseContent` を呼ぶ | ViewModel と UI が出会うのは Content だけ。何も束ねていないファイルは、置き場所を間違えた Section |
+| Section と Component は純粋 | `section` と `component` の下の Composable は `…ViewModel` や `…Container` を引数に取らず、`PulseContent` も `PulseHost` も呼ばない | データとコールバックだけで済むから、単体で Preview でき、使い回せる |
+| Section と Component には Preview がある | `section` と `component` の下の public な Composable には、対応する `@Preview` がある | 純粋な Composable は Preview があれば単体で確認でき、壊れたときに最初に気づける |
 
 ### Preview の名前
 
-Preview は名前で Component と対応付けます。`<Component>_Preview`、または特定の状態を示す `<Component>_Preview_<条件>` です。1 つあれば十分で、状態がいくつもある Component は条件ごとに置けます。それ以外の名前の Preview は数えないので、Component だけリネームして Preview が古い名前のまま残った場合も検出できます。
+Preview は名前で Section や Component と対応付けます。`<Name>_Preview`、または特定の状態を示す `<Name>_Preview_<条件>` です。1 つあれば十分で、状態がいくつもあるものは条件ごとに置けます。それ以外の名前の Preview は数えないので、Composable だけリネームして Preview が古い名前のまま残った場合も検出できます。
 
 | Preview | `PulseTextButton` に対応するか |
 |---|---|
@@ -130,7 +135,7 @@ ViewModel は Repository を直接呼んでかまわないので、UseCase は�
 | モジュール | 層 |
 |---|---|
 | `app` | すべてをつなぐアプリ本体 |
-| `feature/<name>` | 1 つの機能の Screen・Section・ViewModel。`feature/<name>/api` と `/impl` は 1 つの feature として扱う |
+| `feature/<name>` | 1 つの機能の Host・Content・Section・Component・ViewModel。`feature/<name>/api` と `/impl` は 1 つの feature として扱う |
 | `core/domain` | エンティティ、Repository の interface、UseCase（作る場合） |
 | `core/data` | Repository の実装と、それが読む DataSource |
 | `core/designsystem` | テーマと、すべての画面で使う部品 |
@@ -170,6 +175,7 @@ flowchart TB
 | 共有 UI は描くだけ | 共有 UI は domain、designsystem、自身、補助モジュールからだけ import する |
 | feature は domain 経由でデータに触れる | feature は data から何も import しない |
 | domain はフレームワークに依存しない | domain は Compose、AndroidX Lifecycle、PulseDesktop から import しない |
+| designsystem は種類ごとに分ける | designsystem のファイルは、種類の名前のパッケージにある |
 
 ### パッケージ
 
@@ -177,12 +183,15 @@ domain と data の中では、パッケージで宣言の種類を表します�
 
 `local` の DataSource は永続化だけを担い、渡されたものを読む・書く・消すだけです。カウントを 1 増やす、値がないときをどう扱うかといった、値の変え方は Repository が決めます。
 
+designsystem は、種類ごとに分けます。中身はすべて部品なので、`component` というパッケージ名では何が入っているのか分かりません。種類ごとのパッケージにすれば、ボタンがどこにあるかがすぐ分かります。ルートはモジュールのディレクトリと同じ名前のパッケージ（`core/designsystem` なら `designsystem`）で、その直下にはファイルを置きません。
+
 各層のパッケージを表に、典型的な構成をその下に示します。
 
 | 層 | パッケージ |
 |---|---|
 | domain | エンティティは `model`、Repository の interface は `repository`、UseCase は `usecase` |
 | data | Repository の実装は `repository`、DataSource は `local`、DataSource が保存する形は `model` |
+| designsystem | `button`・`card`・`theme` のように種類ごとに 1 つ。`component`・`components`・`widget`・`widgets`・`composable`・`composables`・`common` のような何でも入る名前は使わない |
 
 ```
 core/domain/…/domain/
@@ -193,6 +202,10 @@ core/data/…/data/
 ├── local/          # PulseCountLocalDataSource
 ├── model/          # DataSource が保存する形（エンティティと異なる場合）
 └── repository/     # DataStorePulseCountRepository
+core/designsystem/…/designsystem/
+├── button/         # PulseButton, PulseTextButton
+├── card/           # PulseCard
+└── theme/          # PulseDesktopTheme
 ```
 
 ### 別のモジュール名
@@ -261,7 +274,7 @@ fun `follows the conventions we agreed on`() {
 
 ## 自分のルールを書く
 
-検査の土台になっているクエリも公開しているので、その上に独自のルールを足せます。`pulseViewModels()`、`pulseContainers()`、`pulseStateClasses()`、`pulseStateObjects()`、`pulseMessageInterfaces()`、`pulseMessageClasses()`、`pulseMessageObjects()` は、対応する型を継承・実装している宣言を返します。`pulseScreens()`、`pulseSections()`、`pulseComponents()` は各役割の Composable を持つファイルを返します。`pulseRepositoryClasses()`、`pulseRepositoryInterfaces()`、`pulseRepositories()` は Repository を、`pulseKoinModuleFiles()` は Koin モジュールを定義するファイルを返し、`pulseModule(layout)` はファイルが属するモジュールの名前を返します。
+検査の土台になっているクエリも公開しているので、その上に独自のルールを足せます。`pulseViewModels()`、`pulseContainers()`、`pulseStateClasses()`、`pulseStateObjects()`、`pulseMessageInterfaces()`、`pulseMessageClasses()`、`pulseMessageObjects()` は、対応する型を継承・実装している宣言を返します。`pulseFeatureRoots()` は各 feature のルートのパッケージを返し、`pulseHosts()`、`pulseContents()`、`pulseSections()`、`pulseComponents()` は各役割の Composable を持つファイルを返します。`pulseRepositoryClasses()`、`pulseRepositoryInterfaces()`、`pulseRepositories()` は Repository を、`pulseKoinModuleFiles()` は Koin モジュールを定義するファイルを返し、`pulseModule(layout)` はファイルが属するモジュールの名前を返します。
 
 ```kotlin
 @Test
