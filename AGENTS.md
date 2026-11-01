@@ -26,7 +26,8 @@ creates the ViewModels and the Container and lays out **contents**, beside the C
 under `content/<name>`, binds one ViewModel with `PulseContent`, and its ViewModel sits beside it.
 **Sections** and **components** are pure composables that take data and callbacks only, at the
 feature root or inside one content; only their role differs. Packages decide which is which —
-`content`, `section` and `component` — and names are free except the host's. States and messages
+`content`, `section` and `component`, the only packages under a feature's root, so a pure helper such
+as a label goes in `component` — and names are free except the host's. States and messages
 live in a `…Contracts.kt` file beside the ViewModel or Container that uses them. Every section and
 component has a `@Preview` named `<Name>_Preview`, or `<Name>_Preview_<Condition>`
 for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,

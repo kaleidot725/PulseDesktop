@@ -57,7 +57,7 @@ class PulseDesktopConventionTest {
 
 feature は 4 つの役割に分けます。**Host** はルートが表示するもので、ViewModel と Container を生成し、Content を配置します。**Content** は 1 つの ViewModel が受け持つ部分で、その ViewModel を `PulseContent` で束ねます。**Section** は State とコールバックから画面の一部を描き、**Component** は小さな部品です。Section と Component はどちらも純粋な Composable で、違うのは役割だけです。
 
-どれに当たるかはパッケージで決まるので、Host 以外の名前は自由です。feature のルートは `content` パッケージを持つパッケージで、そこに Host（`…Host` という名前のファイル）、Container、Container の Contracts を置きます。Content は `content` の下にそれぞれのパッケージを持ち、ViewModel と Contracts をその隣に置きます。Section と Component は、feature のルートにも、それを使う Content の中にも置けます。`stringResource` でラベルを読むだけのような、値を返す Composable は View ではないので、どこに置いてもかまいません。
+どれに当たるかはパッケージで決まるので、Host 以外の名前は自由です。feature のルートは `content` パッケージを持つパッケージで、そこに Host（`…Host` という名前のファイル）、Container、Container の Contracts を置きます。Content は `content` の下にそれぞれのパッケージを持ち、ViewModel と Contracts をその隣に置きます。Section と Component は、feature のルートにも、それを使う Content の中にも置けます。ルートの下に置けるパッケージは、この 3 つだけです。`stringResource` でラベルを読むような、feature 全体で使う純粋な関数は `component` に置きます。値を返すだけの Composable は View ではないので、Preview はいりません。
 
 ```
 count/
@@ -82,7 +82,7 @@ count/
 | ViewModel は Content に置く | `PulseViewModel` は `content` の下で、`section` と `component` の外にある | ViewModel は 1 つの Content を受け持つので、それを束ねる Composable の隣に置き、下の純粋な部分からは見えないようにする |
 | Container は feature のルートに置く | `PulseContainer` は `content` を持つパッケージにある | Container は feature のすべての Content をまとめるので、それを生成する Host の隣に置く |
 | Host は Content を並べる | feature のルートにある Composable は `…Host` という名前のファイルにあり、`PulseContent` を呼ばない | Content ではなく Host で束ねると、Host がすべてを知るファイルに育つ |
-| View には役割がある | feature の中の Composable は、Host か、`content`・`section`・`component` のどれかの下にある | それ以外のパッケージにある Composable は、役割が決まっていない |
+| feature のパッケージは決まっている | feature の中のファイルは、ルートか、`content`・`section`・`component` のどれかの下にある。`build/generated` の下の生成コードは対象外 | `text` のような独自のパッケージは、誰も決めていない置き場所になる |
 | Content は ViewModel を束ねる | `content` の下で `section` と `component` の外にある Composable を持つファイルは `PulseContent` を呼ぶ | ViewModel と UI が出会うのは Content だけ。何も束ねていないファイルは、置き場所を間違えた Section |
 | Section と Component は純粋 | `section` と `component` の下の Composable は `…ViewModel` や `…Container` を引数に取らず、`PulseContent` も `PulseHost` も呼ばない | データとコールバックだけで済むから、単体で Preview でき、使い回せる |
 | Section と Component には Preview がある | `section` と `component` の下の public な Composable には、対応する `@Preview` がある | 純粋な Composable は Preview があれば単体で確認でき、壊れたときに最初に気づける |

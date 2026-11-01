@@ -49,7 +49,7 @@ PulseDesktop の API は小さく、焦点が絞られています。アーテ�
 | [`assertViewModelsLiveInContents`](/ja/api/architecture#assertviewmodelsliveincontents) | ViewModel は `content` の下に置く |
 | [`assertContainersLiveAtTheFeatureRoot`](/ja/api/architecture#assertcontainersliveatthefeatureroot) | Container は feature のルートに置く |
 | [`assertHostsComposeContents`](/ja/api/architecture#asserthostscomposecontents) | Host は `…Host` という名前で、ViewModel を束ねず Content を並べる |
-| [`assertViewsHaveARole`](/ja/api/architecture#assertviewshavearole) | feature の中の Composable は Host・Content・Section・Component のどれか |
+| [`assertFeaturePackagesHaveARole`](/ja/api/architecture#assertfeaturepackageshavearole) | feature の中のファイルは、ルートか `content`・`section`・`component` の下にある |
 | [`assertContentsBindAViewModel`](/ja/api/architecture#assertcontentsbindaviewmodel) | Content は `PulseContent` で ViewModel を束ねる |
 | [`assertSectionsAndComponentsArePure`](/ja/api/architecture#assertsectionsandcomponentsarepure) | Section と Component はデータとコールバックだけを受け取る |
 | [`assertSectionsAndComponentsHavePreviews`](/ja/api/architecture#assertsectionsandcomponentshavepreviews) | すべての Section と Component に `<Name>_Preview` がある |
