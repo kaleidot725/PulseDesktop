@@ -1,6 +1,5 @@
 package jp.kaleidot725.pulse.architecture
 
-import androidx.compose.runtime.Composable
 import com.lemonappdev.konsist.api.KoModifier
 import com.lemonappdev.konsist.api.container.KoScope
 import com.lemonappdev.konsist.api.declaration.KoClassDeclaration
@@ -8,16 +7,9 @@ import com.lemonappdev.konsist.api.declaration.KoFileDeclaration
 import com.lemonappdev.konsist.api.declaration.KoFunctionDeclaration
 import com.lemonappdev.konsist.api.declaration.KoInterfaceDeclaration
 import com.lemonappdev.konsist.api.declaration.KoObjectDeclaration
-import com.lemonappdev.konsist.api.ext.list.withParentOf
+import com.lemonappdev.konsist.api.provider.KoFullyQualifiedNameProvider
+import com.lemonappdev.konsist.api.provider.KoParentProvider
 import com.lemonappdev.konsist.api.verify.assertTrue
-import jp.kaleidot725.pulse.mvi.PulseAction
-import jp.kaleidot725.pulse.mvi.PulseBroadcast
-import jp.kaleidot725.pulse.mvi.PulseContainer
-import jp.kaleidot725.pulse.mvi.PulseContent
-import jp.kaleidot725.pulse.mvi.PulseEvent
-import jp.kaleidot725.pulse.mvi.PulseState
-import jp.kaleidot725.pulse.mvi.PulseUnicast
-import jp.kaleidot725.pulse.mvi.PulseViewModel
 
 /**
  * Checks every convention PulsePlatform expects of the code that uses it.
@@ -335,25 +327,25 @@ public fun KoScope.pulseSections(): List<KoFileDeclaration> =
 public fun KoScope.pulseComponents(): List<KoFileDeclaration> = viewFiles().filter { it.hasPackage("..component..") }
 
 /** Every class that extends [PulseViewModel] directly. */
-public fun KoScope.pulseViewModels(): List<KoClassDeclaration> = classes().withParentOf(PulseViewModel::class)
+public fun KoScope.pulseViewModels(): List<KoClassDeclaration> = classes().withPulseParent(PULSE_VIEW_MODEL)
 
 /** Every class that extends [PulseContainer] directly. */
-public fun KoScope.pulseContainers(): List<KoClassDeclaration> = classes().withParentOf(PulseContainer::class)
+public fun KoScope.pulseContainers(): List<KoClassDeclaration> = classes().withPulseParent(PULSE_CONTAINER)
 
 /** Every class that implements [PulseState] directly. */
-public fun KoScope.pulseStateClasses(): List<KoClassDeclaration> = classes().withParentOf(PulseState::class)
+public fun KoScope.pulseStateClasses(): List<KoClassDeclaration> = classes().withPulseParent(PULSE_STATE)
 
 /** Every object that implements [PulseState] directly. */
-public fun KoScope.pulseStateObjects(): List<KoObjectDeclaration> = objects().withParentOf(PulseState::class)
+public fun KoScope.pulseStateObjects(): List<KoObjectDeclaration> = objects().withPulseParent(PULSE_STATE)
 
 /** Every interface that implements one of the four message markers directly. */
-public fun KoScope.pulseMessageInterfaces(): List<KoInterfaceDeclaration> = interfaces().withParentOf(messageMarkers)
+public fun KoScope.pulseMessageInterfaces(): List<KoInterfaceDeclaration> = interfaces().withPulseParent(*messageMarkers)
 
 /** Every class that implements one of the four message markers directly. */
-public fun KoScope.pulseMessageClasses(): List<KoClassDeclaration> = classes().withParentOf(messageMarkers)
+public fun KoScope.pulseMessageClasses(): List<KoClassDeclaration> = classes().withPulseParent(*messageMarkers)
 
 /** Every object that implements one of the four message markers directly. */
-public fun KoScope.pulseMessageObjects(): List<KoObjectDeclaration> = objects().withParentOf(messageMarkers)
+public fun KoScope.pulseMessageObjects(): List<KoObjectDeclaration> = objects().withPulseParent(*messageMarkers)
 
 internal fun KoScope.composableFiles(): List<KoFileDeclaration> = files.filter { it.composables().isNotEmpty() }
 
@@ -365,16 +357,22 @@ internal fun KoFileDeclaration.views(): List<KoFunctionDeclaration> =
     composables().filter { it.returnType?.name.let { type -> type == null || type == "Unit" } }
 
 /** Under a `build/generated` directory, where Gradle plugins write the code they generate. */
-private val KoFileDeclaration.isGenerated: Boolean
+internal val KoFileDeclaration.isGenerated: Boolean
     get() = path.replace('\\', '/').contains("/build/generated/")
 
-private val KoFileDeclaration.isPure: Boolean
+internal val KoFileDeclaration.isPure: Boolean
     get() = hasPackage("..section..") || hasPackage("..component..")
 
 private val KoFileDeclaration.isContent: Boolean
     get() = hasPackage("..content..") && !isPure
 
-internal fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> = functions().filter { it.hasAnnotationOf(Composable::class) }
+internal fun KoFileDeclaration.composables(): List<KoFunctionDeclaration> =
+    functions().filter { function ->
+        function.annotations.any {
+            it.fullyQualifiedName ==
+                COMPOSABLE
+        }
+    }
 
 /** `@Preview` from any package, and multipreview annotations such as `@PreviewLightDark`. */
 internal val KoFunctionDeclaration.isPreview: Boolean
@@ -407,9 +405,25 @@ private fun KoScope.messageCases(): Pair<List<KoClassDeclaration>, List<KoObject
 }
 
 private val messageMarkers =
-    listOf(
-        PulseAction::class,
-        PulseEvent::class,
-        PulseBroadcast::class,
-        PulseUnicast::class,
+    arrayOf(
+        "$PULSE_MVI.PulseAction",
+        "$PULSE_MVI.PulseEvent",
+        "$PULSE_MVI.PulseBroadcast",
+        "$PULSE_MVI.PulseUnicast",
     )
+
+/*
+ * The types are matched by name rather than by class, so this artifact does not depend on `mvi`. It checks an app built
+ * on `mvi-mobile` as well, whose classes share these names, without putting the desktop classes beside them.
+ */
+private const val PULSE_MVI = "jp.kaleidot725.pulse.mvi"
+private const val PULSE_VIEW_MODEL = "$PULSE_MVI.PulseViewModel"
+private const val PULSE_CONTAINER = "$PULSE_MVI.PulseContainer"
+private const val PULSE_STATE = "$PULSE_MVI.PulseState"
+private const val COMPOSABLE = "androidx.compose.runtime.Composable"
+
+/** The declarations whose direct parent is one of [names], given as fully qualified names. */
+private fun <T : KoParentProvider> List<T>.withPulseParent(vararg names: String): List<T> =
+    filter { declaration ->
+        declaration.parents().any { (it.sourceDeclaration as? KoFullyQualifiedNameProvider)?.fullyQualifiedName in names }
+    }
