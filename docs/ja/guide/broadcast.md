@@ -1,6 +1,6 @@
 # Broadcast
 
-Broadcast は、`PulseContainer` から登録済みのすべての `PulseViewModel` へ型付きメッセージを同時に届ける仕組みです。
+デスクトップだけのものです。Broadcast は、`PulseContainer` から登録済みのすべての `PulseViewModel` へ型付きメッセージを同時に届ける仕組みです。
 
 ## Broadcast を定義する
 

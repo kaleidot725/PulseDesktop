@@ -1,6 +1,6 @@
 # Broadcast
 
-Broadcast delivers a typed message from a `PulseContainer` to all of its registered `PulseViewModel` instances at once.
+Desktop only. Broadcast delivers a typed message from a `PulseContainer` to all of its registered `PulseViewModel` instances at once.
 
 ## Defining a Broadcast
 

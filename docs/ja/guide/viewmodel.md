@@ -1,10 +1,10 @@
 # ViewModel
 
-`PulseViewModel` は PulsePlatform の中核となる構成要素です。アプリの 1 つの Content、つまり画面のうち 1 つの ViewModel が受け持つ部分の UI 状態を管理します。
+`PulseViewModel` はライブラリの中核となる構成要素です。自分が受け持つ UI の部分、つまりデスクトップでは Content、モバイルでは Screen の UI 状態を持ちます。どちらでも同じクラスですが、デスクトップ版は Container と共有する Broadcast と Unicast のために型パラメータを 2 つ多く取り、それを使う `onReceive` と `unicast` を持ちます。
 
 ## ViewModel を作る
 
-5 つの型パラメータを指定して `PulseViewModel` を継承します。
+型パラメータを指定して `PulseViewModel` を継承します。デスクトップでは 5 つ、モバイルでは 3 つです。
 
 ```kotlin
 class MyViewModel : PulseViewModel<MyState, MyAction, MyEvent, MyBroadcast, MyUnicast>(
@@ -13,6 +13,16 @@ class MyViewModel : PulseViewModel<MyState, MyAction, MyEvent, MyBroadcast, MyUn
     override fun onSetup() { /* ここでコルーチンを開始する */ }
     override fun onAction(uiAction: MyAction) { /* ユーザーの意図を処理する */ }
     override fun onReceive(broadcast: MyBroadcast) { /* Broadcast に反応する */ }
+}
+```
+
+```kotlin
+// モバイル
+class MyViewModel : PulseViewModel<MyState, MyAction, MyEvent>(
+    initialUiState = MyState(),
+) {
+    override fun onSetup() { /* ここでコルーチンを開始する */ }
+    override fun onAction(uiAction: MyAction) { /* ユーザーの意図を処理する */ }
 }
 ```
 
@@ -55,7 +65,7 @@ override fun onAction(uiAction: MyAction) {
 
 ### `onReceive(broadcast)`
 
-親の Container が Broadcast を届けたときに呼ばれます。状態の更新や Event の発行ができます。
+デスクトップだけのものです。親の Container が Broadcast を届けたときに呼ばれます。状態の更新や Event の発行ができます。
 
 ```kotlin
 override fun onReceive(broadcast: MyBroadcast) {

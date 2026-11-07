@@ -1,6 +1,6 @@
-# Container
+# Host と Container
 
-`PulseContainer` は 1 つ以上の ViewModel の上に位置します。**Broadcast**、**Unicast の処理**、**View Refresh** の 3 つの調整機能を提供します。
+デスクトップだけのものです。デスクトップのウィンドウにはいくつもの Content が同時に並び、`PulseContainer` はそれらの ViewModel の上に位置して、協調できるようにします。Host がそれを作り、Content を `PulseHost` で包みます。**Broadcast**、**Unicast の処理**、**View Refresh** の 3 つの調整機能を提供します。
 
 ## Container を作る
 

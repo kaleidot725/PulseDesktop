@@ -1,8 +1,10 @@
-# モバイル
+# モバイルの Screen
 
-`mvi-mobile` は、Android と iOS の Compose 向けの `mvi` アーティファクトです。スマートフォンは一度に 1 つの画面を表示し、その画面には ViewModel が 1 つあれば足りることがほとんどです。そこで、このアーティファクトは ViewModel 1 つに必要なものだけを持ちます。
+`mvi-mobile` は、Android と iOS の Compose Multiplatform 向けの、PulsePlatform の MVI アーティファクトです。スマートフォンは一度に 1 つの画面を表示し、そこには ViewModel が 1 つあれば足ります。そこでモバイルの feature は、ViewModel を 1 つ結びつける **Screen** 1 つになります。複数の ViewModel を調整する Container はなく、Container のためだけにあるものはアーティファクトから外しています。ルールはこの形を [`assertPulseMobileConventions()`](/ja/guide/rules/ui#モバイル) で検査します。
 
 ## アーティファクトが持つもの
+
+パッケージはデスクトップと同じ `jp.kaleidot725.pulse.mvi` で、残したものの振る舞いも同じです。`onSetup` は `PulseContent` が ViewModel を初めて監視したときに実行され、`cancel` と `close` はそこで始めた処理を終わらせ、Event は UI が収集するまでバッファされます。`PulseViewModel` の型パラメータは 5 つではなく 3 つで、`onReceive` と `unicast` はありません。
 
 | 残したもの | 外したもの |
 |---|---|
@@ -10,32 +12,9 @@
 | `PulseViewModel<State, Action, Event>` | `PulseContainer` |
 | `PulseContent` | `PulseHost` |
 
-パッケージは同じ `jp.kaleidot725.pulse.mvi` で、残したものの振る舞いも同じです。
+## Screen
 
-- `onSetup` は `PulseContent` が ViewModel を初めて監視したときに実行されます
-- `cancel` と `close` は、そこで始めた処理を終わらせます
-- Event は UI が収集するまでバッファされます
-
-`PulseViewModel` の型パラメータは 5 つではなく 3 つで、`onReceive` と `unicast` はありません。
-
-## インストール
-
-このアーティファクトは Kotlin Multiplatform で、Android（`minSdk` 26）、`iosArm64`、`iosSimulatorArm64` のターゲットを持ちます。デスクトップ向けと同じように `settings.gradle.kts` に JitPack を追加します。Compose Multiplatform のプロジェクトでは `commonMain` から `mvi-mobile` に依存すれば、Gradle がターゲットごとに Android 版か iOS 版を選びます。Android だけのアプリでも、同じように `dependencies` に追加します。
-
-```kotlin
-// build.gradle.kts
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
-        }
-    }
-}
-```
-
-## 画面の例
-
-画面は、アプリで ViewModel を作っている手段で ViewModel を作ります。lifecycle-viewmodel-compose の `viewModel()`（Android でも iOS でも使えます）、`koinViewModel()`、Navigation 3 のエントリの ViewModel デコレータなどです。それを `PulseContent` で結びつけます。戻るなど画面の外に出ていく Event は、画面のコールバックにします。
+Screen はルートが表示するもので、ViewModel と UI が出会う唯一の場所です。アプリで ViewModel を作っている手段で ViewModel を作ります。Android でも iOS でも使える lifecycle-viewmodel-compose の `viewModel()`、`koinViewModel()`、Navigation 3 のエントリの ViewModel デコレータなどです。それを `PulseContent` で結びつけ、State とコールバックを Section に渡し、戻るなど画面の外に出ていく Event を自分のコールバックに変えます。こうすると、画面遷移は Screen を表示する側に残ります。
 
 ```kotlin
 @Composable
@@ -54,6 +33,12 @@ fun CounterScreen(onBack: () -> Unit) {
 }
 ```
 
-## アーキテクチャ検査
+## ViewModel の寿命
 
-`architecture` アーティファクトは、モバイルのアプリを `assertPulseMobileConventions()` で検査します。feature は上の Screen とその ViewModel を 1 つのパッケージに置き、その下に `section` と `component` を置いたものです。JVM で動くので、Android のユニットテストか JVM のテストモジュールから呼びます。`commonMain` や `iosMain` も読みます。ルールは [モバイルの View](/ja/guide/architecture-checks#モバイルの-view) にあります。
+`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、Android でも iOS でも、それを保持する `ViewModelStoreOwner` が寿命を決めます。Screen で呼んだ `viewModel()` は、スコープにあるオーナー（Android では Activity やナビゲーションのエントリ、iOS では Compose が用意するオーナー）に ViewModel を保持します。Android の構成変更ではインスタンスが再利用されるので、`onSetup` は再実行されず、State もそのままです。画面を完全に離れるとオーナーがクリアされ、`onCleared` が ViewModel の始めた処理をキャンセルします。
+
+## 次のステップ
+
+- [モバイルのクイックスタート](/ja/guide/getting-started-mobile) — カウンター画面を作って検査する
+- [UI の構成のルール](/ja/guide/rules/ui#モバイル) — モバイルの配置をルールごとに
+- [ViewModel](/ja/guide/viewmodel) — State、Action、Event とライフサイクルフック

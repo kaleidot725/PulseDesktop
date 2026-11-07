@@ -1,8 +1,8 @@
-# Architecture checks
+# Rules
 
-Everything on this page lives in the optional `architecture` artifact. The package is `jp.kaleidot725.pulse.architecture`, and every declaration is an extension of Konsist's `KoScope`.
+Everything on this page lives in the `architecture` artifact. The package is `jp.kaleidot725.pulse.architecture`, and every declaration is an extension of Konsist's `KoScope`.
 
-For what the checks mean and why they exist, see the [architecture checks guide](/guide/architecture-checks).
+For what the checks mean and why they exist, see the [Rules guide](/guide/rules/).
 
 ## assertPulseMviConventions
 
@@ -326,5 +326,5 @@ The assertions work on any `KoScope`, so the choice of scope decides what is che
 
 ## Next steps
 
-- [Architecture checks guide](/guide/architecture-checks) — setup and the reasoning behind each check
+- [Rules guide](/guide/rules/) — setup and the reasoning behind each check
 - [Marker Interfaces](/api/interfaces) — the types the checks are about

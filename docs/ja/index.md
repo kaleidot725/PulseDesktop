@@ -3,36 +3,36 @@ layout: home
 
 hero:
   name: PulsePlatform
-  text: デスクトップ、Android、iOS の Compose のフレームワーク
-  tagline: ウィンドウを Host・Content・Section・Component に分け、Content ごとに ViewModel を持たせ、1 つの Container でまとめて動かします。
+  text: AI エージェントが作る Compose UI のためのルールと部品
+  tagline: テストで実行するルールと、どの画面も同じ形にするライブラリ。デスクトップにも、Android と iOS にも。
   actions:
     - theme: brand
-      text: はじめる
-      link: /ja/guide/getting-started
-    - theme: alt
       text: PulsePlatform とは
       link: /ja/guide/
     - theme: alt
-      text: GitHub で見る
-      link: https://github.com/kaleidot725/PulsePlatform
+      text: デスクトップのクイックスタート
+      link: /ja/guide/getting-started
+    - theme: alt
+      text: モバイルのクイックスタート
+      link: /ja/guide/getting-started-mobile
 
 features:
-  - icon: 🪟
-    title: ウィンドウのための設計
-    details: デスクトップのウィンドウには、いくつものパネルが同時に並びます。ViewModel は画面ごとではなく、Content ごとに持たせます。
-  - icon: 🧩
-    title: Host・Content・Section・Component
-    details: ウィンドウの分け方が決まっています。Host が Content を並べ、Content が ViewModel を 1 つ束ね、Section と Component はデータとコールバックだけを受け取ります。
-  - icon: 📡
-    title: Content どうしの連携
-    details: Container がすべての Content に Broadcast し、Content は Unicast で Container に伝えます。Refresh は状態を保ったまま View を作り直します。
-  - icon: 🔁
-    title: 単方向の状態
-    details: State・Action・Event による MVI です。状態は update で変わり、StateFlow として UI に届きます。
-  - icon: 🧭
-    title: Navigation 3 の寿命
-    details: navigation アーティファクトが ViewModel と Container の寿命をバックスタックのエントリに結びつけます。覆われている間もルートの状態は残ります。
   - icon: ✅
-    title: 規約をテストで守る
-    details: architecture アーティファクトが、状態の規約、Host・Content・Section・Component の分け方、Repository、モジュール間の依存、Koin を Konsist で検査します。自分のテストに 1 本足すだけです。
+    title: 実行できるルール
+    details: UI の構成、State、Repository、モジュール間の依存、Koin、文言を、自分のテストスイートの 1 本のテストで検査します。失敗するとファイルの名前と直し方が示されます。
+  - icon: 🤖
+    title: AI エージェントのために
+    details: エージェントはコードを書き、テストを実行し、何をどこへ動かすかを読みます。「アーキテクチャに従って」を、通すべき検査に変えます。
+  - icon: 🧩
+    title: どの画面も同じ形に
+    details: Section と Component はデータとコールバックだけを受け取り、ViewModel を結びつける場所は 1 つです。ルールが求める部品をライブラリが持っているので、正しい構成がいちばん書きやすい構成になります。
+  - icon: 🪟
+    title: デスクトップのウィンドウ
+    details: ウィンドウにはいくつものパネルが同時に並びます。Content ごとに ViewModel を持ち、Container がその間で Broadcast を届け、状態を保ったまま View を作り直します。
+  - icon: 📱
+    title: Android と iOS
+    details: スマートフォンでは 1 つの画面に ViewModel が 1 つです。mvi-mobile はそれだけを持ち、Android と iOS の Compose Multiplatform で、同じルールのもとで動きます。
+  - icon: 🔁
+    title: 一方向の状態
+    details: State・Action・Event による MVI です。State は update で変わり、StateFlow として UI に届きます。どのプラットフォームでも同じです。
 ---

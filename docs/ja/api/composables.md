@@ -13,7 +13,7 @@ fun <Broadcast : PulseBroadcast, Unicast : PulseUnicast> PulseHost(
 )
 ```
 
-`PulseContainer` をこのサブツリーにスコープします。自身は UI を描画せず、役割は 2 つです。Container のキーを公開して、内側の `PulseContent` が `container.refresh()` に反応できるようにします。コンテンツブロックには `onRefresh` と `onBroadcast` を渡します。
+デスクトップだけのものです。`PulseContainer` をこのサブツリーにスコープします。自身は UI を描画せず、役割は 2 つです。Container のキーを公開して、内側の `PulseContent` が `container.refresh()` に反応できるようにします。コンテンツブロックには `onRefresh` と `onBroadcast` を渡します。
 
 アプリには複数置くことができます。デモでは、Container を所有する各 destination がそれぞれ自分の `PulseHost` を持っています。
 
@@ -60,7 +60,7 @@ PulseContent(
 )
 ```
 
-`PulseViewModel` を観測し、コンテンツブロックに状態と Action のディスパッチャを渡します。インスタンスを最初に観測したときに `onSetup()` を実行しますが、キャンセルは行いません。
+`PulseViewModel` を観測し、コンテンツブロックに状態と Action のディスパッチャを渡します。インスタンスを最初に観測したときに `onSetup()` を実行しますが、キャンセルは行いません。`mvi-mobile` では型パラメータ 3 つの `PulseViewModel<State, Action, Event>` を受け取り、`PulseHost` がないので Refresh でコンテンツを作り直すこともありません。
 
 1 つのインスタンスは、同時に 1 つの `PulseContent` からだけ観測してください。`event` は単一消費者のチャネルです。
 

@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PulsePlatform is a Kotlin MVI (Model-View-Intent) library for Compose Desktop, Android and iOS. Its desktop artifacts
+PulsePlatform is a rule set and a library for Compose UIs that AI agents build, on the desktop and
+on Android and iOS. The rules (the `architecture` artifact) are Konsist assertions an app runs from
+its own tests, and their failure messages say what to move where; the library (`mvi`, `mvi-mobile`,
+`navigation`) holds the MVI pieces those rules expect. The docs present the rules first and the
+library second.
+
+The library is Kotlin MVI (Model-View-Intent). Its desktop artifacts
 publish a JVM target only. Android and iOS get a separate artifact, `mvi-mobile`, a Kotlin
 Multiplatform module (Android, `iosArm64`, `iosSimulatorArm64`) that keeps `PulseState`, `PulseAction`, `PulseEvent`, `PulseViewModel<State, Action, Event>` and
 `PulseContent` in the same package and leaves out the Container, `PulseHost`, Broadcast and Unicast,

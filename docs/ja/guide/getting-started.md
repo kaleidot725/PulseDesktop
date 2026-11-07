@@ -1,13 +1,14 @@
-# はじめかた
+# デスクトップのクイックスタート
 
-このガイドでは、PulsePlatform でシンプルなカウンターアプリを作る手順を追います。
+このガイドでは、Compose Desktop でカウンターのウィンドウを作ります。Host、Content 1 つ、Container からなり、最後にルールで検査します。Android と iOS については [モバイルのクイックスタート](/ja/guide/getting-started-mobile) を参照してください。
 
-ViewModel の生成には `navigation` が追加する `rememberPulseViewModel` を使うので、`mvi` と一緒に追加してください。`mvi` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
+ViewModel の生成には `navigation` が追加する `rememberPulseViewModel` を使うので、`mvi` と一緒に追加し、ルールはテストに追加してください。`mvi` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ```kotlin
 dependencies {
     implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
     implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 
@@ -217,9 +218,23 @@ fun main() = application {
 }
 ```
 
+## 6. ルールで検査する
+
+1 本のテストで、プロジェクト全体にルールを実行します。手順 1 と手順 4 のとおりにファイルを置いていれば通ります。Host と Container は feature のルートに、Content とその ViewModel は `content/counter` に置きます。`./gradlew test` で実行し、失敗するとファイルの名前と直し方が示されます。このカウンターは短く保つためにラベルをリテラルで書いているので、UI の構成のルールだけを実行します。実際のアプリでは、ラベルを文字列リソースへ移す文言のルールなど、[ほかのグループ](/ja/guide/rules/) も加えます。
+
+```kotlin
+class PulsePlatformConventionTest {
+    @Test
+    fun `follows the PulsePlatform conventions`() {
+        val scope = Konsist.scopeFromProduction()
+        scope.assertPulseMviConventions()
+    }
+}
+```
+
 ## デモを動かす
 
-リポジトリにはパルスグリッドのデモが含まれています。4 つのエリアが 1 つの Container を共有しています。1 つをタップすると、辺を共有する 2 つに波及します。デモは app、feature、`core` 配下の domain・data・designsystem に分かれ、Koin で組み立て、カウントを DataStore に保存します。[アーキテクチャ検査](/ja/guide/architecture-checks) が想定する構成で、すべての検査を通ります。リポジトリをクローンして実行してください。
+リポジトリにはパルスグリッドのデモが含まれています。4 つのエリアが 1 つの Container を共有しています。1 つをタップすると、辺を共有する 2 つに波及します。デモは app、feature、`core` 配下の domain・data・designsystem に分かれ、Koin で組み立て、カウントを DataStore に保存します。[ルール](/ja/guide/rules/) が想定する構成で、すべてのルールを通ります。リポジトリをクローンして実行してください。
 
 ```bash
 ./gradlew :demo:app:run
@@ -227,7 +242,8 @@ fun main() = application {
 
 ## 次のステップ
 
-- [アーキテクチャ](/ja/guide/architecture) — データフローを深く理解する
+- [UI の構成のルール](/ja/guide/rules/ui) — テストが検査するすべてのルール
+- [MVI](/ja/guide/mvi) — データフローを深く理解する
 - [ViewModel](/ja/guide/viewmodel) — ViewModel の応用パターン
-- [Container](/ja/guide/container) — 複数の ViewModel を調整する
+- [Host と Container](/ja/guide/container) — 複数の ViewModel を調整する
 - [Navigation 3](/ja/guide/navigation3) — バックスタックにスコープされたライフタイムの仕組み

@@ -13,9 +13,21 @@ abstract class PulseViewModel<
 )
 ```
 
-Abstract base class for managing the UI state of a single content.
+Abstract base class that holds the UI state of a content on the desktop, or of a screen on mobile.
 
-Use `unicast()` when the ViewModel needs to send messages up to its parent Container.
+The signature above is the desktop's, in `mvi`. In `mvi-mobile` the class takes three type parameters, and `unicast`, `onReceive()` and `unicast()` do not exist; everything else on this page is the same. Use `unicast()` on the desktop when the ViewModel needs to send messages up to its parent Container.
+
+```kotlin
+// mvi-mobile
+abstract class PulseViewModel<
+    UiState : PulseState,
+    UiAction : PulseAction,
+    Event : PulseEvent,
+>(
+    initialUiState: UiState,
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
+)
+```
 
 ## Properties
 
@@ -56,7 +68,7 @@ event goes to a single collector and is consumed; it is not replayed to later co
 val unicast: SharedFlow<Unicast>
 ```
 
-A hot stream of child-to-parent unicasts emitted via `unicast()`.
+Desktop only. A hot stream of child-to-parent unicasts emitted via `unicast()`.
 
 ---
 
@@ -102,7 +114,7 @@ Called each time the UI dispatches an action. Launch coroutines for async work h
 open fun onReceive(broadcast: Broadcast)
 ```
 
-Called when the parent `PulseContainer` delivers a broadcast. Default implementation does nothing.
+Desktop only. Called when the parent `PulseContainer` delivers a broadcast. Default implementation does nothing.
 
 ---
 
@@ -142,7 +154,7 @@ oldest event is dropped.
 fun unicast(unicast: Unicast)
 ```
 
-Emits a child-to-parent message. The parent `PulseContainer` collects the ViewModel's `unicast` flow and receives the message through `onReceived()`.
+Desktop only. Emits a child-to-parent message. The parent `PulseContainer` collects the ViewModel's `unicast` flow and receives the message through `onReceived()`.
 
 ---
 

@@ -15,7 +15,7 @@ export default withMermaid(defineConfig({
     root: {
       label: 'English',
       lang: 'en',
-      description: 'A framework for Compose apps on the desktop, Android and iOS',
+      description: 'Rules and building blocks for Compose UIs that AI agents build, on the desktop, Android and iOS',
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/', activeMatch: '/guide/' },
@@ -28,25 +28,41 @@ export default withMermaid(defineConfig({
               text: 'Introduction',
               items: [
                 { text: 'What is PulsePlatform?', link: '/guide/' },
-                { text: 'Getting Started', link: '/guide/getting-started' },
+                { text: 'Desktop quick start', link: '/guide/getting-started' },
+                { text: 'Mobile quick start', link: '/guide/getting-started-mobile' },
+                { text: 'Building with AI agents', link: '/guide/ai-agents' },
               ],
             },
             {
-              text: 'Core Concepts',
+              text: 'Rules',
               items: [
-                { text: 'Architecture', link: '/guide/architecture' },
+                { text: 'Overview', link: '/guide/rules/' },
+                { text: 'UI structure', link: '/guide/rules/ui' },
+                { text: 'Domain and data', link: '/guide/rules/domain' },
+                { text: 'Modules and Koin', link: '/guide/rules/modules' },
+                { text: 'Text', link: '/guide/rules/text' },
+              ],
+            },
+            {
+              text: 'Library',
+              items: [
+                { text: 'MVI', link: '/guide/mvi' },
                 { text: 'ViewModel', link: '/guide/viewmodel' },
-                { text: 'Container', link: '/guide/container' },
+              ],
+            },
+            {
+              text: 'Desktop',
+              items: [
+                { text: 'Host and Container', link: '/guide/container' },
                 { text: 'Broadcast', link: '/guide/broadcast' },
                 { text: 'Unicast', link: '/guide/unicast' },
+                { text: 'Navigation 3', link: '/guide/navigation3' },
               ],
             },
             {
-              text: 'Extensions',
+              text: 'Mobile',
               items: [
-                { text: 'Navigation 3', link: '/guide/navigation3' },
-                { text: 'Architecture checks', link: '/guide/architecture-checks' },
-                { text: 'Mobile', link: '/guide/mobile' },
+                { text: 'Screens', link: '/guide/mobile' },
               ],
             },
           ],
@@ -55,17 +71,22 @@ export default withMermaid(defineConfig({
               text: 'API Reference',
               items: [
                 { text: 'Overview', link: '/api/' },
+                { text: 'Rules', link: '/api/rules' },
+              ],
+            },
+            {
+              text: 'Library',
+              items: [
                 { text: 'PulseViewModel', link: '/api/pulse-viewmodel' },
-                { text: 'PulseContainer', link: '/api/pulse-container' },
                 { text: 'Composables', link: '/api/composables' },
                 { text: 'Marker Interfaces', link: '/api/interfaces' },
               ],
             },
             {
-              text: 'Extensions',
+              text: 'Desktop',
               items: [
+                { text: 'PulseContainer', link: '/api/pulse-container' },
                 { text: 'Navigation 3', link: '/api/navigation3' },
-                { text: 'Architecture checks', link: '/api/architecture' },
               ],
             },
           ],
@@ -84,7 +105,7 @@ export default withMermaid(defineConfig({
       label: '日本語',
       lang: 'ja',
       link: '/ja/',
-      description: 'デスクトップ、Android、iOS の Compose アプリのためのフレームワーク',
+      description: 'AI エージェントが作る Compose UI のためのルールと部品。デスクトップ、Android、iOS に対応',
       themeConfig: {
         nav: [
           { text: 'ガイド', link: '/ja/guide/', activeMatch: '/ja/guide/' },
@@ -97,25 +118,41 @@ export default withMermaid(defineConfig({
               text: 'はじめに',
               items: [
                 { text: 'PulsePlatform とは', link: '/ja/guide/' },
-                { text: 'はじめかた', link: '/ja/guide/getting-started' },
+                { text: 'デスクトップのクイックスタート', link: '/ja/guide/getting-started' },
+                { text: 'モバイルのクイックスタート', link: '/ja/guide/getting-started-mobile' },
+                { text: 'AI エージェントと作る', link: '/ja/guide/ai-agents' },
               ],
             },
             {
-              text: 'コアコンセプト',
+              text: 'ルール',
               items: [
-                { text: 'アーキテクチャ', link: '/ja/guide/architecture' },
+                { text: '概要', link: '/ja/guide/rules/' },
+                { text: 'UI の構成', link: '/ja/guide/rules/ui' },
+                { text: 'ドメインとデータ', link: '/ja/guide/rules/domain' },
+                { text: 'モジュールと Koin', link: '/ja/guide/rules/modules' },
+                { text: '文言', link: '/ja/guide/rules/text' },
+              ],
+            },
+            {
+              text: 'ライブラリ',
+              items: [
+                { text: 'MVI', link: '/ja/guide/mvi' },
                 { text: 'ViewModel', link: '/ja/guide/viewmodel' },
-                { text: 'Container', link: '/ja/guide/container' },
+              ],
+            },
+            {
+              text: 'デスクトップ',
+              items: [
+                { text: 'Host と Container', link: '/ja/guide/container' },
                 { text: 'Broadcast', link: '/ja/guide/broadcast' },
                 { text: 'Unicast', link: '/ja/guide/unicast' },
+                { text: 'Navigation 3', link: '/ja/guide/navigation3' },
               ],
             },
             {
-              text: '拡張',
+              text: 'モバイル',
               items: [
-                { text: 'Navigation 3', link: '/ja/guide/navigation3' },
-                { text: 'アーキテクチャ検査', link: '/ja/guide/architecture-checks' },
-                { text: 'モバイル', link: '/ja/guide/mobile' },
+                { text: 'Screen', link: '/ja/guide/mobile' },
               ],
             },
           ],
@@ -124,17 +161,22 @@ export default withMermaid(defineConfig({
               text: 'API リファレンス',
               items: [
                 { text: '概要', link: '/ja/api/' },
+                { text: 'ルール', link: '/ja/api/rules' },
+              ],
+            },
+            {
+              text: 'ライブラリ',
+              items: [
                 { text: 'PulseViewModel', link: '/ja/api/pulse-viewmodel' },
-                { text: 'PulseContainer', link: '/ja/api/pulse-container' },
                 { text: 'Composable', link: '/ja/api/composables' },
                 { text: 'マーカーインターフェース', link: '/ja/api/interfaces' },
               ],
             },
             {
-              text: '拡張',
+              text: 'デスクトップ',
               items: [
+                { text: 'PulseContainer', link: '/ja/api/pulse-container' },
                 { text: 'Navigation 3', link: '/ja/api/navigation3' },
-                { text: 'アーキテクチャ検査', link: '/ja/api/architecture' },
               ],
             },
           ],
