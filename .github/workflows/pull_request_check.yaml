@@ -30,7 +30,7 @@ jobs:
           gem install --conservative danger danger-junit danger-checkstyle_format
       - name: Run test
         run: |
-          ./gradlew allTests :library:mvi-mobile:testDebugUnitTest
+          ./gradlew allTests :library:mvi-mobile:testDebugUnitTest :library:navigation-mobile:testDebugUnitTest
         continue-on-error: true
       - name: Run ktlint
         run: |
@@ -57,4 +57,4 @@ jobs:
           java-version: '17'
       - name: Run iOS tests
         run: |
-          ./gradlew :library:mvi-mobile:iosSimulatorArm64Test
+          ./gradlew :library:mvi-mobile:iosSimulatorArm64Test :library:navigation-mobile:iosSimulatorArm64Test
