@@ -1,11 +1,11 @@
 # Navigation 3
 
 Two optional artifacts tie a `PulseViewModel`'s lifetime to a Navigation 3 back stack entry:
-`navigation` for the desktop, beside `mvi`, and `navigation-mobile` for Android and iOS, beside
+`navigation-desktop` for the desktop, beside `mvi-desktop`, and `navigation-mobile` for Android and iOS, beside
 `mvi-mobile`. They share a package and an API, except that only the desktop one has
 `rememberPulseContainer`, since mobile has no Container. Everything on this page applies to both.
 
-The `mvi` artifact has no opinion about lifetime. `PulseViewModel` is an
+Neither `mvi-desktop` nor `mvi-mobile` has an opinion about lifetime. `PulseViewModel` is an
 `androidx.lifecycle.ViewModel`, so whichever `ViewModelStore` holds it decides how long it lives.
 This artifact supplies a store per back stack entry, and the composables that put a ViewModel into
 it.

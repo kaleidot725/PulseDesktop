@@ -1,6 +1,6 @@
 # API 概要
 
-PulsePlatform は役割ごとに 1 つのパッケージを公開しています。ルールは `jp.kaleidot725.pulse.architecture`（`architecture` アーティファクト）にあります。ライブラリは `jp.kaleidot725.pulse.mvi` にあり、デスクトップ向けに `mvi`、Android と iOS 向けに `mvi-mobile` として公開しています。Navigation 3 対応は `jp.kaleidot725.pulse.navigation` にあり、`navigation` と `navigation-mobile` として公開しています。
+PulsePlatform は役割ごとに 1 つのパッケージを公開しています。ルールは `jp.kaleidot725.pulse.architecture`（`architecture` アーティファクト）にあります。ライブラリは `jp.kaleidot725.pulse.mvi` にあり、デスクトップ向けに `mvi-desktop`、Android と iOS 向けに `mvi-mobile` として公開しています。Navigation 3 対応は `jp.kaleidot725.pulse.navigation` にあり、`navigation-desktop` と `navigation-mobile` として公開しています。
 
 ## ルール
 
@@ -33,7 +33,7 @@ PulsePlatform は役割ごとに 1 つのパッケージを公開しています
 
 ## ライブラリ
 
-`PulseViewModel`、`PulseContent`、次の 3 つのマーカーは `mvi` と `mvi-mobile` の両方に、Navigation 3 の 2 つの Composable は `navigation` と `navigation-mobile` の両方にあります。モバイルの `PulseViewModel` は型パラメータを 5 つではなく 3 つ取ります。
+`PulseViewModel`、`PulseContent`、次の 3 つのマーカーは `mvi-desktop` と `mvi-mobile` の両方に、Navigation 3 の 2 つの Composable は `navigation-desktop` と `navigation-mobile` の両方にあります。モバイルの `PulseViewModel` は型パラメータを 5 つではなく 3 つ取ります。
 
 | 宣言 | 説明 |
 |---|---|
@@ -47,7 +47,7 @@ PulsePlatform は役割ごとに 1 つのパッケージを公開しています
 
 ## デスクトップ
 
-`mvi` と `navigation` だけにあるものです。
+`mvi-desktop` と `navigation-desktop` だけにあるものです。
 
 | 宣言 | 説明 |
 |---|---|

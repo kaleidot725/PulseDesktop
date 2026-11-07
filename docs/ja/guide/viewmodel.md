@@ -111,7 +111,7 @@ override fun onAction(uiAction: MyAction) {
 ViewModel を素の `remember` で持つと誰も破棄しないので、自分でキャンセルしてください。Container も同様です。
 
 ::: warning
-この場合、ViewModel はこのコンポジションと同じ長さだけ生きます。離れて戻ってくると新しいインスタンスが作られ、状態は失われます。それが問題になるなら `navigation` を追加してください。
+この場合、ViewModel はこのコンポジションと同じ長さだけ生きます。離れて戻ってくると新しいインスタンスが作られ、状態は失われます。それが問題になるなら `navigation-desktop` を追加してください。
 :::
 
 ```kotlin

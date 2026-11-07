@@ -2,14 +2,14 @@
 
 This guide builds a counter window with Compose Desktop: a host, one content and a Container, checked by the rules at the end. For Android and iOS, see the [mobile quick start](/guide/getting-started-mobile).
 
-It creates the ViewModel with `rememberPulseViewModel`, which the `navigation` artifact adds, so that
-one goes in alongside `mvi`, and the rules go in the tests. To drive the lifecycle yourself with `mvi` alone, see
+It creates the ViewModel with `rememberPulseViewModel`, which the `navigation-desktop` artifact adds, so that
+one goes in alongside `mvi-desktop`, and the rules go in the tests. To drive the lifecycle yourself with `mvi-desktop` alone, see
 [ViewModel](/guide/viewmodel).
 
 ```kotlin
 dependencies {
-    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi-desktop:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation-desktop:<version>")
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```

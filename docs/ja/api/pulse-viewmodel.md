@@ -15,7 +15,7 @@ abstract class PulseViewModel<
 
 デスクトップでは Content の、モバイルでは Screen の UI 状態を持つ抽象基底クラスです。
 
-上のシグネチャは `mvi` のデスクトップ版です。`mvi-mobile` では型パラメータが 3 つで、`unicast`、`onReceive()`、`unicast()` はありません。このページのほかの内容は同じです。デスクトップで親の Container へメッセージを送る必要があるときは `unicast()` を使います。
+上のシグネチャは `mvi-desktop` のデスクトップ版です。`mvi-mobile` では型パラメータが 3 つで、`unicast`、`onReceive()`、`unicast()` はありません。このページのほかの内容は同じです。デスクトップで親の Container へメッセージを送る必要があるときは `unicast()` を使います。
 
 ```kotlin
 // mvi-mobile

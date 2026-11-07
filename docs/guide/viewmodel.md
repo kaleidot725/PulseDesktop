@@ -114,7 +114,7 @@ Container needs the same treatment.
 
 ::: warning
 The ViewModel then lives exactly as long as this composition. Leaving and re-entering it builds a
-new instance, and its state is lost. Add `navigation` when that matters.
+new instance, and its state is lost. Add `navigation-desktop` when that matters.
 :::
 
 ```kotlin

@@ -27,7 +27,7 @@ A desktop window shows a sidebar, an editor and an inspector at once. Each is a 
 
 | | Desktop | Mobile |
 |---|---|---|
-| Artifact | `mvi` | `mvi-mobile` |
+| Artifact | `mvi-desktop` | `mvi-mobile` |
 | Targets | JVM (Compose Desktop) | Android, iOS (Compose Multiplatform) |
 | A feature is | a host, its contents, and a Container | one screen and one ViewModel |
 | Binds a ViewModel | each content | the screen |
@@ -57,9 +57,9 @@ PulsePlatform is published on JitPack as five artifacts. Use the rules on every 
 | Artifact | Role | Platforms |
 |---|---|---|
 | `architecture` | the rules, as Konsist assertions for your tests | runs on the JVM; checks desktop and mobile code |
-| `mvi` | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces | desktop |
+| `mvi-desktop` | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces | desktop |
 | `mvi-mobile` | `PulseViewModel`, `PulseContent` and three marker interfaces | Android, iOS |
-| `navigation` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
+| `navigation-desktop` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
 | `navigation-mobile` | ties ViewModels to a Navigation 3 back stack entry | Android, iOS |
 
 ## Installation
@@ -78,8 +78,8 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts — desktop
 dependencies {
-    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi-desktop:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation-desktop:<version>")
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```

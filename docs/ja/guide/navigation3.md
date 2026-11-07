@@ -1,8 +1,8 @@
 # Navigation 3
 
-`PulseViewModel` の寿命を Navigation 3 のバックスタックエントリに結びつける任意のアーティファクトが 2 つあります。デスクトップ向けに `mvi` と並ぶ `navigation`、Android と iOS 向けに `mvi-mobile` と並ぶ `navigation-mobile` です。パッケージと API は同じですが、モバイルには Container がないので、`rememberPulseContainer` はデスクトップ版だけにあります。このページの内容はどちらにも当てはまります。
+`PulseViewModel` の寿命を Navigation 3 のバックスタックエントリに結びつける任意のアーティファクトが 2 つあります。デスクトップ向けに `mvi-desktop` と並ぶ `navigation-desktop`、Android と iOS 向けに `mvi-mobile` と並ぶ `navigation-mobile` です。パッケージと API は同じですが、モバイルには Container がないので、`rememberPulseContainer` はデスクトップ版だけにあります。このページの内容はどちらにも当てはまります。
 
-`mvi` は寿命について何も決めていません。`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、それを保持している `ViewModelStore` が寿命を決めます。このアーティファクトが提供するのは、バックスタックエントリごとのストアと、ViewModel をそこに入れる Composable です。
+`mvi-desktop` も `mvi-mobile` も寿命については何も決めていません。`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、それを保持している `ViewModelStore` が寿命を決めます。このアーティファクトが提供するのは、バックスタックエントリごとのストアと、ViewModel をそこに入れる Composable です。
 
 組み込みの手順は [デスクトップのクイックスタート 手順 5](/ja/guide/getting-started#_5-viewmodel-を-navigation-3-の-destination-にスコープする) と [モバイルの Screen](/ja/guide/mobile#navigation-3-と使う) にあります。このページでは、その手順が何をしているかを解説します。
 

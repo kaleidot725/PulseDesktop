@@ -32,9 +32,9 @@ so a mobile feature is one **screen** binding one ViewModel. On both, **sections
 | Artifact | Role | Platforms |
 |---|---|---|
 | `architecture` | the rules, as [Konsist](https://docs.konsist.lemonappdev.com/) assertions for your tests | checks desktop and mobile code |
-| `mvi` | `PulseViewModel`, `PulseContent`, and the `PulseContainer` and `PulseHost` that let a window's contents work together | desktop |
+| `mvi-desktop` | `PulseViewModel`, `PulseContent`, and the `PulseContainer` and `PulseHost` that let a window's contents work together | desktop |
 | `mvi-mobile` | `PulseViewModel` and `PulseContent`, one ViewModel per screen | Android, iOS |
-| `navigation` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
+| `navigation-desktop` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
 | `navigation-mobile` | ties ViewModels to a Navigation 3 back stack entry | Android, iOS |
 
 ## Installation
@@ -52,8 +52,8 @@ dependencyResolutionManagement {
 
 // build.gradle.kts — desktop
 dependencies {
-    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi-desktop:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation-desktop:<version>")
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 

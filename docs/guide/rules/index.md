@@ -1,6 +1,6 @@
 # Rules
 
-The rules are what PulsePlatform asks of the code around it, written as [Konsist](https://docs.konsist.lemonappdev.com/) assertions that your own test suite runs. They are published as the `architecture` artifact and run on the JVM, so they check desktop apps and the Kotlin of Android and iOS apps alike. They recognise the Pulse types by their fully qualified names and depend on neither `mvi` nor `mvi-mobile`, so adding them to a mobile app's tests puts no desktop classes on the classpath.
+The rules are what PulsePlatform asks of the code around it, written as [Konsist](https://docs.konsist.lemonappdev.com/) assertions that your own test suite runs. They are published as the `architecture` artifact and run on the JVM, so they check desktop apps and the Kotlin of Android and iOS apps alike. They recognise the Pulse types by their fully qualified names and depend on neither `mvi-desktop` nor `mvi-mobile`, so adding them to a mobile app's tests puts no desktop classes on the classpath.
 
 The compiler already rejects what the types can express: a ViewModel must implement `onAction`, and its message types must be the ones its Container knows. The rules cover what the types cannot, each a habit with a consequence that is easy to miss in review and easy for an AI agent to drift from. A failure names the file or declaration and says how to fix it, so a person or an agent can act on it without opening this site.
 
