@@ -4,11 +4,12 @@
 
 型で表せることはコンパイラが弾きます。ViewModel は `onAction` を実装しなければならず、メッセージの型は Container が知っているものに限られます。残るのは型で表せない書き方の習慣で、どれもレビューで見落としやすいものです。
 
-検査は 5 つのグループに分かれていて、グループごとにアサートが 1 つあります。どのグループも単独で使えます。
+検査は 5 つのグループに分かれていて、グループごとにアサートが 1 つあります。View のグループには、モバイルアプリ向けのアサートがもう 1 つあります。どのグループも単独で使えます。
 
 | アサート | 検査する内容 |
 |---|---|
 | `assertPulseMviConventions()` | State とメッセージの型と置き場所、ViewModel と Container の名前と置き場所、feature を Host・Content・Section・Component に分けること、すべての Section と Component に Preview があること |
+| `assertPulseMobileConventions()` | [`mvi-mobile`](/ja/guide/mobile) で作ったアプリ向けの `assertPulseMviConventions()`。feature は Screen 1 つと ViewModel 1 つ |
 | `assertPulseDomainConventions()` | Repository がデータをどう公開するか、UseCase を作ってよいのはどんなときか |
 | `assertPulseModuleConventions()` | どのモジュールがどのモジュールに依存してよいか、domain と data の中のパッケージ |
 | `assertPulseKoinConventions()` | Koin のモジュールをどこで定義するか |
@@ -97,6 +98,31 @@ Preview は名前で Section や Component と対応付けます。`<Name>_Previ
 | `PulseTextButton_Preview_Disabled` | する |
 | `PulseTextButton_Preview_Disabled_Dark` | する |
 | `PulseTextButtonPreview` | しない |
+
+### モバイルの View
+
+[`mvi-mobile`](/ja/guide/mobile) で作ったアプリでは、`assertPulseMviConventions()` の代わりに `assertPulseMobileConventions()` を呼びます。スマートフォンは一度に 1 つの画面を表示し、`mvi-mobile` には Container がないので、feature は **Screen** 1 つと ViewModel 1 つです。Host も `content` パッケージもありません。feature のルートは ViewModel があるパッケージです。Screen も同じパッケージの `…Screen` という名前のファイルに置き、`PulseContent` で ViewModel を結びつけます。Section と Component はデスクトップと同じで、ルートの下に置けるパッケージは `section` と `component` だけです。
+
+```
+counter/
+├── CounterScreen.kt       # Screen: CounterViewModel を PulseContent で結びつける
+├── CounterViewModel.kt
+├── CounterContracts.kt    # ViewModel の State、Action、Event
+├── section/
+│   └── CounterSection.kt
+└── component/
+    └── CounterBadge.kt
+```
+
+State とメッセージ、Contracts、ViewModel の名前、`var` プロパティ、純粋な Section と Component、Preview の規約はデスクトップと同じです。配置の検査だけが次のものに替わります。
+
+| 検査 | ルール | 理由 |
+|---|---|---|
+| feature の ViewModel は 1 つ | `PulseViewModel` は `section`・`component`・`content` の外にあり、同じパッケージにほかの ViewModel がない | 1 つの画面には ViewModel が 1 つ。2 つ目は、自分の feature を持たない 2 つ目の画面 |
+| Screen が ViewModel を結びつける | feature のルートにある Composable は `…Screen` という名前のファイルにあって `PulseContent` を呼び、どの ViewModel の隣にもそういう Screen がある | Screen はルートが表示するもので、ViewModel と UI が出会う唯一の場所 |
+| feature には決まったパッケージだけ | feature の中のファイルは、ルートか `section`・`component` の下にある。ビルドが生成したコードは対象外 | 独自のパッケージは、誰も決めていない置き場所が 1 つ増えるだけ |
+
+このアーティファクトは Pulse の型を完全修飾名で見分けるので、`mvi` にも `mvi-mobile` にも依存しません。モバイルアプリのテストに追加しても、デスクトップのクラスがクラスパスに入ることはありません。JVM で動くので、Android のユニットテストか JVM のテストモジュールから呼びます。
 
 ## Repository
 
@@ -274,7 +300,7 @@ fun `follows the conventions we agreed on`() {
 
 ## 自分のルールを書く
 
-検査の土台になっているクエリも公開しているので、その上に独自のルールを足せます。`pulseViewModels()`、`pulseContainers()`、`pulseStateClasses()`、`pulseStateObjects()`、`pulseMessageInterfaces()`、`pulseMessageClasses()`、`pulseMessageObjects()` は、対応する型を継承・実装している宣言を返します。`pulseFeatureRoots()` は各 feature のルートのパッケージを返し、`pulseHosts()`、`pulseContents()`、`pulseSections()`、`pulseComponents()` は各役割の Composable を持つファイルを返します。`pulseRepositoryClasses()`、`pulseRepositoryInterfaces()`、`pulseRepositories()` は Repository を、`pulseKoinModuleFiles()` は Koin モジュールを定義するファイルを返し、`pulseModule(layout)` はファイルが属するモジュールの名前を返します。
+検査の土台になっているクエリも公開しているので、その上に独自のルールを足せます。`pulseViewModels()`、`pulseContainers()`、`pulseStateClasses()`、`pulseStateObjects()`、`pulseMessageInterfaces()`、`pulseMessageClasses()`、`pulseMessageObjects()` は、対応する型を継承・実装している宣言を返します。`pulseFeatureRoots()` は各 feature のルートのパッケージを返し、`pulseHosts()`、`pulseContents()`、`pulseSections()`、`pulseComponents()` は各役割の Composable を持つファイルを返します。モバイルでは、`pulseMobileFeatureRoots()` と `pulseScreens()` が Screen について同じことをします。`pulseRepositoryClasses()`、`pulseRepositoryInterfaces()`、`pulseRepositories()` は Repository を、`pulseKoinModuleFiles()` は Koin モジュールを定義するファイルを返し、`pulseModule(layout)` はファイルが属するモジュールの名前を返します。
 
 ```kotlin
 @Test

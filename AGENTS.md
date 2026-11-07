@@ -33,7 +33,10 @@ feature root or inside one content; only their role differs. Packages decide whi
 as a label goes in `component` — and names are free except the host's. States and messages
 live in a `…Contracts.kt` file beside the ViewModel or Container that uses them. Every section and
 component has a `@Preview` named `<Name>_Preview`, or `<Name>_Preview_<Condition>`
-for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
+for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseMobileConventions` checks an app on `mvi-mobile` instead: a feature is one
+`…Screen` that binds the one ViewModel beside it with `PulseContent`, with only `section` and
+`component` under it. The checks match the Pulse types by fully qualified name, so `architecture`
+depends on neither `mvi` nor `mvi-mobile`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
 `feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: `core/domain` holds
 the entities, use cases and repository interfaces and depends on nothing, `core/data` implements the
 interfaces, and a feature reaches data only through the domain. Dependencies are read from imports.

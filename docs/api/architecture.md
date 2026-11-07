@@ -124,6 +124,38 @@ fun KoScope.assertSectionsAndComponentsHavePreviews()
 
 Requires every public composable under a `section` or `component` package to have a function annotated `@Preview` — from any package, or a multipreview annotation whose name starts with `Preview` — named `<Name>_Preview` or `<Name>_Preview_<Condition>`. Previews are looked for across the whole scope. Private composables and the previews themselves are skipped.
 
+## assertPulseMobileConventions
+
+```kotlin
+fun KoScope.assertPulseMobileConventions()
+```
+
+Runs the checks for an app built on `mvi-mobile`, in order: `assertStatesAreDataTypes`, `assertMessagesAreSealedOrDataTypes`, `assertStatesAndMessagesLiveInContracts`, `assertViewModelsAndContainersAreNamedAfterTheirBase`, `assertViewModelsHoldTheirDataInTheirState`, the three mobile checks that follow, `assertSectionsAndComponentsArePure` and `assertSectionsAndComponentsHavePreviews`. The first failing check throws.
+
+## assertMobileFeaturesHaveOneViewModel
+
+```kotlin
+fun KoScope.assertMobileFeaturesHaveOneViewModel()
+```
+
+Requires every `PulseViewModel` subclass to be outside any `section`, `component` or `content` package, and to be the only one in its package.
+
+## assertScreensBindTheirViewModel
+
+```kotlin
+fun KoScope.assertScreensBindTheirViewModel()
+```
+
+Requires every file with a composable at the root of a mobile feature to be named `…Screen` and to call `PulseContent`, and every `PulseViewModel` subclass to have such a file in its package.
+
+## assertMobileFeaturePackagesHaveARole
+
+```kotlin
+fun KoScope.assertMobileFeaturePackagesHaveARole()
+```
+
+Requires every file below the root of a mobile feature to be under a `section` or `component` package. Files under `build/generated` are skipped.
+
 ## assertPulseDomainConventions
 
 ```kotlin
@@ -273,6 +305,8 @@ The queries are the building blocks of the assertions above, and of rules a proj
 | `pulseContents()` | `List<KoFileDeclaration>` — files with a composable under a `content` package, outside its `section` and `component` packages |
 | `pulseSections()` | `List<KoFileDeclaration>` — files with a composable under a `section` package, components inside it excluded |
 | `pulseComponents()` | `List<KoFileDeclaration>` — files with a composable under a `component` package |
+| `pulseMobileFeatureRoots()` | `Set<String>` — the packages a `PulseViewModel` sits in, outside `section` and `component`, one per mobile feature |
+| `pulseScreens()` | `List<KoFileDeclaration>` — files with a composable at the root of a mobile feature |
 | `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — classes whose name ends with `Repository` |
 | `pulseRepositoryInterfaces()` | `List<KoInterfaceDeclaration>` — interfaces whose name ends with `Repository` |
 | `pulseRepositories()` | `List<KoBaseDeclaration>` — both of the above |
