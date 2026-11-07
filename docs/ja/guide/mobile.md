@@ -56,4 +56,4 @@ fun CounterScreen(onBack: () -> Unit) {
 
 ## アーキテクチャ検査
 
-`architecture` アーティファクトは JVM で動くので、Android のユニットテストか JVM のテストモジュールから使います。Konsist で `commonMain` や `iosMain` も含めてソースを読み、クラスのパッケージも同じなので、デスクトップと同じように `PulseViewModel` を見分けます。`PulseContainer`、Broadcast、Unicast の検査は、対象が見つからないだけです。
+`architecture` アーティファクトは、モバイルのアプリを `assertPulseMobileConventions()` で検査します。feature は上の Screen とその ViewModel を 1 つのパッケージに置き、その下に `section` と `component` を置いたものです。JVM で動くので、Android のユニットテストか JVM のテストモジュールから呼びます。`commonMain` や `iosMain` も読みます。ルールは [モバイルの View](/ja/guide/architecture-checks#モバイルの-view) にあります。

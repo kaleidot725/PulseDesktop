@@ -64,7 +64,8 @@ fun CounterScreen(onBack: () -> Unit) {
 
 ## Architecture checks
 
-The `architecture` artifact runs on the JVM, so it is used from the Android unit tests or a JVM test
-module. It reads the sources with Konsist, including `commonMain` and `iosMain`, and the classes keep
-their package, so the checks recognise `PulseViewModel` as they do on the desktop. The checks for
-`PulseContainer`, Broadcast and Unicast simply find nothing to check.
+The `architecture` artifact checks a mobile app with `assertPulseMobileConventions()`. A feature is
+the screen above and its ViewModel, in one package, with `section` and `component` below them. The
+artifact runs on the JVM, so call it from the Android unit tests or a JVM test module. It reads
+`commonMain` and `iosMain` as well. [Mobile views](/guide/architecture-checks#mobile-views) lists the
+rules.

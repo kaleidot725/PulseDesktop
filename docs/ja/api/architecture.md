@@ -124,6 +124,38 @@ fun KoScope.assertSectionsAndComponentsHavePreviews()
 
 `section` と `component` パッケージ配下の public な Composable それぞれに、`<Name>_Preview` または `<Name>_Preview_<条件>` という名前で `@Preview`（パッケージは問わず、名前が `Preview` で始まるマルチプレビュー注釈も含む）が付いた関数があることを要求します。Preview はスコープ全体から探します。private な Composable と Preview 自身は対象外です。
 
+## assertPulseMobileConventions
+
+```kotlin
+fun KoScope.assertPulseMobileConventions()
+```
+
+`mvi-mobile` で作ったアプリ向けの検査を順に実行します。`assertStatesAreDataTypes`、`assertMessagesAreSealedOrDataTypes`、`assertStatesAndMessagesLiveInContracts`、`assertViewModelsAndContainersAreNamedAfterTheirBase`、`assertViewModelsHoldTheirDataInTheirState`、続く 3 つのモバイルの検査、`assertSectionsAndComponentsArePure`、`assertSectionsAndComponentsHavePreviews` の順です。最初に失敗した検査で例外が投げられます。
+
+## assertMobileFeaturesHaveOneViewModel
+
+```kotlin
+fun KoScope.assertMobileFeaturesHaveOneViewModel()
+```
+
+`PulseViewModel` のサブクラスがすべて `section`・`component`・`content` パッケージの外にあり、同じパッケージにほかの ViewModel がないことを要求します。
+
+## assertScreensBindTheirViewModel
+
+```kotlin
+fun KoScope.assertScreensBindTheirViewModel()
+```
+
+モバイルの feature のルートにある Composable を持つファイルが `…Screen` という名前で `PulseContent` を呼ぶこと、そして `PulseViewModel` のサブクラスのパッケージにそういうファイルがあることを要求します。
+
+## assertMobileFeaturePackagesHaveARole
+
+```kotlin
+fun KoScope.assertMobileFeaturePackagesHaveARole()
+```
+
+モバイルの feature のルートより下のファイルが、すべて `section` か `component` パッケージの下にあることを要求します。`build/generated` 配下のファイルは対象外です。
+
 ## assertPulseDomainConventions
 
 ```kotlin
@@ -273,6 +305,8 @@ fun KoScope.assertComposablesTakeTextFromResources()
 | `pulseContents()` | `List<KoFileDeclaration>` — `content` 配下で、`section` と `component` の外にある Composable を持つファイル |
 | `pulseSections()` | `List<KoFileDeclaration>` — `section` 配下の Composable を持つファイル。内側の `component` を除く |
 | `pulseComponents()` | `List<KoFileDeclaration>` — `component` 配下の Composable を持つファイル |
+| `pulseMobileFeatureRoots()` | `Set<String>` — `section` と `component` の外で `PulseViewModel` があるパッケージ。モバイルの feature ごとに 1 つ |
+| `pulseScreens()` | `List<KoFileDeclaration>` — モバイルの feature のルートにある Composable を持つファイル |
 | `pulseRepositoryClasses()` | `List<KoClassDeclaration>` — 名前が `Repository` で終わる class |
 | `pulseRepositoryInterfaces()` | `List<KoInterfaceDeclaration>` — 名前が `Repository` で終わる interface |
 | `pulseRepositories()` | `List<KoBaseDeclaration>` — 上の 2 つを合わせたもの |

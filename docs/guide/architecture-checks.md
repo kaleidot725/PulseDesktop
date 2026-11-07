@@ -4,11 +4,12 @@
 
 The compiler already rejects what the types can express. A ViewModel must implement `onAction`, and its message types must be the ones its Container knows. What is left are habits the types cannot express, each with a consequence that is easy to miss in review.
 
-The checks come in five groups, one assertion each. Every group can be used without the others.
+The checks come in five groups, one assertion each, and the view group has a second assertion for mobile apps. Every group can be used without the others.
 
 | Assertion | What it checks |
 |---|---|
 | `assertPulseMviConventions()` | the state and message types and where they live, the ViewModel and Container names and places, how a feature is split into a host, contents, sections and components, and that every section and component has a preview |
+| `assertPulseMobileConventions()` | the same as `assertPulseMviConventions()` for an app built on [`mvi-mobile`](/guide/mobile), where a feature is one screen and one ViewModel |
 | `assertPulseDomainConventions()` | how a repository hands out its data, and what earns a use case its place |
 | `assertPulseModuleConventions()` | which module may depend on which, and the packages inside the domain and the data layer |
 | `assertPulseKoinConventions()` | where Koin modules are declared |
@@ -97,6 +98,31 @@ A preview matches its section or component by name: `<Name>_Preview`, or `<Name>
 | `PulseTextButton_Preview_Disabled` | yes |
 | `PulseTextButton_Preview_Disabled_Dark` | yes |
 | `PulseTextButtonPreview` | no |
+
+### Mobile views
+
+An app built on [`mvi-mobile`](/guide/mobile) calls `assertPulseMobileConventions()` in place of `assertPulseMviConventions()`. A phone shows one screen at a time and `mvi-mobile` has no Container, so a feature is one **screen** and one ViewModel, with no host and no `content` package. The root of a feature is the package its ViewModel sits in. The screen sits there too, in a file named `…Screen`, and binds the ViewModel with `PulseContent`. Sections and components work as on the desktop, and `section` and `component` are the only packages under the root.
+
+```
+counter/
+├── CounterScreen.kt       # screen: binds CounterViewModel with PulseContent
+├── CounterViewModel.kt
+├── CounterContracts.kt    # the ViewModel's state, actions and events
+├── section/
+│   └── CounterSection.kt
+└── component/
+    └── CounterBadge.kt
+```
+
+The rules for states, messages, Contracts, ViewModel names, `var` properties, pure sections and components, and previews are the desktop's. The layout checks are these instead.
+
+| Check | Rule | Why |
+|---|---|---|
+| Features have one ViewModel | a `PulseViewModel` is outside `section`, `component` and `content`, and no other ViewModel shares its package | one screen is one ViewModel; a second one is a second screen without a feature of its own |
+| Screens bind their ViewModel | a composable at the feature root is in a file named `…Screen` and calls `PulseContent`, and every ViewModel has such a screen beside it | the screen is what a route shows and the only place the ViewModel and the UI meet |
+| Features have only their packages | inside a feature, every file is at the root or under `section` or `component`; generated code is skipped | a package of its own is one more place nobody decided on |
+
+The artifact recognises the Pulse types by their fully qualified names, so it depends on neither `mvi` nor `mvi-mobile`, and adding it to a mobile app's tests puts no desktop classes on the classpath. It runs on the JVM, so call it from the Android unit tests or from a JVM test module.
 
 ## Repositories
 
@@ -274,7 +300,7 @@ fun `follows the conventions we agreed on`() {
 
 ## Writing your own rules
 
-The queries behind the checks are public too, so a project can add rules of its own on top of them. `pulseViewModels()`, `pulseContainers()`, `pulseStateClasses()`, `pulseStateObjects()`, `pulseMessageInterfaces()`, `pulseMessageClasses()` and `pulseMessageObjects()` return the declarations that extend or implement the matching type. `pulseFeatureRoots()` returns the root package of each feature, and `pulseHosts()`, `pulseContents()`, `pulseSections()` and `pulseComponents()` return the files that hold composables of each role. `pulseRepositoryClasses()`, `pulseRepositoryInterfaces()` and `pulseRepositories()` return the repositories, `pulseKoinModuleFiles()` the files that declare Koin modules, and `pulseModule(layout)` names the module a file belongs to.
+The queries behind the checks are public too, so a project can add rules of its own on top of them. `pulseViewModels()`, `pulseContainers()`, `pulseStateClasses()`, `pulseStateObjects()`, `pulseMessageInterfaces()`, `pulseMessageClasses()` and `pulseMessageObjects()` return the declarations that extend or implement the matching type. `pulseFeatureRoots()` returns the root package of each feature, and `pulseHosts()`, `pulseContents()`, `pulseSections()` and `pulseComponents()` return the files that hold composables of each role. On mobile, `pulseMobileFeatureRoots()` and `pulseScreens()` do the same for the screens. `pulseRepositoryClasses()`, `pulseRepositoryInterfaces()` and `pulseRepositories()` return the repositories, `pulseKoinModuleFiles()` the files that declare Koin modules, and `pulseModule(layout)` names the module a file belongs to.
 
 ```kotlin
 @Test
