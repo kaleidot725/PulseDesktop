@@ -9,30 +9,37 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![](https://jitpack.io/v/kaleidot725/PulsePlatform.svg)](https://jitpack.io/#kaleidot725/PulsePlatform)
 
-PulsePlatform is a framework for Compose apps on the desktop, with a smaller artifact for Android
-and iOS. A desktop window shows many panels at once, so
-PulsePlatform gives each **content** of a screen its own `PulseViewModel` and puts one
-`PulseContainer` above them. **Broadcast** reaches every content, **Unicast** sends a message up from
-one, and **Refresh** rebuilds the view without losing state.
-
-Around that, it decides how a window is split. A **host** creates the ViewModels and lays out the
-contents, a content binds one ViewModel with `PulseContent`, and **sections** and **components** take
-data and callbacks only. Your own tests can check that the code keeps to it.
+PulsePlatform is a rule set and a library for Compose UIs that AI agents build. The **rules** are
+tests your project runs: they check how each feature is split, how state and messages are declared,
+how repositories hand out data, which module depends on which, and where the text comes from. A
+failure names the file and says what to move where, so an agent fixes it the way it fixes a compile
+error. The **library** holds the pieces the rules expect, so the right structure is also the easy one
+to write. It builds desktop apps with Compose Desktop, and Android and iOS apps with Compose
+Multiplatform.
 
 Read [What is PulsePlatform?](https://kaleidot725.github.io/PulsePlatform/guide/) for the idea behind it.
 
 ![demo](docs/demo.png)
 
+## What you get
+
+Use the rules on every platform, and the MVI artifact for your target. A desktop window shows
+several panels at once, so a feature is a **host** that lays out **contents**, each binding its own
+ViewModel, with a **Container** carrying messages between them. A phone shows one screen at a time,
+so a mobile feature is one **screen** binding one ViewModel. On both, **sections** and
+**components** take data and callbacks only.
+
+| Artifact | Role | Platforms |
+|---|---|---|
+| `architecture` | the rules, as [Konsist](https://docs.konsist.lemonappdev.com/) assertions for your tests | checks desktop and mobile code |
+| `mvi` | `PulseViewModel`, `PulseContent`, and the `PulseContainer` and `PulseHost` that let a window's contents work together | desktop |
+| `mvi-mobile` | `PulseViewModel` and `PulseContent`, one ViewModel per screen | Android, iOS |
+| `navigation` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
+
 ## Installation
 
-PulsePlatform publishes three artifacts for the desktop, one package each. `mvi` is the library; the
-other two are optional. `navigation` scopes ViewModels to a Navigation 3 back stack entry, and
-`architecture` checks in your own tests that the code follows the conventions. An Android or iOS app
-uses `mvi-mobile` instead of `mvi`, as [Mobile](https://kaleidot725.github.io/PulsePlatform/guide/mobile)
-describes.
-
-Add JitPack to `settings.gradle.kts`, then the dependencies to `build.gradle.kts`, replacing
-`<version>` with a tag from [Releases](https://github.com/kaleidot725/PulsePlatform/releases).
+Add JitPack to `settings.gradle.kts`, then the artifacts for your platform, replacing `<version>`
+with a tag from [Releases](https://github.com/kaleidot725/PulsePlatform/releases).
 
 ```kotlin
 // settings.gradle.kts
@@ -42,10 +49,22 @@ dependencyResolutionManagement {
     }
 }
 
-// build.gradle.kts
+// build.gradle.kts — desktop
 dependencies {
     implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
     implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
+}
+
+// build.gradle.kts — mobile (Compose Multiplatform)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
+        }
+    }
+}
+dependencies {
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
@@ -57,16 +76,38 @@ dependencies {
 | Java | 17+ |
 | Kotlin | 2.0+ |
 | Compose Multiplatform | 1.6+ |
+| Android | `minSdk` 26 |
 
-## Getting started
+## The rules
 
-A ViewModel handles actions and updates its state. A content binds it to the UI with
-`PulseContent`, and the host creates the ViewModel and places the content. The full walkthrough,
-including the Container, is in
-[Getting Started](https://kaleidot725.github.io/PulsePlatform/guide/getting-started).
+One test runs the rules over the whole project. Desktop apps call `assertPulseMviConventions()`,
+mobile apps `assertPulseMobileConventions()`, and the other groups are shared. Point your agent at it
+from `CLAUDE.md` or `AGENTS.md`, as
+[Building with AI agents](https://kaleidot725.github.io/PulsePlatform/guide/ai-agents) describes.
 
 ```kotlin
-class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(
+class PulsePlatformConventionTest {
+    @Test
+    fun `follows the PulsePlatform conventions`() {
+        val scope = Konsist.scopeFromProduction()
+        scope.assertPulseMviConventions() // or assertPulseMobileConventions() on mobile
+        scope.assertPulseDomainConventions()
+        scope.assertPulseModuleConventions()
+        scope.assertPulseKoinConventions()
+        scope.assertPulseResourceConventions()
+    }
+}
+```
+
+## A screen
+
+On mobile, a screen binds its ViewModel with `PulseContent` and hands the state to a section. The
+desktop does the same in each content, under a host. The quick starts walk through both:
+[desktop](https://kaleidot725.github.io/PulsePlatform/guide/getting-started) and
+[mobile](https://kaleidot725.github.io/PulsePlatform/guide/getting-started-mobile).
+
+```kotlin
+class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEvent>(
     initialUiState = CounterState(),
 ) {
     override fun onAction(uiAction: CounterAction) {
@@ -76,22 +117,13 @@ class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEven
     }
 }
 
-// counter/content/total/TotalContent.kt
+// counter/CounterScreen.kt
 @Composable
-fun TotalContent(viewModel: CounterViewModel) {
+fun CounterScreen() {
+    val viewModel = viewModel { CounterViewModel() }
     PulseContent(viewModel = viewModel) { state, onAction ->
-        Button(onClick = { onAction(CounterAction.Increment) }) {
-            Text("${state.count}")
-        }
+        CounterSection(count = state.count, onIncrement = { onAction(CounterAction.Increment) })
     }
-}
-
-// counter/CounterHost.kt
-@Composable
-fun CounterHost() {
-    val viewModel = rememberPulseViewModel { CounterViewModel() }
-
-    TotalContent(viewModel = viewModel)
 }
 ```
 
@@ -99,17 +131,18 @@ fun CounterHost() {
 
 **[kaleidot725.github.io/PulsePlatform](https://kaleidot725.github.io/PulsePlatform/)** (English and Japanese).
 
-| Artifact | Package | Documentation |
-|---|---|---|
-| `mvi` | `jp.kaleidot725.pulse.mvi` | [Architecture](https://kaleidot725.github.io/PulsePlatform/guide/architecture) |
-| `navigation` | `jp.kaleidot725.pulse.navigation` | [Navigation 3](https://kaleidot725.github.io/PulsePlatform/guide/navigation3) |
-| `architecture` | `jp.kaleidot725.pulse.architecture` | [Architecture checks](https://kaleidot725.github.io/PulsePlatform/guide/architecture-checks) |
-| `mvi-mobile` | `jp.kaleidot725.pulse.mvi` | [Mobile](https://kaleidot725.github.io/PulsePlatform/guide/mobile) |
+| Topic | Page |
+|---|---|
+| The idea | [What is PulsePlatform?](https://kaleidot725.github.io/PulsePlatform/guide/) |
+| The rules | [Rules](https://kaleidot725.github.io/PulsePlatform/guide/rules/) |
+| AI agents | [Building with AI agents](https://kaleidot725.github.io/PulsePlatform/guide/ai-agents) |
+| Desktop | [Host and Container](https://kaleidot725.github.io/PulsePlatform/guide/container), [Navigation 3](https://kaleidot725.github.io/PulsePlatform/guide/navigation3) |
+| Mobile | [Screens](https://kaleidot725.github.io/PulsePlatform/guide/mobile) |
 
 ## Demo
 
-The `demo` directory is a small multi-module app built the way the architecture checks expect, and
-it passes all of them. Four areas share one Container, and a tap on one spreads to the two it shares
+The `demo` directory is a small multi-module desktop app built the way the rules expect, and it
+passes all of them. Four areas share one Container, and a tap on one spreads to the two it shares
 an edge with. The counts are kept in a DataStore, so they survive a restart.
 
 | Module | Holds |

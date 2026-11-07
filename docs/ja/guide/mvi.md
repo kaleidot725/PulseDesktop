@@ -1,6 +1,6 @@
-# アーキテクチャ
+# MVI
 
-PulsePlatform は MVI（Model-View-Intent）パターンに従います。そこに **Broadcast**、**Unicast**、**View Refresh** の 3 つの調整プリミティブを加えています。
+ライブラリは MVI（Model-View-Intent）パターンに従い、次のデータフローはデスクトップでもモバイルでも同じです。デスクトップのウィンドウでは、Container を通して ViewModel どうしが協調する **Broadcast**、**Unicast**、**View Refresh** の 3 つが加わります。モバイルには Container がないので、Broadcast のフローから View Refresh のフローまでの節はデスクトップだけのものです。
 
 ## データフロー
 
@@ -64,11 +64,11 @@ flowchart TB
 | `PulseState` | UI データの不変スナップショット |
 | `PulseAction` | ユーザーの意図 — ユーザーが何をしたいか |
 | `PulseEvent` | 一度きりの副作用 — ナビゲーション、ダイアログ、スナックバー |
-| `PulseBroadcast` | Container から ViewModel 群への横断的な通知 |
-| `PulseUnicast` | ViewModel から親への通知 |
+| `PulseBroadcast` | Container から ViewModel 群への横断的な通知（デスクトップ） |
+| `PulseUnicast` | ViewModel から親への通知（デスクトップ） |
 | `PulseViewModel` | 状態を所有し、Action と Broadcast を処理し、Unicast を発行できる |
-| `PulseContainer` | ViewModel 群を調整し、Broadcast・Unicast 処理・Refresh を提供する |
-| `PulseHost` | Container のキーを伝播する Compose ラッパー |
+| `PulseContainer` | ViewModel 群を調整し、Broadcast・Unicast 処理・Refresh を提供する（デスクトップ） |
+| `PulseHost` | Container のキーを伝播する Compose ラッパー（デスクトップ） |
 | `PulseContent` | ViewModel を観測する Compose ラッパー |
 
 ## ライフサイクル

@@ -13,7 +13,7 @@ fun <Broadcast : PulseBroadcast, Unicast : PulseUnicast> PulseHost(
 )
 ```
 
-Scopes a `PulseContainer` to this subtree. It emits no UI of its own and does two things: it publishes the Container key, so the `PulseContent` composables inside respond to `container.refresh()`, and it provides `onRefresh` and `onBroadcast` to the content block.
+Desktop only. Scopes a `PulseContainer` to this subtree. It emits no UI of its own and does two things: it publishes the Container key, so the `PulseContent` composables inside respond to `container.refresh()`, and it provides `onRefresh` and `onBroadcast` to the content block.
 
 An app can contain several of them. In the demo, each destination that owns a Container hosts its own.
 
@@ -60,7 +60,7 @@ PulseContent(
 )
 ```
 
-Observes a `PulseViewModel` and provides state and an action dispatcher to the content block. It runs `onSetup()` the first time it observes an instance, but never cancels one.
+Observes a `PulseViewModel` and provides state and an action dispatcher to the content block. In `mvi-mobile` it takes the three-parameter `PulseViewModel<State, Action, Event>`, and it never re-creates its content on a refresh, since there is no `PulseHost`. It runs `onSetup()` the first time it observes an instance, but never cancels one.
 
 Observe each instance from one `PulseContent` at a time. `event` is a single-consumer channel.
 

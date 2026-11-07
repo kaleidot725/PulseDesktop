@@ -1,6 +1,6 @@
-# Architecture
+# MVI
 
-PulsePlatform follows the MVI (Model-View-Intent) pattern. It adds three coordination primitives: **Broadcast**, **Unicast**, and **View Refresh**.
+The library follows the MVI (Model-View-Intent) pattern, and the data flow below is the same on the desktop and on mobile. A desktop window adds three ways for its ViewModels to work together — **Broadcast**, **Unicast** and **View Refresh** — through a Container. Mobile has no Container, so the sections from Broadcast Flow to View Refresh Flow apply to the desktop only.
 
 ## Data Flow
 
@@ -64,11 +64,11 @@ flowchart TB
 | `PulseState` | Immutable snapshot of UI data |
 | `PulseAction` | User intent — what the user wants to do |
 | `PulseEvent` | One-time side effect — navigation, dialog, snackbar |
-| `PulseBroadcast` | Cross-ViewModel notification from Container |
-| `PulseUnicast` | Child-to-parent notification from ViewModel |
+| `PulseBroadcast` | Cross-ViewModel notification from Container (desktop) |
+| `PulseUnicast` | Child-to-parent notification from ViewModel (desktop) |
 | `PulseViewModel` | Owns state; handles actions and broadcasts; can emit unicasts |
-| `PulseContainer` | Coordinates ViewModels; enables broadcast, unicast handling, and refresh |
-| `PulseHost` | Compose wrapper that propagates container key |
+| `PulseContainer` | Coordinates ViewModels; enables broadcast, unicast handling, and refresh (desktop) |
+| `PulseHost` | Compose wrapper that propagates container key (desktop) |
 | `PulseContent` | Compose wrapper that observes a ViewModel |
 
 ## Lifecycle

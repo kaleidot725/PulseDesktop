@@ -1,6 +1,6 @@
 # Unicast
 
-Unicast sends a typed message from a `PulseViewModel` up to its parent `PulseContainer`.
+Desktop only. Unicast sends a typed message from a `PulseViewModel` up to its parent `PulseContainer`.
 
 Use it when handling an action and coordinating the follow-up are split. The child ViewModel owns the immediate user action. The parent Container handles the follow-up, such as broadcasting the result to sibling ViewModels.
 

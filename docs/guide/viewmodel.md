@@ -1,10 +1,10 @@
 # ViewModel
 
-`PulseViewModel` is the core building block of PulsePlatform. It manages the UI state for a single content of your app, the part of a screen one ViewModel answers for.
+`PulseViewModel` is the core building block of the library. It holds the UI state of the part of the UI it answers for: a content on the desktop, a screen on mobile. It is the same class on both, except that the desktop version takes two more type parameters, for the Broadcast and Unicast it shares with its Container, and has `onReceive` and `unicast` to use them.
 
 ## Creating a ViewModel
 
-Extend `PulseViewModel` with your five type parameters:
+Extend `PulseViewModel` with its type parameters: five on the desktop, three on mobile.
 
 ```kotlin
 class MyViewModel : PulseViewModel<MyState, MyAction, MyEvent, MyBroadcast, MyUnicast>(
@@ -13,6 +13,16 @@ class MyViewModel : PulseViewModel<MyState, MyAction, MyEvent, MyBroadcast, MyUn
     override fun onSetup() { /* start coroutines here */ }
     override fun onAction(uiAction: MyAction) { /* handle user intents */ }
     override fun onReceive(broadcast: MyBroadcast) { /* react to broadcasts */ }
+}
+```
+
+```kotlin
+// mobile
+class MyViewModel : PulseViewModel<MyState, MyAction, MyEvent>(
+    initialUiState = MyState(),
+) {
+    override fun onSetup() { /* start coroutines here */ }
+    override fun onAction(uiAction: MyAction) { /* handle user intents */ }
 }
 ```
 
@@ -55,7 +65,7 @@ override fun onAction(uiAction: MyAction) {
 
 ### `onReceive(broadcast)`
 
-Called when the parent Container delivers a broadcast. You can update state or emit events:
+Desktop only. Called when the parent Container delivers a broadcast. You can update state or emit events:
 
 ```kotlin
 override fun onReceive(broadcast: MyBroadcast) {

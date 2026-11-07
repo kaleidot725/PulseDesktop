@@ -1,7 +1,8 @@
 # Navigation 3
 
-`navigation` is an optional artifact. It ties a `PulseViewModel`'s lifetime to a
-Navigation 3 back stack entry.
+`navigation` is an optional artifact for the desktop. It ties a `PulseViewModel`'s lifetime to a
+Navigation 3 back stack entry. On mobile, lifecycle-viewmodel-navigation3's own decorator does the
+same for `mvi-mobile`, which has no Container to scope.
 
 The `mvi` artifact has no opinion about lifetime. `PulseViewModel` is an
 `androidx.lifecycle.ViewModel`, so whichever `ViewModelStore` holds it decides how long it lives.
@@ -9,7 +10,7 @@ This artifact supplies a store per back stack entry, and the composables that pu
 it.
 
 The wiring itself is in
-[Getting Started, step 5](/guide/getting-started#_5-scope-the-viewmodel-to-a-navigation-3-destination).
+[Desktop quick start, step 5](/guide/getting-started#_5-scope-the-viewmodel-to-a-navigation-3-destination).
 This page explains what that wiring does.
 
 ## What the artifact adds
@@ -104,6 +105,6 @@ that. For holding one without a store, see
 
 ## Next Steps
 
-- [Getting Started](/guide/getting-started#_5-scope-the-viewmodel-to-a-navigation-3-destination) — the wiring, step by step
+- [Desktop quick start](/guide/getting-started#_5-scope-the-viewmodel-to-a-navigation-3-destination) — the wiring, step by step
 - [Navigation 3 API](/api/navigation3) — the full signatures and owner resolution rules
 - [ViewModel](/guide/viewmodel) — lifecycle hooks and state updates

@@ -13,9 +13,21 @@ abstract class PulseViewModel<
 )
 ```
 
-1 つの Content の UI 状態を管理する抽象基底クラスです。
+デスクトップでは Content の、モバイルでは Screen の UI 状態を持つ抽象基底クラスです。
 
-親の Container へメッセージを送る必要があるときは `unicast()` を使います。
+上のシグネチャは `mvi` のデスクトップ版です。`mvi-mobile` では型パラメータが 3 つで、`unicast`、`onReceive()`、`unicast()` はありません。このページのほかの内容は同じです。デスクトップで親の Container へメッセージを送る必要があるときは `unicast()` を使います。
+
+```kotlin
+// mvi-mobile
+abstract class PulseViewModel<
+    UiState : PulseState,
+    UiAction : PulseAction,
+    Event : PulseEvent,
+>(
+    initialUiState: UiState,
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
+)
+```
 
 ## プロパティ
 
@@ -55,7 +67,7 @@ val event: Flow<Event>
 val unicast: SharedFlow<Unicast>
 ```
 
-`unicast()` で発行された、子から親への Unicast のホットなストリームです。
+デスクトップだけのものです。`unicast()` で発行された、子から親への Unicast のホットなストリームです。
 
 ---
 
@@ -101,7 +113,7 @@ UI が Action を発行するたびに呼ばれます。非同期処理はここ
 open fun onReceive(broadcast: Broadcast)
 ```
 
-親の `PulseContainer` が Broadcast を届けたときに呼ばれます。既定の実装は何もしません。
+デスクトップだけのものです。親の `PulseContainer` が Broadcast を届けたときに呼ばれます。既定の実装は何もしません。
 
 ---
 
@@ -139,7 +151,7 @@ fun event(effect: Event)
 fun unicast(unicast: Unicast)
 ```
 
-子から親へのメッセージを発行します。親の `PulseContainer` が ViewModel の `unicast` Flow を収集し、`onReceived()` で受け取ります。
+デスクトップだけのものです。子から親へのメッセージを発行します。親の `PulseContainer` が ViewModel の `unicast` Flow を収集し、`onReceived()` で受け取ります。
 
 ---
 

@@ -1,10 +1,10 @@
-# Mobile
+# Mobile screens
 
-`mvi-mobile` is the `mvi` artifact for Compose on Android and iOS. A phone shows one screen at a
-time, and one ViewModel is usually enough for it, so this artifact keeps only what one ViewModel
-needs.
+`mvi-mobile` is PulsePlatform's MVI artifact for Compose Multiplatform on Android and iOS. A phone shows one screen at a time, and one ViewModel is enough for it, so a mobile feature is one **screen** that binds one ViewModel. There is no Container to coordinate several ViewModels, and the artifact leaves out what only a Container needs. The rules check this shape with [`assertPulseMobileConventions()`](/guide/rules/ui#mobile).
 
 ## What the artifact holds
+
+The package is the same as on the desktop, `jp.kaleidot725.pulse.mvi`, and so is the behaviour of what is kept: `onSetup` runs the first time `PulseContent` observes the ViewModel, `cancel` and `close` end the work it started, and events are buffered until the UI collects them. `PulseViewModel` takes three type parameters instead of five, and has no `onReceive` or `unicast`.
 
 | Kept | Left out |
 |---|---|
@@ -12,38 +12,9 @@ needs.
 | `PulseViewModel<State, Action, Event>` | `PulseContainer` |
 | `PulseContent` | `PulseHost` |
 
-The package is the same, `jp.kaleidot725.pulse.mvi`, and so is the behaviour of what is kept:
-
-- `onSetup` runs the first time `PulseContent` observes the ViewModel
-- `cancel` and `close` end the work it started
-- Events are buffered until the UI collects them
-
-`PulseViewModel` has three type parameters instead of five, and has no `onReceive` or `unicast`.
-
-## Installation
-
-The artifact is Kotlin Multiplatform, with Android (`minSdk` 26), `iosArm64` and `iosSimulatorArm64`
-targets. Add JitPack to `settings.gradle.kts` as for the desktop artifacts. In a Compose
-Multiplatform project, depend on `mvi-mobile` from `commonMain`; Gradle picks the Android or iOS
-variant for each target. An Android-only app adds it to `dependencies` the same way.
-
-```kotlin
-// build.gradle.kts
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
-        }
-    }
-}
-```
-
 ## A screen
 
-A screen creates its ViewModel with whatever creates ViewModels in the app, such as `viewModel()`
-from lifecycle-viewmodel-compose (on Android and iOS alike), `koinViewModel()` or a Navigation 3
-entry's ViewModel decorator. It binds the ViewModel with `PulseContent`. Events that leave the
-screen, such as going back, become callbacks of the screen.
+The screen is what a route shows and the one place the ViewModel meets the UI. It creates the ViewModel with whatever creates ViewModels in the app — `viewModel()` from lifecycle-viewmodel-compose on Android and iOS alike, `koinViewModel()`, or a Navigation 3 entry's ViewModel decorator — and binds it with `PulseContent`. It hands the state and callbacks to its sections, and turns the events that leave the screen, such as going back, into callbacks of its own, so navigation stays with whoever shows the screen.
 
 ```kotlin
 @Composable
@@ -62,10 +33,12 @@ fun CounterScreen(onBack: () -> Unit) {
 }
 ```
 
-## Architecture checks
+## How long a ViewModel lives
 
-The `architecture` artifact checks a mobile app with `assertPulseMobileConventions()`. A feature is
-the screen above and its ViewModel, in one package, with `section` and `component` below them. The
-artifact runs on the JVM, so call it from the Android unit tests or a JVM test module. It reads
-`commonMain` and `iosMain` as well. [Mobile views](/guide/architecture-checks#mobile-views) lists the
-rules.
+`PulseViewModel` is an `androidx.lifecycle.ViewModel`, so the `ViewModelStoreOwner` that holds it decides its lifetime, on Android and on iOS. `viewModel()` called in a screen keeps the ViewModel in the owner in scope: the activity or the navigation entry on Android, and the owner Compose provides on iOS. A configuration change on Android reuses the instance, so `onSetup` does not run again and the state stands. Leaving the screen for good clears the owner, and `onCleared` cancels the work the ViewModel started.
+
+## Next steps
+
+- [Mobile quick start](/guide/getting-started-mobile) — build and check a counter screen
+- [UI structure rules](/guide/rules/ui#mobile) — the mobile layout, rule by rule
+- [ViewModel](/guide/viewmodel) — state, actions, events and the lifecycle hooks

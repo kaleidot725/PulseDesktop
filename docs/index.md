@@ -3,36 +3,36 @@ layout: home
 
 hero:
   name: PulsePlatform
-  text: A framework for Compose apps on the desktop, Android and iOS
-  tagline: Split a window into a host, contents, sections and components. Give each content its own ViewModel, and let one Container keep them working together.
+  text: Rules and building blocks for Compose UIs that AI agents build
+  tagline: A rule set your tests run, and a library that gives every screen the same shape. For the desktop and for Android and iOS.
   actions:
     - theme: brand
-      text: Get Started
-      link: /guide/getting-started
-    - theme: alt
       text: What is PulsePlatform?
       link: /guide/
     - theme: alt
-      text: View on GitHub
-      link: https://github.com/kaleidot725/PulsePlatform
+      text: Desktop quick start
+      link: /guide/getting-started
+    - theme: alt
+      text: Mobile quick start
+      link: /guide/getting-started-mobile
 
 features:
-  - icon: 🪟
-    title: Designed for windows
-    details: A desktop window shows many panels at once. Each content gets its own ViewModel, rather than each screen getting one.
+  - icon: ✅
+    title: Rules you can run
+    details: The UI layout, state, repositories, module dependencies, Koin and text are checked by one test in your own suite. A failure names the file and says how to fix it.
+  - icon: 🤖
+    title: Made for AI agents
+    details: An agent writes, runs the test, and reads what to move where. The rules turn "follow our architecture" into a check it can pass.
   - icon: 🧩
-    title: Host, Content, Section, Component
-    details: A fixed way to split a window. A host lays out contents, a content binds one ViewModel, and sections and components take data and callbacks.
-  - icon: 📡
-    title: Contents that work together
-    details: The Container broadcasts to every content, and a content reports up with Unicast. Refresh rebuilds the view without losing state.
+    title: One shape for every screen
+    details: Sections and components take data and callbacks, and one place binds each ViewModel. The library has the pieces the rules expect, so the right structure is also the easy one.
+  - icon: 🪟
+    title: Desktop windows
+    details: A window shows many panels at once. Each content has its own ViewModel, and a Container broadcasts between them and refreshes the view without losing state.
+  - icon: 📱
+    title: Android and iOS
+    details: On a phone a screen is one ViewModel. mvi-mobile keeps only that, for Compose Multiplatform on Android and iOS, under the same rules.
   - icon: 🔁
     title: One-way state
-    details: MVI with State, Action and Event. State changes through update and reaches the UI as a StateFlow.
-  - icon: 🧭
-    title: Navigation 3 lifetimes
-    details: The navigation artifact ties ViewModels and Containers to a back stack entry, so a route keeps its state while it is covered.
-  - icon: ✅
-    title: Conventions you can test
-    details: The architecture artifact checks the state rules, the host, content, section and component split, repositories, module dependencies and Koin with Konsist, from one test in your own suite.
+    details: MVI with State, Action and Event. State changes through update and reaches the UI as a StateFlow, the same on every platform.
 ---

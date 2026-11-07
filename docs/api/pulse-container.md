@@ -7,7 +7,7 @@ abstract class PulseContainer<Broadcast : PulseBroadcast, Unicast : PulseUnicast
 )
 ```
 
-Coordinates multiple `PulseViewModel` instances. Provides broadcast delivery, child unicast handling, and view refresh.
+Desktop only. Coordinates multiple `PulseViewModel` instances. Provides broadcast delivery, child unicast handling, and view refresh.
 
 The internal unicast collector uses `Dispatchers.Default`. Another dispatcher can be passed to the constructor.
 

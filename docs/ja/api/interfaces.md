@@ -60,7 +60,7 @@ sealed class CounterEvent : PulseEvent {
 interface PulseBroadcast
 ```
 
-クラスを Broadcast メッセージとして印付けます。`PulseContainer` から、登録済みのすべての `PulseViewModel` インスタンスへ届けられます。`sealed class` で実装してください。
+デスクトップだけのものです。クラスを Broadcast メッセージとして印付けます。`PulseContainer` から、登録済みのすべての `PulseViewModel` インスタンスへ届けられます。`sealed class` で実装してください。
 
 ```kotlin
 sealed class AppBroadcast : PulseBroadcast {
@@ -77,7 +77,7 @@ sealed class AppBroadcast : PulseBroadcast {
 interface PulseUnicast
 ```
 
-クラスを Unicast メッセージとして印付けます。子の `PulseViewModel` から親の `PulseContainer` へ発行されます。`sealed class` で実装してください。
+デスクトップだけのものです。クラスを Unicast メッセージとして印付けます。子の `PulseViewModel` から親の `PulseContainer` へ発行されます。`sealed class` で実装してください。
 
 ```kotlin
 sealed class AppUnicast : PulseUnicast {

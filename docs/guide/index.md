@@ -1,69 +1,69 @@
 # What is PulsePlatform?
 
-PulsePlatform is a framework for building **Compose Desktop** apps, and [`mvi-mobile`](/guide/mobile) brings its ViewModel to Android and iOS. It decides how a window is split, where each part keeps its state, how the parts talk to each other and how long they live. Your own tests can check that the code keeps to those decisions.
+PulsePlatform is a rule set and a library for building Compose UIs, made to be used by AI agents as much as by people. The rules are tests your project runs. The library holds the pieces those rules expect. Together they build desktop apps with Compose Desktop, and Android and iOS apps with Compose Multiplatform.
 
-## Why a desktop framework
+## Why rules first
 
-On a phone, one screen usually maps to one ViewModel. A desktop window is different: a sidebar, an editor and an inspector are on screen together. Each changes on its own, and some of those changes have to reach the others.
+An AI agent writes a screen that compiles and works on the first try. What it does not keep by itself is the shape of the code around it. One screen binds its ViewModel in a section, another keeps a `var` beside its state, a third puts a label in the domain. Each choice works on its own, and the codebase drifts.
 
-Putting all of it in one ViewModel turns that ViewModel into the file that knows everything. Splitting it with no way to coordinate makes the panels reach into each other instead. PulsePlatform gives each part its own ViewModel and puts one Container above them.
+A rule written in a prompt or a style guide is easy to skip. A rule that is a failing test is not. PulsePlatform's rules are [Konsist](https://docs.konsist.lemonappdev.com/) assertions you call from one test in your own suite. When the code drifts, the test fails, names the file, and says what to move where. An agent reads that message and fixes the code the same way it fixes a compile error.
 
-## How a window is split
+The library is the other half. The rules ask that one place binds each ViewModel, that sections and components take only data and callbacks, and that state is one immutable value. The library makes that the easy way to write a screen, so following the rules does not mean writing more code.
 
-A window is built from four kinds of composable. The package a composable lives in decides which one it is.
+## What the rules cover
 
-| Role | What it does | Where it lives |
-|---|---|---|
-| **Host** | What a route shows. It creates the ViewModels and the Container, and lays out the contents | a file named `…Host` at the root of a feature package |
-| **Content** | The part one ViewModel answers for. It binds that ViewModel with `PulseContent` | `content/<name>`, beside its ViewModel |
-| **Section** | A part of the screen drawn from a state and callbacks, previewed on its own | a `section` package |
-| **Component** | A small building block. It takes data and callbacks, so it can be reused and previewed on its own | a `component` package |
-
-## How the contents work together
-
-The Container held by the host is what connects the contents. Three features carry the messages between them.
-
-| Feature | Description |
+| Area | What is checked |
 |---|---|
-| **Broadcast** | Deliver a typed message from the Container to every content's ViewModel at once |
-| **Unicast** | Send a typed message from one content's ViewModel up to the Container |
-| **View Refresh** | Rebuild the view tree under the Container without losing any ViewModel's state |
+| [UI structure](/guide/rules/ui) | how a feature is split into the place that binds the ViewModel, sections and components; states and messages; previews |
+| [Domain and data](/guide/rules/domain) | how a repository hands out data, and when a use case is worth writing |
+| [Modules and Koin](/guide/rules/modules) | which module may depend on which, the packages inside them, and where Koin modules are declared |
+| [Text](/guide/rules/text) | that every string a user reads comes from string resources, so the app can be translated |
 
-## An example window
+## Desktop and mobile
 
-In the window below, the editor reports a change with Unicast, and the Container broadcasts it to all three contents. Each content decides on its own how to react.
+The rules and the core are the same on every platform: `PulseViewModel` holds one immutable state, handles actions and emits events, and `PulseContent` binds it to the UI. What differs is how many ViewModels a screen has.
 
-```mermaid
-flowchart TB
-    PC["PulseContainer<br/><i>held by the host</i>"]
-    subgraph W["Window"]
-        direction LR
-        A["SideBar content<br/><i>SideBarViewModel</i>"]
-        B["Editor content<br/><i>EditorViewModel</i>"]
-        C["Inspector content<br/><i>InspectorViewModel</i>"]
-    end
-    B -- "unicast" --> PC
-    PC -- "broadcast" --> A
-    PC -- "broadcast" --> B
-    PC -- "broadcast" --> C
+A desktop window shows a sidebar, an editor and an inspector at once. Each is a **content** with its own ViewModel, a **host** lays them out, and a **Container** above them carries messages between them. A phone shows one screen at a time, so a **screen** has one ViewModel and binds it itself, with no Container.
+
+| | Desktop | Mobile |
+|---|---|---|
+| Artifact | `mvi` | `mvi-mobile` |
+| Targets | JVM (Compose Desktop) | Android, iOS (Compose Multiplatform) |
+| A feature is | a host, its contents, and a Container | one screen and one ViewModel |
+| Binds a ViewModel | each content | the screen |
+| Messages between ViewModels | Broadcast and Unicast through the Container | none |
+| Rules | `assertPulseMviConventions()` | `assertPulseMobileConventions()` |
+
+```
+Desktop                                  Mobile
+counter/                                 counter/
+├── CounterHost.kt                       ├── CounterScreen.kt
+├── CounterContainer.kt                  ├── CounterViewModel.kt
+├── CounterContracts.kt                  ├── CounterContracts.kt
+├── content/                             ├── section/
+│   └── total/                           └── component/
+│       ├── TotalContent.kt
+│       ├── TotalViewModel.kt
+│       ├── TotalContracts.kt
+│       └── section/
+├── section/
+└── component/
 ```
 
 ## Artifacts
 
-PulsePlatform is split into four artifacts. Only `mvi` is required, or `mvi-mobile` in an Android or iOS app, which shares its package.
+PulsePlatform is published on JitPack as four artifacts. Use the rules on every platform, and one of the two MVI artifacts depending on the target.
 
-| Artifact | What it decides | Contents |
+| Artifact | Role | Platforms |
 |---|---|---|
-| `mvi` | where state lives and how contents talk | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces |
-| `navigation` | how long a host's ViewModels live | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
-| `architecture` | that the code keeps to the conventions | Konsist assertions for the state rules, the host, content, section and component split, previews, repositories, module dependencies and Koin |
-| `mvi-mobile` | the same for one ViewModel on Android and iOS | `PulseViewModel`, `PulseContent` and three marker interfaces, without the Container — see [Mobile](/guide/mobile) |
+| `architecture` | the rules, as Konsist assertions for your tests | runs on the JVM; checks desktop and mobile code |
+| `mvi` | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces | desktop |
+| `mvi-mobile` | `PulseViewModel`, `PulseContent` and three marker interfaces | Android, iOS |
+| `navigation` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
 
 ## Installation
 
-### Repository
-
-Add JitPack to `settings.gradle.kts`.
+Add JitPack to `settings.gradle.kts`, then the artifacts for your platform to `build.gradle.kts`. Replace `<version>` with a tag from [GitHub Releases](https://github.com/kaleidot725/PulsePlatform/releases).
 
 ```kotlin
 // settings.gradle.kts
@@ -74,19 +74,27 @@ dependencyResolutionManagement {
 }
 ```
 
-### Dependencies
-
-Add the dependencies to `build.gradle.kts`. Replace `<version>` with the latest tag from [GitHub Releases](https://github.com/kaleidot725/PulsePlatform/releases).
-
 ```kotlin
-// build.gradle.kts
+// build.gradle.kts — desktop
 dependencies {
     implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-
-    // Optional: scope ViewModels to a Navigation 3 back stack entry
     implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
+}
+```
 
-    // Optional: check the conventions in your tests
+```kotlin
+// build.gradle.kts — mobile (Compose Multiplatform)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
+        }
+    }
+}
+
+dependencies {
+    // the rules run in the Android unit tests
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
@@ -98,11 +106,11 @@ dependencies {
 | Java | 17+ |
 | Kotlin | 2.0+ |
 | Compose Multiplatform | 1.6+ |
+| Android | `minSdk` 26 |
 
-## Next Steps
+## Next steps
 
-- [Getting Started](/guide/getting-started) — build your first counter app
-- [Architecture](/guide/architecture) — understand how state flows
-- [Container](/guide/container) — make the contents work together
-- [Navigation 3](/guide/navigation3) — scope ViewModels to a back stack entry
-- [Architecture checks](/guide/architecture-checks) — check in your tests that the code follows the conventions
+- [Desktop quick start](/guide/getting-started) — a counter window with a host, a content and a Container
+- [Mobile quick start](/guide/getting-started-mobile) — a counter screen on Android and iOS
+- [Building with AI agents](/guide/ai-agents) — set up the rules so an agent checks its own work
+- [Rules](/guide/rules/) — every rule and why it exists

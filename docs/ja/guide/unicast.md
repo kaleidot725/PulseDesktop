@@ -1,6 +1,6 @@
 # Unicast
 
-Unicast は、`PulseViewModel` から親の `PulseContainer` へ型付きメッセージを送る仕組みです。
+デスクトップだけのものです。Unicast は、`PulseViewModel` から親の `PulseContainer` へ型付きメッセージを送る仕組みです。
 
 使う場面は、操作の処理と後続の調整が分かれているときです。直近のユーザー操作は子の ViewModel が担当します。その結果を兄弟の ViewModel に Broadcast するといった調整は、親の Container が行います。
 

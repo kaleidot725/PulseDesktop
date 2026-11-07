@@ -7,7 +7,7 @@ abstract class PulseContainer<Broadcast : PulseBroadcast, Unicast : PulseUnicast
 )
 ```
 
-複数の `PulseViewModel` インスタンスを調整します。Broadcast の配信、子からの Unicast の処理、View Refresh を提供します。
+デスクトップだけのものです。複数の `PulseViewModel` インスタンスを調整します。Broadcast の配信、子からの Unicast の処理、View Refresh を提供します。
 
 内部の Unicast 収集には `Dispatchers.Default` を使います。コンストラクタで別のディスパッチャを渡すこともできます。
 

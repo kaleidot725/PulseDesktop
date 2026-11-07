@@ -60,7 +60,7 @@ sealed class CounterEvent : PulseEvent {
 interface PulseBroadcast
 ```
 
-Marks a class as a broadcast message. `PulseContainer` delivers it to all registered `PulseViewModel` instances. Implement with a `sealed class`.
+Desktop only. Marks a class as a broadcast message. `PulseContainer` delivers it to all registered `PulseViewModel` instances. Implement with a `sealed class`.
 
 ```kotlin
 sealed class AppBroadcast : PulseBroadcast {
@@ -77,7 +77,7 @@ sealed class AppBroadcast : PulseBroadcast {
 interface PulseUnicast
 ```
 
-Marks a class as a unicast message. A child `PulseViewModel` emits it to its parent `PulseContainer`. Implement with a `sealed class`.
+Desktop only. Marks a class as a unicast message. A child `PulseViewModel` emits it to its parent `PulseContainer`. Implement with a `sealed class`.
 
 ```kotlin
 sealed class AppUnicast : PulseUnicast {

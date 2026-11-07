@@ -1,6 +1,6 @@
-# Container
+# Host and Container
 
-`PulseContainer` sits above one or more ViewModels. It provides three coordination capabilities: **broadcast**, **unicast handling**, and **view refresh**.
+Desktop only. A desktop window shows several contents at once, and `PulseContainer` sits above their ViewModels so they can work together. The host creates it and wraps the contents in `PulseHost`. It provides three coordination capabilities: **broadcast**, **unicast handling**, and **view refresh**.
 
 ## Creating a Container
 

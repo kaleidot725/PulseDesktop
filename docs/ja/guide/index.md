@@ -1,69 +1,69 @@
 # PulsePlatform とは
 
-PulsePlatform は **Compose Desktop** のアプリを作るためのフレームワークです。[`mvi-mobile`](/ja/guide/mobile) で、その ViewModel を Android と iOS でも使えます。ウィンドウをどう分けるか、各部分の状態をどこに置くか、部分どうしがどうやり取りするか、それぞれがどれだけ生きるかを決めています。コードがその決まりを守っているかは、自分のテストで検査できます。
+PulsePlatform は、Compose の UI を作るためのルールとライブラリです。人だけでなく AI エージェントが使うことを前提にしています。ルールはプロジェクトが実行するテストで、ライブラリはそのルールが求める部品を持っています。この 2 つで、Compose Desktop のデスクトップアプリも、Compose Multiplatform の Android と iOS のアプリも作れます。
 
-## なぜデスクトップ向けなのか
+## なぜルールが先なのか
 
-スマートフォンでは、1 つの画面に 1 つの ViewModel を対応させるのが普通です。デスクトップのウィンドウは違います。サイドバー、エディタ、インスペクタが同時に表示され、それぞれが別々に変化し、その変化の一部はほかのパネルにも届く必要があります。
+AI エージェントは、コンパイルが通り、最初から動く画面を書きます。自分では保てないのは、そのまわりのコードの形です。ある画面は Section で ViewModel を結びつけ、別の画面は State の隣に `var` を置き、また別の画面は domain に文言を置きます。どの選択もそれ自体は動くので、コードベースは少しずつずれていきます。
 
-すべてを 1 つの ViewModel に入れると、その ViewModel がすべてを知るファイルになります。かといって連携の手段なしに分けると、パネルどうしが互いの中身に手を伸ばし始めます。PulsePlatform は各部分に専用の ViewModel を持たせ、その上に Container を 1 つ置きます。
+プロンプトやスタイルガイドに書いたルールは読み飛ばされます。失敗するテストになったルールはそうはいきません。PulsePlatform のルールは [Konsist](https://docs.konsist.lemonappdev.com/) のアサートで、自分のテストスイートの 1 本のテストから呼びます。コードがずれるとテストが失敗し、ファイルの名前と、何をどこへ動かすかを示します。エージェントはそのメッセージを読み、コンパイルエラーと同じようにコードを直します。
 
-## ウィンドウの分け方
+もう半分がライブラリです。ルールは、ViewModel を結びつける場所が 1 つであること、Section と Component がデータとコールバックだけを受け取ること、State が 1 つの不変な値であることを求めます。ライブラリはそれをいちばん書きやすい画面の書き方にするので、ルールに従うために余計なコードを書く必要はありません。
 
-ウィンドウは 4 種類の Composable から組み立てます。どれに当たるかは、Composable を置くパッケージで決まります。
+## ルールが扱うもの
 
-| 役割 | 何をするか | 置き場所 |
-|---|---|---|
-| **Host** | ルートが表示するもの。ViewModel と Container を生成し、Content を配置する | feature パッケージのルートの `…Host` という名前のファイル |
-| **Content** | 1 つの ViewModel が受け持つ部分。その ViewModel を `PulseContent` で束ねる | `content/<名前>`。ViewModel の隣 |
-| **Section** | State とコールバックから描く画面の一部。単体で Preview できる | `section` パッケージ |
-| **Component** | 小さな部品。データとコールバックだけを受け取るので、使い回せて単体で Preview できる | `component` パッケージ |
-
-## Content どうしの連携
-
-Content をつなぐのは、Host が持つ Container です。Content 間のメッセージは 3 つの機能が運びます。
-
-| 機能 | 説明 |
+| 範囲 | 検査する内容 |
 |---|---|
-| **Broadcast** | Container から、すべての Content の ViewModel へ型付きメッセージを一度に届ける |
-| **Unicast** | ある Content の ViewModel から、Container へ型付きメッセージを送る |
-| **View Refresh** | どの ViewModel の状態も失わずに、Container 配下のビューツリーを作り直す |
+| [UI の構成](/ja/guide/rules/ui) | feature を、ViewModel を結びつける場所と Section・Component にどう分けるか、State とメッセージ、Preview |
+| [ドメインとデータ](/ja/guide/rules/domain) | Repository がデータをどう公開するか、UseCase を書く価値があるのはどんなときか |
+| [モジュールと Koin](/ja/guide/rules/modules) | どのモジュールがどのモジュールに依存してよいか、その中のパッケージ、Koin のモジュールをどこで定義するか |
+| [文言](/ja/guide/rules/text) | ユーザーが読む文字列がすべて文字列リソースから来ていて、アプリを翻訳できること |
 
-## ウィンドウの例
+## デスクトップとモバイル
 
-下のウィンドウでは、エディタが変更を Unicast で伝え、Container がそれを 3 つの Content すべてに Broadcast します。どう反応するかは、それぞれの Content が自分で決めます。
+ルールとコアはどのプラットフォームでも同じです。`PulseViewModel` は 1 つの不変な State を持ち、Action を処理して Event を発行し、`PulseContent` がそれを UI に結びつけます。違うのは、1 つの画面に ViewModel がいくつあるかです。
 
-```mermaid
-flowchart TB
-    PC["PulseContainer<br/><i>Host が保持する</i>"]
-    subgraph W["Window"]
-        direction LR
-        A["SideBar Content<br/><i>SideBarViewModel</i>"]
-        B["Editor Content<br/><i>EditorViewModel</i>"]
-        C["Inspector Content<br/><i>InspectorViewModel</i>"]
-    end
-    B -- "unicast" --> PC
-    PC -- "broadcast" --> A
-    PC -- "broadcast" --> B
-    PC -- "broadcast" --> C
+デスクトップのウィンドウには、サイドバー、エディタ、インスペクタが同時に並びます。それぞれが自分の ViewModel を持つ **Content** で、**Host** がそれを並べ、その上の **Container** が Content の間でメッセージを運びます。スマートフォンは一度に 1 つの画面しか表示しないので、**Screen** が ViewModel を 1 つ持って自分で結びつけ、Container はありません。
+
+| | デスクトップ | モバイル |
+|---|---|---|
+| アーティファクト | `mvi` | `mvi-mobile` |
+| ターゲット | JVM（Compose Desktop） | Android、iOS（Compose Multiplatform） |
+| feature の単位 | Host、その Content、Container | Screen 1 つと ViewModel 1 つ |
+| ViewModel を結びつける場所 | 各 Content | Screen |
+| ViewModel 間のメッセージ | Container を通る Broadcast と Unicast | なし |
+| ルール | `assertPulseMviConventions()` | `assertPulseMobileConventions()` |
+
+```
+デスクトップ                             モバイル
+counter/                                 counter/
+├── CounterHost.kt                       ├── CounterScreen.kt
+├── CounterContainer.kt                  ├── CounterViewModel.kt
+├── CounterContracts.kt                  ├── CounterContracts.kt
+├── content/                             ├── section/
+│   └── total/                           └── component/
+│       ├── TotalContent.kt
+│       ├── TotalViewModel.kt
+│       ├── TotalContracts.kt
+│       └── section/
+├── section/
+└── component/
 ```
 
 ## アーティファクト
 
-PulsePlatform は 4 つのアーティファクトに分かれています。必須なのは `mvi` だけで、Android や iOS のアプリでは同じパッケージを持つ `mvi-mobile` を代わりに使います。
+PulsePlatform は JitPack で 4 つのアーティファクトとして公開しています。ルールはどのプラットフォームでも使い、MVI のアーティファクトはターゲットに合わせて 2 つのうちどちらかを使います。
 
-| アーティファクト | 何を決めるか | 内容 |
+| アーティファクト | 役割 | プラットフォーム |
 |---|---|---|
-| `mvi` | 状態をどこに置き、Content どうしがどうやり取りするか | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース |
-| `navigation` | Host の ViewModel がどれだけ生きるか | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
-| `architecture` | コードが規約を守っているか | 状態の規約、Host・Content・Section・Component の分け方、Preview、Repository、モジュール間の依存、Koin を検査する Konsist のアサート |
-| `mvi-mobile` | Android と iOS で ViewModel 1 つについて同じことを決める | `PulseViewModel`、`PulseContent`、3 つのマーカーインターフェース。Container はない。[モバイル](/ja/guide/mobile) を参照 |
+| `architecture` | ルール。テストから呼ぶ Konsist のアサート | JVM で動き、デスクトップとモバイルのコードを検査する |
+| `mvi` | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース | デスクトップ |
+| `mvi-mobile` | `PulseViewModel`、`PulseContent`、3 つのマーカーインターフェース | Android、iOS |
+| `navigation` | ViewModel と Container を Navigation 3 のバックスタックエントリに結びつける | デスクトップ |
 
 ## インストール
 
-### リポジトリ
-
-`settings.gradle.kts` に JitPack を追加します。
+`settings.gradle.kts` に JitPack を追加し、`build.gradle.kts` にプラットフォームに合ったアーティファクトを追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulsePlatform/releases) のタグに置き換えてください。
 
 ```kotlin
 // settings.gradle.kts
@@ -74,19 +74,27 @@ dependencyResolutionManagement {
 }
 ```
 
-### 依存関係
-
-`build.gradle.kts` に依存を追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulsePlatform/releases) の最新タグに置き換えてください。
-
 ```kotlin
-// build.gradle.kts
+// build.gradle.kts — デスクトップ
 dependencies {
     implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-
-    // 任意: ViewModel を Navigation 3 のバックスタックエントリにスコープする
     implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
+}
+```
 
-    // 任意: 規約をテストで検査する
+```kotlin
+// build.gradle.kts — モバイル（Compose Multiplatform）
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
+        }
+    }
+}
+
+dependencies {
+    // ルールは Android のユニットテストで実行する
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
@@ -95,14 +103,14 @@ dependencies {
 
 | 要件 | バージョン |
 |---|---|
-| Java | 17 以上 |
-| Kotlin | 2.0 以上 |
-| Compose Multiplatform | 1.6 以上 |
+| Java | 17+ |
+| Kotlin | 2.0+ |
+| Compose Multiplatform | 1.6+ |
+| Android | `minSdk` 26 |
 
 ## 次のステップ
 
-- [はじめかた](/ja/guide/getting-started) — 最初のカウンターアプリを作る
-- [アーキテクチャ](/ja/guide/architecture) — 状態がどう流れるかを理解する
-- [Container](/ja/guide/container) — Content をまとめて動かす
-- [Navigation 3](/ja/guide/navigation3) — ViewModel をバックスタックエントリにスコープする
-- [アーキテクチャ検査](/ja/guide/architecture-checks) — 規約に従っているかを自分のテストで検査する
+- [デスクトップのクイックスタート](/ja/guide/getting-started) — Host、Content、Container を持つカウンターのウィンドウ
+- [モバイルのクイックスタート](/ja/guide/getting-started-mobile) — Android と iOS のカウンター画面
+- [AI エージェントと作る](/ja/guide/ai-agents) — エージェントが自分の作業を確かめられるようにルールを用意する
+- [ルール](/ja/guide/rules/) — すべてのルールとその理由

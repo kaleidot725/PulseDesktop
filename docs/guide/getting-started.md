@@ -1,15 +1,16 @@
-# Getting Started
+# Desktop quick start
 
-This guide walks you through building a simple counter app with PulsePlatform.
+This guide builds a counter window with Compose Desktop: a host, one content and a Container, checked by the rules at the end. For Android and iOS, see the [mobile quick start](/guide/getting-started-mobile).
 
 It creates the ViewModel with `rememberPulseViewModel`, which the `navigation` artifact adds, so that
-one goes in alongside `mvi`. To drive the lifecycle yourself with `mvi` alone, see
+one goes in alongside `mvi`, and the rules go in the tests. To drive the lifecycle yourself with `mvi` alone, see
 [ViewModel](/guide/viewmodel).
 
 ```kotlin
 dependencies {
     implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
     implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 
@@ -228,12 +229,26 @@ fun main() = application {
 }
 ```
 
+## 6. Check the rules
+
+One test runs the rules over the whole project. It passes when the files sit where step 1 and step 4 put them: the host and the Container at the feature root, the content and its ViewModel in `content/counter`. Run it with `./gradlew test`. A failure names the file and says what to change. This counter writes its labels as literals to stay short, so it runs the UI structure rules only; a real app adds the [other groups](/guide/rules/), such as the text rules that move those labels into string resources.
+
+```kotlin
+class PulsePlatformConventionTest {
+    @Test
+    fun `follows the PulsePlatform conventions`() {
+        val scope = Konsist.scopeFromProduction()
+        scope.assertPulseMviConventions()
+    }
+}
+```
+
 ## Running the Demo
 
 The repository includes a pulse grid demo: four areas share one Container, and a tap on one spreads
 to the two it shares an edge with. It is split into an app, a feature, and a domain, data and design
 system under `core`, wired with Koin, and keeps its counts in a DataStore — the layout the
-[architecture checks](/guide/architecture-checks) describe, which it passes. Clone the repo and run:
+[rules](/guide/rules/) describe, which it passes. Clone the repo and run:
 
 ```bash
 ./gradlew :demo:app:run
@@ -241,7 +256,8 @@ system under `core`, wired with Koin, and keeps its counts in a DataStore — th
 
 ## Next Steps
 
-- [Architecture](/guide/architecture) — understand the data flow in depth
+- [UI structure rules](/guide/rules/ui) — every rule the test checks
+- [MVI](/guide/mvi) — understand the data flow in depth
 - [ViewModel](/guide/viewmodel) — advanced ViewModel patterns
-- [Container](/guide/container) — coordinating multiple ViewModels
+- [Host and Container](/guide/container) — coordinating multiple ViewModels
 - [Navigation 3](/guide/navigation3) — how back stack scoped lifetimes work
