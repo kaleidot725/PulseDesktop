@@ -81,7 +81,7 @@ class PulseViewModelTest {
      * buffer keeps them until it does, in the order they were sent.
      */
     @Test
-    fun `buffers events emitted before a collector arrives, in order`() =
+    fun `buffers events emitted before a collector arrives in order`() =
         runTest {
             val viewModel = TestViewModel()
 
