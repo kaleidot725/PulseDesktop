@@ -1,6 +1,6 @@
 # Architecture checks
 
-`architecture` is an optional artifact. It states the conventions PulseDesktop expects of the code around it as [Konsist](https://docs.konsist.lemonappdev.com/) assertions, so your own test suite checks them.
+`architecture` is an optional artifact. It states the conventions PulsePlatform expects of the code around it as [Konsist](https://docs.konsist.lemonappdev.com/) assertions, so your own test suite checks them.
 
 The compiler already rejects what the types can express. A ViewModel must implement `onAction`, and its message types must be the ones its Container knows. What is left are habits the types cannot express, each with a consequence that is easy to miss in review.
 
@@ -21,16 +21,16 @@ Add the artifact to the test classpath. Konsist itself comes with it, so there i
 ```kotlin
 // build.gradle.kts
 dependencies {
-    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 
 Then write one test. `scopeFromProduction()` reads the project's main source sets, leaving test code out.
 
 ```kotlin
-class PulseDesktopConventionTest {
+class PulsePlatformConventionTest {
     @Test
-    fun `follows the PulseDesktop conventions`() {
+    fun `follows the PulsePlatform conventions`() {
         val scope = Konsist.scopeFromProduction()
         scope.assertPulseMviConventions()
         scope.assertPulseDomainConventions()
@@ -174,7 +174,7 @@ Dependencies are read from the imports in each file, so what is checked is the c
 | The design system stands alone | the design system imports only from support |
 | Shared UI only draws | the shared UI imports only from the domain, the design system, itself and support |
 | Features reach data through the domain | a feature imports nothing from the data layer |
-| The domain is framework-free | the domain imports nothing from Compose, AndroidX Lifecycle or PulseDesktop |
+| The domain is framework-free | the domain imports nothing from Compose, AndroidX Lifecycle or PulsePlatform |
 | The design system is split by kind | every file of the design system is in a package named after its kind |
 
 ### Packages
@@ -205,7 +205,7 @@ core/data/…/data/
 core/designsystem/…/designsystem/
 ├── button/         # PulseButton, PulseTextButton
 ├── card/           # PulseCard
-└── theme/          # PulseDesktopTheme
+└── theme/          # PulsePlatformTheme
 ```
 
 ### Other module names
@@ -294,7 +294,7 @@ Konsist also reads source code rather than compiled classes. A ViewModel that re
 
 Konsist does not read Gradle build scripts either, so the module checks find dependencies through imports. A dependency that is declared in a build script but never imported is not seen.
 
-An empty result passes. A module with no PulseDesktop types yet does not fail, so the test can be added before the code it checks.
+An empty result passes. A module with no PulsePlatform types yet does not fail, so the test can be added before the code it checks.
 
 ## Next steps
 

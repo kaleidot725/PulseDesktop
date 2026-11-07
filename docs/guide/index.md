@@ -1,12 +1,12 @@
-# What is PulseDesktop?
+# What is PulsePlatform?
 
-PulseDesktop is a framework for building **Compose Desktop** apps. It decides how a window is split, where each part keeps its state, how the parts talk to each other and how long they live. Your own tests can check that the code keeps to those decisions.
+PulsePlatform is a framework for building **Compose Desktop** apps, and [`mvi-mobile`](/guide/mobile) brings its ViewModel to Android and iOS. It decides how a window is split, where each part keeps its state, how the parts talk to each other and how long they live. Your own tests can check that the code keeps to those decisions.
 
 ## Why a desktop framework
 
 On a phone, one screen usually maps to one ViewModel. A desktop window is different: a sidebar, an editor and an inspector are on screen together. Each changes on its own, and some of those changes have to reach the others.
 
-Putting all of it in one ViewModel turns that ViewModel into the file that knows everything. Splitting it with no way to coordinate makes the panels reach into each other instead. PulseDesktop gives each part its own ViewModel and puts one Container above them.
+Putting all of it in one ViewModel turns that ViewModel into the file that knows everything. Splitting it with no way to coordinate makes the panels reach into each other instead. PulsePlatform gives each part its own ViewModel and puts one Container above them.
 
 ## How a window is split
 
@@ -50,7 +50,7 @@ flowchart TB
 
 ## Artifacts
 
-PulseDesktop is split into four artifacts. Only `mvi` is required, or `mvi-mobile` in an Android or iOS app, which shares its package.
+PulsePlatform is split into four artifacts. Only `mvi` is required, or `mvi-mobile` in an Android or iOS app, which shares its package.
 
 | Artifact | What it decides | Contents |
 |---|---|---|
@@ -76,18 +76,18 @@ dependencyResolutionManagement {
 
 ### Dependencies
 
-Add the dependencies to `build.gradle.kts`. Replace `<version>` with the latest tag from [GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases).
+Add the dependencies to `build.gradle.kts`. Replace `<version>` with the latest tag from [GitHub Releases](https://github.com/kaleidot725/PulsePlatform/releases).
 
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
 
     // Optional: scope ViewModels to a Navigation 3 back stack entry
-    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
 
     // Optional: check the conventions in your tests
-    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 

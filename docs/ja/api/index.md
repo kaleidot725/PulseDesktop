@@ -1,6 +1,6 @@
 # API 概要
 
-PulseDesktop の API は小さく、焦点が絞られています。アーティファクトとパッケージは 1 対 1 です。コアの `mvi` は `jp.kaleidot725.pulse.mvi`、任意の `navigation` と `architecture` はそれぞれ `jp.kaleidot725.pulse.navigation` と `jp.kaleidot725.pulse.architecture` にあります。後者 2 つは [拡張](#拡張) にまとめています。
+PulsePlatform の API は小さく、焦点が絞られています。アーティファクトとパッケージは 1 対 1 です。コアの `mvi` は `jp.kaleidot725.pulse.mvi`、任意の `navigation` と `architecture` はそれぞれ `jp.kaleidot725.pulse.navigation` と `jp.kaleidot725.pulse.architecture` にあります。後者 2 つは [拡張](#拡張) にまとめています。
 
 ## クラス
 

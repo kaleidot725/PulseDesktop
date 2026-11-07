@@ -1,13 +1,13 @@
 # はじめかた
 
-このガイドでは、PulseDesktop でシンプルなカウンターアプリを作る手順を追います。
+このガイドでは、PulsePlatform でシンプルなカウンターアプリを作る手順を追います。
 
 ViewModel の生成には `navigation` が追加する `rememberPulseViewModel` を使うので、`mvi` と一緒に追加してください。`mvi` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ```kotlin
 dependencies {
-    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
-    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
 }
 ```
 

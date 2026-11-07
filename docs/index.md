@@ -2,19 +2,19 @@
 layout: home
 
 hero:
-  name: PulseDesktop
-  text: A framework for Compose Desktop apps
+  name: PulsePlatform
+  text: A framework for Compose apps on the desktop, Android and iOS
   tagline: Split a window into a host, contents, sections and components. Give each content its own ViewModel, and let one Container keep them working together.
   actions:
     - theme: brand
       text: Get Started
       link: /guide/getting-started
     - theme: alt
-      text: What is PulseDesktop?
+      text: What is PulsePlatform?
       link: /guide/
     - theme: alt
       text: View on GitHub
-      link: https://github.com/kaleidot725/PulseDesktop
+      link: https://github.com/kaleidot725/PulsePlatform
 
 features:
   - icon: 🪟

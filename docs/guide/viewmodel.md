@@ -1,6 +1,6 @@
 # ViewModel
 
-`PulseViewModel` is the core building block of PulseDesktop. It manages the UI state for a single content of your app, the part of a screen one ViewModel answers for.
+`PulseViewModel` is the core building block of PulsePlatform. It manages the UI state for a single content of your app, the part of a screen one ViewModel answers for.
 
 ## Creating a ViewModel
 

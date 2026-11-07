@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-PulseDesktop is a Kotlin MVI (Model-View-Intent) library for Compose Desktop. Its desktop artifacts
+PulsePlatform is a Kotlin MVI (Model-View-Intent) library for Compose Desktop, Android and iOS. Its desktop artifacts
 publish a JVM target only. Android and iOS get a separate artifact, `mvi-mobile`, a Kotlin
 Multiplatform module (Android, `iosArm64`, `iosSimulatorArm64`) that keeps `PulseState`, `PulseAction`, `PulseEvent`, `PulseViewModel<State, Action, Event>` and
 `PulseContent` in the same package and leaves out the Container, `PulseHost`, Broadcast and Unicast,
@@ -23,7 +23,7 @@ artifact adds `rememberPulseViewModel` / `rememberPulseContainer`, and
 `rememberPulseNavEntryDecorators()` scopes an instance to a Navigation 3 back stack entry.
 
 The `architecture` artifact publishes the conventions themselves as Konsist assertions, so an app
-can check in its own test suite that it uses PulseDesktop the way the library expects. Among them is the
+can check in its own test suite that it uses PulsePlatform the way the library expects. Among them is the
 view layout the demo follows: a feature's root holds the **host** (a file named `…Host`), which
 creates the ViewModels and the Container and lays out **contents**, beside the Container. A content,
 under `content/<name>`, binds one ViewModel with `PulseContent`, and its ViewModel sits beside it.
@@ -96,7 +96,7 @@ the library. A new public declaration is still expected to arrive with the test 
 ## Project Structure
 
 ```
-PulseDesktop/
+PulsePlatform/
 ├── library/                          # Everything published; each module is one artifact
 │   ├── mvi/                          # :library:mvi — core artifact: mvi
 │   │   └── src/
@@ -185,13 +185,13 @@ resources in `commonMain`.
 
 ## Key Configuration
 
-- Group ID: `com.github.kaleidot725.PulseDesktop` (what JitPack serves for a multi-module repo)
+- Group ID: `com.github.kaleidot725.PulsePlatform` (what JitPack serves for a multi-module repo)
 - Artifact IDs: `mvi`, `navigation`, `architecture`, `mvi-mobile` — the projects are `:library:mvi`,
   `:library:navigation`, `:library:architecture` and `:library:mvi-mobile`, and JitPack names an artifact after the project,
   so the `library` directory does not appear in the coordinates
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation`,
   `jp.kaleidot725.pulse.architecture` — one package per artifact, all three beside each other under
   `pulse`. The core package and the `Pulse` class prefix are unchanged by the rename
-- JitPack dependency: `implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")`, and
-  `testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")` for the
+- JitPack dependency: `implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")`, and
+  `testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")` for the
   convention checks

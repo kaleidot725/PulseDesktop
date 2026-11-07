@@ -1,16 +1,17 @@
 <p align="center">
-  <img src="docs/public/logo.svg" width="96" alt="PulseDesktop" />
+  <img src="docs/public/logo.svg" width="96" alt="PulsePlatform" />
 </p>
 
-# PulseDesktop
+# PulsePlatform
 
 [![Kotlin](https://img.shields.io/badge/kotlin-2.3.10-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.10.1-blue)](https://www.jetbrains.com/lp/compose-multiplatform/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![](https://jitpack.io/v/kaleidot725/PulseDesktop.svg)](https://jitpack.io/#kaleidot725/PulseDesktop)
+[![](https://jitpack.io/v/kaleidot725/PulsePlatform.svg)](https://jitpack.io/#kaleidot725/PulsePlatform)
 
-PulseDesktop is a framework for Compose Desktop apps. A desktop window shows many panels at once, so
-PulseDesktop gives each **content** of a screen its own `PulseViewModel` and puts one
+PulsePlatform is a framework for Compose apps on the desktop, with a smaller artifact for Android
+and iOS. A desktop window shows many panels at once, so
+PulsePlatform gives each **content** of a screen its own `PulseViewModel` and puts one
 `PulseContainer` above them. **Broadcast** reaches every content, **Unicast** sends a message up from
 one, and **Refresh** rebuilds the view without losing state.
 
@@ -18,20 +19,20 @@ Around that, it decides how a window is split. A **host** creates the ViewModels
 contents, a content binds one ViewModel with `PulseContent`, and **sections** and **components** take
 data and callbacks only. Your own tests can check that the code keeps to it.
 
-Read [What is PulseDesktop?](https://kaleidot725.github.io/PulseDesktop/guide/) for the idea behind it.
+Read [What is PulsePlatform?](https://kaleidot725.github.io/PulsePlatform/guide/) for the idea behind it.
 
 ![demo](docs/demo.png)
 
 ## Installation
 
-PulseDesktop publishes three artifacts for the desktop, one package each. `mvi` is the library; the
+PulsePlatform publishes three artifacts for the desktop, one package each. `mvi` is the library; the
 other two are optional. `navigation` scopes ViewModels to a Navigation 3 back stack entry, and
 `architecture` checks in your own tests that the code follows the conventions. An Android or iOS app
-uses `mvi-mobile` instead of `mvi`, as [Mobile](https://kaleidot725.github.io/PulseDesktop/guide/mobile)
+uses `mvi-mobile` instead of `mvi`, as [Mobile](https://kaleidot725.github.io/PulsePlatform/guide/mobile)
 describes.
 
 Add JitPack to `settings.gradle.kts`, then the dependencies to `build.gradle.kts`, replacing
-`<version>` with a tag from [Releases](https://github.com/kaleidot725/PulseDesktop/releases).
+`<version>` with a tag from [Releases](https://github.com/kaleidot725/PulsePlatform/releases).
 
 ```kotlin
 // settings.gradle.kts
@@ -43,9 +44,9 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
-    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
-    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 
@@ -62,7 +63,7 @@ dependencies {
 A ViewModel handles actions and updates its state. A content binds it to the UI with
 `PulseContent`, and the host creates the ViewModel and places the content. The full walkthrough,
 including the Container, is in
-[Getting Started](https://kaleidot725.github.io/PulseDesktop/guide/getting-started).
+[Getting Started](https://kaleidot725.github.io/PulsePlatform/guide/getting-started).
 
 ```kotlin
 class CounterViewModel : PulseViewModel<CounterState, CounterAction, CounterEvent, CounterBroadcast, CounterUnicast>(
@@ -96,14 +97,14 @@ fun CounterHost() {
 
 ## Documentation
 
-**[kaleidot725.github.io/PulseDesktop](https://kaleidot725.github.io/PulseDesktop/)** (English and Japanese).
+**[kaleidot725.github.io/PulsePlatform](https://kaleidot725.github.io/PulsePlatform/)** (English and Japanese).
 
 | Artifact | Package | Documentation |
 |---|---|---|
-| `mvi` | `jp.kaleidot725.pulse.mvi` | [Architecture](https://kaleidot725.github.io/PulseDesktop/guide/architecture) |
-| `navigation` | `jp.kaleidot725.pulse.navigation` | [Navigation 3](https://kaleidot725.github.io/PulseDesktop/guide/navigation3) |
-| `architecture` | `jp.kaleidot725.pulse.architecture` | [Architecture checks](https://kaleidot725.github.io/PulseDesktop/guide/architecture-checks) |
-| `mvi-mobile` | `jp.kaleidot725.pulse.mvi` | [Mobile](https://kaleidot725.github.io/PulseDesktop/guide/mobile) |
+| `mvi` | `jp.kaleidot725.pulse.mvi` | [Architecture](https://kaleidot725.github.io/PulsePlatform/guide/architecture) |
+| `navigation` | `jp.kaleidot725.pulse.navigation` | [Navigation 3](https://kaleidot725.github.io/PulsePlatform/guide/navigation3) |
+| `architecture` | `jp.kaleidot725.pulse.architecture` | [Architecture checks](https://kaleidot725.github.io/PulsePlatform/guide/architecture-checks) |
+| `mvi-mobile` | `jp.kaleidot725.pulse.mvi` | [Mobile](https://kaleidot725.github.io/PulsePlatform/guide/mobile) |
 
 ## Demo
 
