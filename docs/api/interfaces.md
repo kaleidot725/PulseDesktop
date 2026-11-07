@@ -1,6 +1,6 @@
 # Marker Interfaces
 
-PulseDesktop uses marker interfaces to enforce type safety at the generic level. None of them has members; they exist solely to constrain type parameters.
+PulsePlatform uses marker interfaces to enforce type safety at the generic level. None of them has members; they exist solely to constrain type parameters.
 
 ## PulseState
 

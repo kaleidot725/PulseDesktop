@@ -2,19 +2,19 @@
 layout: home
 
 hero:
-  name: PulseDesktop
-  text: Compose Desktop のフレームワーク
+  name: PulsePlatform
+  text: デスクトップ、Android、iOS の Compose のフレームワーク
   tagline: ウィンドウを Host・Content・Section・Component に分け、Content ごとに ViewModel を持たせ、1 つの Container でまとめて動かします。
   actions:
     - theme: brand
       text: はじめる
       link: /ja/guide/getting-started
     - theme: alt
-      text: PulseDesktop とは
+      text: PulsePlatform とは
       link: /ja/guide/
     - theme: alt
       text: GitHub で見る
-      link: https://github.com/kaleidot725/PulseDesktop
+      link: https://github.com/kaleidot725/PulsePlatform
 
 features:
   - icon: 🪟

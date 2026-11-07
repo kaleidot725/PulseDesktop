@@ -1,21 +1,21 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 
-const github = 'https://github.com/kaleidot725/PulseDesktop'
+const github = 'https://github.com/kaleidot725/PulsePlatform'
 
 export default withMermaid(defineConfig({
-  title: 'PulseDesktop',
-  base: '/PulseDesktop/',
+  title: 'PulsePlatform',
+  base: '/PulsePlatform/',
 
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/PulseDesktop/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/PulsePlatform/favicon.svg' }],
   ],
 
   locales: {
     root: {
       label: 'English',
       lang: 'en',
-      description: 'A framework for Compose Desktop apps',
+      description: 'A framework for Compose apps on the desktop, Android and iOS',
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/', activeMatch: '/guide/' },
@@ -27,7 +27,7 @@ export default withMermaid(defineConfig({
             {
               text: 'Introduction',
               items: [
-                { text: 'What is PulseDesktop?', link: '/guide/' },
+                { text: 'What is PulsePlatform?', link: '/guide/' },
                 { text: 'Getting Started', link: '/guide/getting-started' },
               ],
             },
@@ -84,7 +84,7 @@ export default withMermaid(defineConfig({
       label: '日本語',
       lang: 'ja',
       link: '/ja/',
-      description: 'Compose Desktop アプリのためのフレームワーク',
+      description: 'デスクトップ、Android、iOS の Compose アプリのためのフレームワーク',
       themeConfig: {
         nav: [
           { text: 'ガイド', link: '/ja/guide/', activeMatch: '/ja/guide/' },
@@ -96,7 +96,7 @@ export default withMermaid(defineConfig({
             {
               text: 'はじめに',
               items: [
-                { text: 'PulseDesktop とは', link: '/ja/guide/' },
+                { text: 'PulsePlatform とは', link: '/ja/guide/' },
                 { text: 'はじめかた', link: '/ja/guide/getting-started' },
               ],
             },

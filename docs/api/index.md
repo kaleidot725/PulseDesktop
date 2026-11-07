@@ -1,6 +1,6 @@
 # API Overview
 
-PulseDesktop exposes a small, focused API surface. One package per artifact: `mvi` is the core and lives in `jp.kaleidot725.pulse.mvi`, while the optional `navigation` and `architecture` artifacts live in `jp.kaleidot725.pulse.navigation` and `jp.kaleidot725.pulse.architecture`. Both are listed under [Extensions](#extensions).
+PulsePlatform exposes a small, focused API surface. One package per artifact: `mvi` is the core and lives in `jp.kaleidot725.pulse.mvi`, while the optional `navigation` and `architecture` artifacts live in `jp.kaleidot725.pulse.navigation` and `jp.kaleidot725.pulse.architecture`. Both are listed under [Extensions](#extensions).
 
 ## Classes
 

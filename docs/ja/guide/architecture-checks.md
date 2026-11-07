@@ -1,6 +1,6 @@
 # アーキテクチャ検査
 
-`architecture` は任意のアーティファクトです。PulseDesktop が周りのコードに期待する規約を [Konsist](https://docs.konsist.lemonappdev.com/) のアサートとして公開しているので、自分のテストで検査できます。
+`architecture` は任意のアーティファクトです。PulsePlatform が周りのコードに期待する規約を [Konsist](https://docs.konsist.lemonappdev.com/) のアサートとして公開しているので、自分のテストで検査できます。
 
 型で表せることはコンパイラが弾きます。ViewModel は `onAction` を実装しなければならず、メッセージの型は Container が知っているものに限られます。残るのは型で表せない書き方の習慣で、どれもレビューで見落としやすいものです。
 
@@ -21,16 +21,16 @@
 ```kotlin
 // build.gradle.kts
 dependencies {
-    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 
 あとはテストを 1 本書きます。`scopeFromProduction()` はプロダクションのソースセットだけを読み、テストコードを除きます。
 
 ```kotlin
-class PulseDesktopConventionTest {
+class PulsePlatformConventionTest {
     @Test
-    fun `follows the PulseDesktop conventions`() {
+    fun `follows the PulsePlatform conventions`() {
         val scope = Konsist.scopeFromProduction()
         scope.assertPulseMviConventions()
         scope.assertPulseDomainConventions()
@@ -174,7 +174,7 @@ flowchart TB
 | designsystem は独立している | designsystem は補助モジュールからだけ import する |
 | 共有 UI は描くだけ | 共有 UI は domain、designsystem、自身、補助モジュールからだけ import する |
 | feature は domain 経由でデータに触れる | feature は data から何も import しない |
-| domain はフレームワークに依存しない | domain は Compose、AndroidX Lifecycle、PulseDesktop から import しない |
+| domain はフレームワークに依存しない | domain は Compose、AndroidX Lifecycle、PulsePlatform から import しない |
 | designsystem は種類ごとに分ける | designsystem のファイルは、種類の名前のパッケージにある |
 
 ### パッケージ
@@ -205,7 +205,7 @@ core/data/…/data/
 core/designsystem/…/designsystem/
 ├── button/         # PulseButton, PulseTextButton
 ├── card/           # PulseCard
-└── theme/          # PulseDesktopTheme
+└── theme/          # PulsePlatformTheme
 ```
 
 ### 別のモジュール名
@@ -294,7 +294,7 @@ Konsist が読むのはコンパイル済みのクラスではなくソースコ
 
 Konsist は Gradle の build script も読まないので、モジュールの検査は import から依存を見つけます。build script で宣言していても、一度も import していない依存は見えません。
 
-対象が 0 件のときは成功します。PulseDesktop の型がまだないモジュールでも落ちないので、検査するコードより先にテストを置けます。
+対象が 0 件のときは成功します。PulsePlatform の型がまだないモジュールでも落ちないので、検査するコードより先にテストを置けます。
 
 ## 次のステップ
 

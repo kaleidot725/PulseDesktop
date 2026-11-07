@@ -1,12 +1,12 @@
-# PulseDesktop とは
+# PulsePlatform とは
 
-PulseDesktop は **Compose Desktop** のアプリを作るためのフレームワークです。ウィンドウをどう分けるか、各部分の状態をどこに置くか、部分どうしがどうやり取りするか、それぞれがどれだけ生きるかを決めています。コードがその決まりを守っているかは、自分のテストで検査できます。
+PulsePlatform は **Compose Desktop** のアプリを作るためのフレームワークです。[`mvi-mobile`](/ja/guide/mobile) で、その ViewModel を Android と iOS でも使えます。ウィンドウをどう分けるか、各部分の状態をどこに置くか、部分どうしがどうやり取りするか、それぞれがどれだけ生きるかを決めています。コードがその決まりを守っているかは、自分のテストで検査できます。
 
 ## なぜデスクトップ向けなのか
 
 スマートフォンでは、1 つの画面に 1 つの ViewModel を対応させるのが普通です。デスクトップのウィンドウは違います。サイドバー、エディタ、インスペクタが同時に表示され、それぞれが別々に変化し、その変化の一部はほかのパネルにも届く必要があります。
 
-すべてを 1 つの ViewModel に入れると、その ViewModel がすべてを知るファイルになります。かといって連携の手段なしに分けると、パネルどうしが互いの中身に手を伸ばし始めます。PulseDesktop は各部分に専用の ViewModel を持たせ、その上に Container を 1 つ置きます。
+すべてを 1 つの ViewModel に入れると、その ViewModel がすべてを知るファイルになります。かといって連携の手段なしに分けると、パネルどうしが互いの中身に手を伸ばし始めます。PulsePlatform は各部分に専用の ViewModel を持たせ、その上に Container を 1 つ置きます。
 
 ## ウィンドウの分け方
 
@@ -50,7 +50,7 @@ flowchart TB
 
 ## アーティファクト
 
-PulseDesktop は 4 つのアーティファクトに分かれています。必須なのは `mvi` だけで、Android や iOS のアプリでは同じパッケージを持つ `mvi-mobile` を代わりに使います。
+PulsePlatform は 4 つのアーティファクトに分かれています。必須なのは `mvi` だけで、Android や iOS のアプリでは同じパッケージを持つ `mvi-mobile` を代わりに使います。
 
 | アーティファクト | 何を決めるか | 内容 |
 |---|---|---|
@@ -76,18 +76,18 @@ dependencyResolutionManagement {
 
 ### 依存関係
 
-`build.gradle.kts` に依存を追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulseDesktop/releases) の最新タグに置き換えてください。
+`build.gradle.kts` に依存を追加します。`<version>` は [GitHub Releases](https://github.com/kaleidot725/PulsePlatform/releases) の最新タグに置き換えてください。
 
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("com.github.kaleidot725.PulseDesktop:mvi:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
 
     // 任意: ViewModel を Navigation 3 のバックスタックエントリにスコープする
-    implementation("com.github.kaleidot725.PulseDesktop:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
 
     // 任意: 規約をテストで検査する
-    testImplementation("com.github.kaleidot725.PulseDesktop:architecture:<version>")
+    testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```
 

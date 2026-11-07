@@ -27,7 +27,7 @@
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("com.github.kaleidot725.PulseDesktop:mvi-mobile:<version>")
+            implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
         }
     }
 }

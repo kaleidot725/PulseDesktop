@@ -1,6 +1,6 @@
 # ViewModel
 
-`PulseViewModel` は PulseDesktop の中核となる構成要素です。アプリの 1 つの Content、つまり画面のうち 1 つの ViewModel が受け持つ部分の UI 状態を管理します。
+`PulseViewModel` は PulsePlatform の中核となる構成要素です。アプリの 1 つの Content、つまり画面のうち 1 つの ViewModel が受け持つ部分の UI 状態を管理します。
 
 ## ViewModel を作る
 
