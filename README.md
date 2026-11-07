@@ -35,6 +35,7 @@ so a mobile feature is one **screen** binding one ViewModel. On both, **sections
 | `mvi` | `PulseViewModel`, `PulseContent`, and the `PulseContainer` and `PulseHost` that let a window's contents work together | desktop |
 | `mvi-mobile` | `PulseViewModel` and `PulseContent`, one ViewModel per screen | Android, iOS |
 | `navigation` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
+| `navigation-mobile` | ties ViewModels to a Navigation 3 back stack entry | Android, iOS |
 
 ## Installation
 
@@ -61,6 +62,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
+            implementation("com.github.kaleidot725.PulsePlatform:navigation-mobile:<version>")
         }
     }
 }
@@ -136,8 +138,9 @@ fun CounterScreen() {
 | The idea | [What is PulsePlatform?](https://kaleidot725.github.io/PulsePlatform/guide/) |
 | The rules | [Rules](https://kaleidot725.github.io/PulsePlatform/guide/rules/) |
 | AI agents | [Building with AI agents](https://kaleidot725.github.io/PulsePlatform/guide/ai-agents) |
-| Desktop | [Host and Container](https://kaleidot725.github.io/PulsePlatform/guide/container), [Navigation 3](https://kaleidot725.github.io/PulsePlatform/guide/navigation3) |
+| Desktop | [Host and Container](https://kaleidot725.github.io/PulsePlatform/guide/container) |
 | Mobile | [Screens](https://kaleidot725.github.io/PulsePlatform/guide/mobile) |
+| Both | [Navigation 3](https://kaleidot725.github.io/PulsePlatform/guide/navigation3) |
 
 ## Demo
 

@@ -1,6 +1,6 @@
 # API Overview
 
-PulsePlatform publishes one package per role. The rules live in `jp.kaleidot725.pulse.architecture` (the `architecture` artifact). The library lives in `jp.kaleidot725.pulse.mvi`, published as `mvi` for the desktop and `mvi-mobile` for Android and iOS. The desktop's Navigation 3 support lives in `jp.kaleidot725.pulse.navigation` (the `navigation` artifact).
+PulsePlatform publishes one package per role. The rules live in `jp.kaleidot725.pulse.architecture` (the `architecture` artifact). The library lives in `jp.kaleidot725.pulse.mvi`, published as `mvi` for the desktop and `mvi-mobile` for Android and iOS. Navigation 3 support lives in `jp.kaleidot725.pulse.navigation`, published as `navigation` and `navigation-mobile`.
 
 ## Rules
 
@@ -33,7 +33,7 @@ The assertions your tests call, and the queries behind them. Every page of the [
 
 ## Library
 
-`PulseViewModel`, `PulseContent` and the three markers below are in both `mvi` and `mvi-mobile`. On mobile, `PulseViewModel` takes three type parameters instead of five.
+`PulseViewModel`, `PulseContent` and the three markers below are in both `mvi` and `mvi-mobile`, and the two Navigation 3 composables are in both `navigation` and `navigation-mobile`. On mobile, `PulseViewModel` takes three type parameters instead of five.
 
 | Declaration | Description |
 |---|---|
@@ -42,6 +42,8 @@ The assertions your tests call, and the queries behind them. Every page of the [
 | [`PulseState`](/api/interfaces#pulsestate) | Marks a class as a ViewModel's UI state |
 | [`PulseAction`](/api/interfaces#pulseaction) | Marks a class as a user action |
 | [`PulseEvent`](/api/interfaces#pulseevent) | Marks a class as a one-time side effect |
+| [`rememberPulseViewModel`](/api/navigation3#rememberpulseviewmodel) | ViewModel scoped to a `ViewModelStoreOwner` |
+| [`rememberPulseNavEntryDecorators`](/api/navigation3#rememberpulsenaventrydecorators) | `NavDisplay` decorators that scope ViewModels to a back stack entry |
 
 ## Desktop
 
@@ -53,6 +55,4 @@ These are in `mvi` and `navigation` only.
 | [`PulseHost`](/api/composables#pulsehost) | Scopes a Container to a subtree; enables refresh and broadcast callbacks |
 | [`PulseBroadcast`](/api/interfaces#pulsebroadcast) | Marks a class as a Container broadcast message |
 | [`PulseUnicast`](/api/interfaces#pulseunicast) | Marks a class as a child-to-parent unicast message |
-| [`rememberPulseViewModel`](/api/navigation3#rememberpulseviewmodel) | ViewModel scoped to a `ViewModelStoreOwner` |
 | [`rememberPulseContainer`](/api/navigation3#rememberpulsecontainer) | Container scoped to a `ViewModelStoreOwner` |
-| [`rememberPulseNavEntryDecorators`](/api/navigation3#rememberpulsenaventrydecorators) | `NavDisplay` decorators that scope ViewModels to a back stack entry |

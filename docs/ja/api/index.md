@@ -1,6 +1,6 @@
 # API 概要
 
-PulsePlatform は役割ごとに 1 つのパッケージを公開しています。ルールは `jp.kaleidot725.pulse.architecture`（`architecture` アーティファクト）にあります。ライブラリは `jp.kaleidot725.pulse.mvi` にあり、デスクトップ向けに `mvi`、Android と iOS 向けに `mvi-mobile` として公開しています。デスクトップの Navigation 3 対応は `jp.kaleidot725.pulse.navigation`（`navigation` アーティファクト）にあります。
+PulsePlatform は役割ごとに 1 つのパッケージを公開しています。ルールは `jp.kaleidot725.pulse.architecture`（`architecture` アーティファクト）にあります。ライブラリは `jp.kaleidot725.pulse.mvi` にあり、デスクトップ向けに `mvi`、Android と iOS 向けに `mvi-mobile` として公開しています。Navigation 3 対応は `jp.kaleidot725.pulse.navigation` にあり、`navigation` と `navigation-mobile` として公開しています。
 
 ## ルール
 
@@ -33,7 +33,7 @@ PulsePlatform は役割ごとに 1 つのパッケージを公開しています
 
 ## ライブラリ
 
-`PulseViewModel`、`PulseContent`、次の 3 つのマーカーは、`mvi` と `mvi-mobile` の両方にあります。モバイルの `PulseViewModel` は型パラメータを 5 つではなく 3 つ取ります。
+`PulseViewModel`、`PulseContent`、次の 3 つのマーカーは `mvi` と `mvi-mobile` の両方に、Navigation 3 の 2 つの Composable は `navigation` と `navigation-mobile` の両方にあります。モバイルの `PulseViewModel` は型パラメータを 5 つではなく 3 つ取ります。
 
 | 宣言 | 説明 |
 |---|---|
@@ -42,6 +42,8 @@ PulsePlatform は役割ごとに 1 つのパッケージを公開しています
 | [`PulseState`](/ja/api/interfaces#pulsestate) | クラスを ViewModel の UI 状態として印付ける |
 | [`PulseAction`](/ja/api/interfaces#pulseaction) | クラスをユーザーの操作として印付ける |
 | [`PulseEvent`](/ja/api/interfaces#pulseevent) | クラスを一度きりの副作用として印付ける |
+| [`rememberPulseViewModel`](/ja/api/navigation3#rememberpulseviewmodel) | `ViewModelStoreOwner` にスコープされた ViewModel |
+| [`rememberPulseNavEntryDecorators`](/ja/api/navigation3#rememberpulsenaventrydecorators) | ViewModel をバックスタックエントリにスコープする `NavDisplay` のデコレータ |
 
 ## デスクトップ
 
@@ -53,6 +55,4 @@ PulsePlatform は役割ごとに 1 つのパッケージを公開しています
 | [`PulseHost`](/ja/api/composables#pulsehost) | Container をサブツリーにスコープし、Refresh と Broadcast のコールバックを渡す |
 | [`PulseBroadcast`](/ja/api/interfaces#pulsebroadcast) | クラスを Container の Broadcast メッセージとして印付ける |
 | [`PulseUnicast`](/ja/api/interfaces#pulseunicast) | クラスを子から親への Unicast メッセージとして印付ける |
-| [`rememberPulseViewModel`](/ja/api/navigation3#rememberpulseviewmodel) | `ViewModelStoreOwner` にスコープされた ViewModel |
 | [`rememberPulseContainer`](/ja/api/navigation3#rememberpulsecontainer) | `ViewModelStoreOwner` にスコープされた Container |
-| [`rememberPulseNavEntryDecorators`](/ja/api/navigation3#rememberpulsenaventrydecorators) | ViewModel をバックスタックエントリにスコープする `NavDisplay` のデコレータ |
