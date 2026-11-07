@@ -15,6 +15,7 @@ rootProject.name = "PulseDesktop"
 include(":library:mvi")
 include(":library:navigation")
 include(":library:architecture")
+include(":library:mvi-mobile")
 include(":demo:app")
 include(":demo:feature:count")
 include(":demo:core:domain")
