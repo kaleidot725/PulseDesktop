@@ -50,13 +50,14 @@ flowchart TB
 
 ## アーティファクト
 
-PulseDesktop は 3 つのアーティファクトに分かれていて、それぞれが 1 つのパッケージを持ちます。必須なのは `mvi` だけです。
+PulseDesktop は 4 つのアーティファクトに分かれています。必須なのは `mvi` だけで、Android や iOS のアプリでは同じパッケージを持つ `mvi-mobile` を代わりに使います。
 
 | アーティファクト | 何を決めるか | 内容 |
 |---|---|---|
 | `mvi` | 状態をどこに置き、Content どうしがどうやり取りするか | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース |
 | `navigation` | Host の ViewModel がどれだけ生きるか | `rememberPulseViewModel`、`rememberPulseContainer`、`rememberPulseNavEntryDecorators` |
 | `architecture` | コードが規約を守っているか | 状態の規約、Host・Content・Section・Component の分け方、Preview、Repository、モジュール間の依存、Koin を検査する Konsist のアサート |
+| `mvi-mobile` | Android と iOS で ViewModel 1 つについて同じことを決める | `PulseViewModel`、`PulseContent`、3 つのマーカーインターフェース。Container はない。[モバイル](/ja/guide/mobile) を参照 |
 
 ## インストール
 

@@ -46,6 +46,7 @@ export default withMermaid(defineConfig({
               items: [
                 { text: 'Navigation 3', link: '/guide/navigation3' },
                 { text: 'Architecture checks', link: '/guide/architecture-checks' },
+                { text: 'Mobile', link: '/guide/mobile' },
               ],
             },
           ],
@@ -114,6 +115,7 @@ export default withMermaid(defineConfig({
               items: [
                 { text: 'Navigation 3', link: '/ja/guide/navigation3' },
                 { text: 'アーキテクチャ検査', link: '/ja/guide/architecture-checks' },
+                { text: 'モバイル', link: '/ja/guide/mobile' },
               ],
             },
           ],
