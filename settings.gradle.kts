@@ -12,8 +12,8 @@ plugins {
 
 rootProject.name = "PulsePlatform"
 
-include(":library:mvi")
-include(":library:navigation")
+include(":library:mvi-desktop")
+include(":library:navigation-desktop")
 include(":library:architecture")
 include(":library:mvi-mobile")
 include(":library:navigation-mobile")

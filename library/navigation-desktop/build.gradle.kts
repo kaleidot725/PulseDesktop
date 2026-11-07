@@ -24,15 +24,15 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                api("org.jetbrains.compose.runtime:runtime:1.10.1")
-                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.10.0")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                api(project(":library:mvi-desktop"))
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+                api("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0")
+                api("org.jetbrains.androidx.navigation3:navigation3-ui:1.1.1")
             }
         }
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
                 implementation(compose.desktop.currentOs)
                 implementation("org.jetbrains.compose.ui:ui-test-junit4:1.10.1")
             }
@@ -44,8 +44,8 @@ publishing {
     publications.withType<MavenPublication>().configureEach {
 
         pom {
-            name.set("PulsePlatform MVI")
-            description.set("A Kotlin MVI library for Compose Desktop")
+            name.set("PulsePlatform Navigation for desktop")
+            description.set("Scopes PulsePlatform ViewModels to a Navigation 3 back stack entry")
             url.set("https://github.com/kaleidot725/PulsePlatform")
 
             licenses {
