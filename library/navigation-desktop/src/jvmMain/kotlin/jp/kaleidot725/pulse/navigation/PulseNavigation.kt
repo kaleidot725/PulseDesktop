@@ -78,7 +78,7 @@ internal fun requirePulseViewModelStoreOwner(owner: ViewModelStoreOwner?): ViewM
     checkNotNull(owner) {
         "No ViewModelStoreOwner in scope. Provide one with " +
             "CompositionLocalProvider(LocalViewModelStoreOwner provides owner), or drive the " +
-            "PulseViewModel lifecycle yourself with the mvi artifact alone."
+            "PulseViewModel lifecycle yourself with the mvi-desktop artifact alone."
     }
 
 /**

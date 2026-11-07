@@ -15,7 +15,7 @@ kotlin {
                 implementation(project(":demo:core:data"))
                 implementation(project(":demo:core:domain"))
                 implementation(project(":demo:core:designsystem"))
-                implementation(project(":library:navigation"))
+                implementation(project(":library:navigation-desktop"))
                 implementation("org.jetbrains.compose.runtime:runtime:1.10.1")
                 implementation("org.jetbrains.compose.components:components-resources:1.10.1")
                 implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.1.1")

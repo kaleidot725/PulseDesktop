@@ -13,8 +13,8 @@ kotlin {
             dependencies {
                 implementation(project(":demo:core:domain"))
                 implementation(project(":demo:core:designsystem"))
-                implementation(project(":library:mvi"))
-                implementation(project(":library:navigation"))
+                implementation(project(":library:mvi-desktop"))
+                implementation(project(":library:navigation-desktop"))
                 implementation("org.jetbrains.compose.foundation:foundation:1.10.1")
                 implementation("org.jetbrains.compose.material3:material3:1.9.0")
                 implementation("org.jetbrains.compose.runtime:runtime:1.10.1")

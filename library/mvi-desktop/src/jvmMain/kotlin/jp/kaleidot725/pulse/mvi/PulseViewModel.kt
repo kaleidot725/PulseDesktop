@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.update
  * [Unicast], and receives [Broadcast] from its [PulseContainer].
  *
  * A [ViewModel], so anything that creates ViewModels can create it — `viewModel()`,
- * `koinViewModel()`, or `rememberPulseViewModel` from `navigation` — and its lifetime is
+ * `koinViewModel()`, or `rememberPulseViewModel` from `navigation-desktop` — and its lifetime is
  * the owning `ViewModelStore`'s. [onSetup] runs once, the first time a [PulseContent] observes it;
  * [onCleared] cancels the work it started.
  */

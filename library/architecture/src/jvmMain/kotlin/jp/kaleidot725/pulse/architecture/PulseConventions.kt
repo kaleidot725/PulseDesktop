@@ -413,7 +413,7 @@ private val messageMarkers =
     )
 
 /*
- * The types are matched by name rather than by class, so this artifact does not depend on `mvi`. It checks an app built
+ * The types are matched by name rather than by class, so this artifact does not depend on `mvi-desktop`. It checks an app built
  * on `mvi-mobile` as well, whose classes share these names, without putting the desktop classes beside them.
  */
 private const val PULSE_MVI = "jp.kaleidot725.pulse.mvi"
