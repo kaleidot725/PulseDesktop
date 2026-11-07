@@ -35,11 +35,11 @@ class PulseConventionsTest {
     }
 
     /**
-     * A project that has not adopted PulseDesktop anywhere must pass rather than fail on empty filters, since the
+     * A project that has not adopted PulsePlatform anywhere must pass rather than fail on empty filters, since the
      * assertions are meant to be added before the code they check.
      */
     @Test
-    fun `passes on a project with no PulseDesktop types`() {
+    fun `passes on a project with no PulsePlatform types`() {
         Konsist.scopeFromDirectory("library/architecture/src/jvmMain").assertPulseMviConventions()
     }
 

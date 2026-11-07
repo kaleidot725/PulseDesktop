@@ -8,7 +8,7 @@ plugins {
 
 // JitPack publishes multi-module builds under com.github.<user>.<repo> and versions them by tag, and
 // names the artifact after the project: this one is mvi-mobile.
-group = "com.github.kaleidot725.PulseDesktop"
+group = "com.github.kaleidot725.PulsePlatform"
 version = System.getenv("VERSION") ?: "1.0.0"
 
 kotlin {
@@ -59,9 +59,9 @@ android {
 publishing {
     publications.withType<MavenPublication>().configureEach {
         pom {
-            name.set("PulseDesktop MVI for mobile")
+            name.set("PulsePlatform MVI for mobile")
             description.set("A Kotlin MVI library for Compose Multiplatform on Android and iOS")
-            url.set("https://github.com/kaleidot725/PulseDesktop")
+            url.set("https://github.com/kaleidot725/PulsePlatform")
 
             licenses {
                 license {

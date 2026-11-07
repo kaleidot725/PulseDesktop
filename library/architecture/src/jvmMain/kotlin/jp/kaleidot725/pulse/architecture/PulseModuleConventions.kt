@@ -5,7 +5,7 @@ import com.lemonappdev.konsist.api.declaration.KoFileDeclaration
 import com.lemonappdev.konsist.api.verify.assertTrue
 
 /**
- * Checks the module layout PulseDesktop expects of a multi-module app: modules named after Now in Android's, with the
+ * Checks the module layout PulsePlatform expects of a multi-module app: modules named after Now in Android's, with the
  * dependencies between them pointing the way Clean Architecture asks.
  *
  * | Module | Layer |
@@ -29,7 +29,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  * ```kotlin
  * class PulseModuleConventionTest {
  *     @Test
- *     fun `follows the PulseDesktop module conventions`() {
+ *     fun `follows the PulsePlatform module conventions`() {
  *         Konsist.scopeFromProduction().assertPulseModuleConventions()
  *     }
  * }
@@ -154,7 +154,7 @@ public fun KoScope.assertFeaturesReachDataThroughTheDomain(layout: PulseModuleLa
 }
 
 /**
- * The domain imports nothing from Compose, AndroidX Lifecycle or PulseDesktop.
+ * The domain imports nothing from Compose, AndroidX Lifecycle or PulsePlatform.
  *
  * The centre is plain Kotlin. A use case that needs Compose can only run where Compose runs, and the reason to have a
  * domain is that it does not care.

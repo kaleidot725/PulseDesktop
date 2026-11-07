@@ -13,7 +13,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  * ```kotlin
  * class PulseKoinConventionTest {
  *     @Test
- *     fun `follows the PulseDesktop Koin conventions`() {
+ *     fun `follows the PulsePlatform Koin conventions`() {
  *         Konsist.scopeFromProduction().assertPulseKoinConventions()
  *     }
  * }

@@ -8,7 +8,7 @@ plugins {
 
 // JitPack publishes multi-module builds under com.github.<user>.<repo> and versions them by tag.
 // Matching both here keeps the inter-module dependencies in the published POMs resolvable.
-group = "com.github.kaleidot725.PulseDesktop"
+group = "com.github.kaleidot725.PulsePlatform"
 version = System.getenv("VERSION") ?: "1.0.0"
 
 repositories {
@@ -44,9 +44,9 @@ publishing {
     publications.withType<MavenPublication>().configureEach {
 
         pom {
-            name.set("PulseDesktop Navigation")
-            description.set("Scopes PulseDesktop ViewModels to a Navigation 3 back stack entry")
-            url.set("https://github.com/kaleidot725/PulseDesktop")
+            name.set("PulsePlatform Navigation")
+            description.set("Scopes PulsePlatform ViewModels to a Navigation 3 back stack entry")
+            url.set("https://github.com/kaleidot725/PulsePlatform")
 
             licenses {
                 license {

@@ -9,7 +9,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import jp.kaleidot725.pulse.demo.core.designsystem.theme.PulseDesktopTheme
+import jp.kaleidot725.pulse.demo.core.designsystem.theme.PulsePlatformTheme
 import jp.kaleidot725.pulse.demo.count.PulseCountHost
 import jp.kaleidot725.pulse.navigation.rememberPulseNavEntryDecorators
 
@@ -32,7 +32,7 @@ fun DemoApp() {
         if (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
     }
 
-    PulseDesktopTheme {
+    PulsePlatformTheme {
         NavDisplay(
             backStack = backStack,
             onBack = popLast,

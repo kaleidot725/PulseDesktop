@@ -30,7 +30,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  * ```kotlin
  * class PulseDomainConventionTest {
  *     @Test
- *     fun `follows the PulseDesktop domain conventions`() {
+ *     fun `follows the PulsePlatform domain conventions`() {
  *         Konsist.scopeFromProduction().assertPulseDomainConventions()
  *     }
  * }

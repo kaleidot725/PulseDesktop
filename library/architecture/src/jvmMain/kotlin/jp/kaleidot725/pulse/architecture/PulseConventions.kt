@@ -20,7 +20,7 @@ import jp.kaleidot725.pulse.mvi.PulseUnicast
 import jp.kaleidot725.pulse.mvi.PulseViewModel
 
 /**
- * Checks every convention PulseDesktop expects of the code that uses it.
+ * Checks every convention PulsePlatform expects of the code that uses it.
  *
  * The compiler already rejects the mistakes it can see: a ViewModel must implement `onAction`, and its message types
  * must be the ones its Container knows. What is left are the habits the types cannot express, and this is what they are
@@ -29,7 +29,7 @@ import jp.kaleidot725.pulse.mvi.PulseViewModel
  * ```kotlin
  * class PulseMviConventionTest {
  *     @Test
- *     fun `follows the PulseDesktop conventions`() {
+ *     fun `follows the PulsePlatform conventions`() {
  *         Konsist.scopeFromProduction().assertPulseMviConventions()
  *     }
  * }
@@ -108,7 +108,7 @@ public fun KoScope.assertStatesAreDataTypes() {
  */
 public fun KoScope.assertMessagesAreSealedOrDataTypes() {
     (pulseMessageInterfaces() + pulseMessageClasses() + pulseMessageObjects()).assertTrue(
-        testName = "PulseDesktop messages are sealed classes",
+        testName = "PulsePlatform messages are sealed classes",
         additionalMessage =
             "Declare the message as a `sealed class` with `data class` or `data object` cases, or as a single `data class` or " +
                 "`data object`.",
@@ -122,7 +122,7 @@ public fun KoScope.assertMessagesAreSealedOrDataTypes() {
 
     val (caseClasses, caseObjects) = messageCases()
     (caseClasses + caseObjects).assertTrue(
-        testName = "PulseDesktop message cases are data types",
+        testName = "PulsePlatform message cases are data types",
         additionalMessage = "Add `data`, or `sealed` when the case groups cases of its own.",
     ) { it.hasModifier(KoModifier.DATA) || (it is KoClassDeclaration && it.hasModifier(KoModifier.SEALED)) }
 }
@@ -171,7 +171,7 @@ public fun KoScope.assertViewModelsAndContainersAreNamedAfterTheirBase() {
  */
 public fun KoScope.assertViewModelsHoldTheirDataInTheirState() {
     (pulseViewModels() + pulseContainers()).assertTrue(
-        testName = "PulseDesktop ViewModels and Containers keep their data in their state",
+        testName = "PulsePlatform ViewModels and Containers keep their data in their state",
         additionalMessage = "Move the `var` into the state and publish it with `update`.",
     ) { declaration -> declaration.properties().none { it.isVar } }
 }

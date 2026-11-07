@@ -36,7 +36,7 @@ compose.desktop {
         mainClass = "jp.kaleidot725.pulse.demo.MainKt"
 
         nativeDistributions {
-            packageName = "PulseDesktopDemo"
+            packageName = "PulsePlatformDemo"
             packageVersion = "1.0.0"
 
             macOS {
