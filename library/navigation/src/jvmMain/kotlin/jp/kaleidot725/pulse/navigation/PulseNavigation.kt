@@ -93,7 +93,7 @@ internal fun defaultPulseKey(
 ): String = type.qualifiedName ?: type.simpleName ?: fallback
 
 /**
- * The [NavEntryDecorator] list `NavDisplay` needs for PulseDesktop ViewModels to be scoped to a back
+ * The [NavEntryDecorator] list `NavDisplay` needs for PulsePlatform ViewModels to be scoped to a back
  * stack entry.
  *
  * `NavDisplay` defaults `entryDecorators` to the saveable state holder alone, so passing the

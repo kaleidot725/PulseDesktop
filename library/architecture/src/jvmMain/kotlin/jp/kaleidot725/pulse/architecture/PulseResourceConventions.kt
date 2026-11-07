@@ -16,7 +16,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
  * ```kotlin
  * class PulseResourceConventionTest {
  *     @Test
- *     fun `follows the PulseDesktop resource conventions`() {
+ *     fun `follows the PulsePlatform resource conventions`() {
  *         Konsist.scopeFromProduction().assertPulseResourceConventions()
  *     }
  * }

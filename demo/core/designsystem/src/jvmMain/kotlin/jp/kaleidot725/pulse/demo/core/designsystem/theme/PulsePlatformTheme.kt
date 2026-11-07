@@ -12,7 +12,7 @@ private val PulseViolet = Color(0xFF7C5CFF)
 private val PulseVioletLight = Color(0xFFB9A8FF)
 
 @Composable
-fun PulseDesktopTheme(content: @Composable () -> Unit) {
+fun PulsePlatformTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme =
             if (isSystemInDarkTheme()) {
