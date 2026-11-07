@@ -33,7 +33,7 @@ The assertions your tests call, and the queries behind them. Every page of the [
 
 ## Library
 
-`PulseViewModel`, `PulseContent` and the three markers below are in both `mvi-desktop` and `mvi-mobile`, and the two Navigation 3 composables are in both `navigation-desktop` and `navigation-mobile`. On mobile, `PulseViewModel` takes three type parameters instead of five.
+`PulseViewModel`, `PulseContent` and the three markers below are in both `mvi-desktop` and `mvi-mobile`. On mobile, `PulseViewModel` takes three type parameters instead of five.
 
 | Declaration | Description |
 |---|---|
@@ -42,12 +42,10 @@ The assertions your tests call, and the queries behind them. Every page of the [
 | [`PulseState`](/api/interfaces#pulsestate) | Marks a class as a ViewModel's UI state |
 | [`PulseAction`](/api/interfaces#pulseaction) | Marks a class as a user action |
 | [`PulseEvent`](/api/interfaces#pulseevent) | Marks a class as a one-time side effect |
-| [`rememberPulseViewModel`](/api/navigation3#rememberpulseviewmodel) | ViewModel scoped to a `ViewModelStoreOwner` |
-| [`rememberPulseNavEntryDecorators`](/api/navigation3#rememberpulsenaventrydecorators) | `NavDisplay` decorators that scope ViewModels to a back stack entry |
 
 ## Desktop
 
-These are in `mvi-desktop` and `navigation-desktop` only.
+These are in `mvi-desktop` only.
 
 | Declaration | Description |
 |---|---|
@@ -55,4 +53,13 @@ These are in `mvi-desktop` and `navigation-desktop` only.
 | [`PulseHost`](/api/composables#pulsehost) | Scopes a Container to a subtree; enables refresh and broadcast callbacks |
 | [`PulseBroadcast`](/api/interfaces#pulsebroadcast) | Marks a class as a Container broadcast message |
 | [`PulseUnicast`](/api/interfaces#pulseunicast) | Marks a class as a child-to-parent unicast message |
-| [`rememberPulseContainer`](/api/navigation3#rememberpulsecontainer) | Container scoped to a `ViewModelStoreOwner` |
+
+## Extension
+
+Navigation 3 support is optional and works the same on every platform: `navigation-desktop` for the desktop and `navigation-mobile` for Android and iOS. `rememberPulseContainer` is in `navigation-desktop` only, since mobile has no Container.
+
+| Declaration | Description |
+|---|---|
+| [`rememberPulseViewModel`](/api/navigation3#rememberpulseviewmodel) | ViewModel scoped to a `ViewModelStoreOwner` |
+| [`rememberPulseNavEntryDecorators`](/api/navigation3#rememberpulsenaventrydecorators) | `NavDisplay` decorators that scope ViewModels to a back stack entry |
+| [`rememberPulseContainer`](/api/navigation3#rememberpulsecontainer) | Container scoped to a `ViewModelStoreOwner` (desktop only) |
