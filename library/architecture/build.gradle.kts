@@ -22,7 +22,6 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                api(project(":library:mvi"))
                 api("com.lemonappdev:konsist:0.17.3")
             }
         }
