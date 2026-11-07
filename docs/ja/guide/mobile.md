@@ -14,7 +14,7 @@
 
 ## Screen
 
-Screen はルートが表示するもので、ViewModel と UI が出会う唯一の場所です。アプリで ViewModel を作っている手段で ViewModel を作ります。Android でも iOS でも使える lifecycle-viewmodel-compose の `viewModel()`、`koinViewModel()`、Navigation 3 のエントリの ViewModel デコレータなどです。それを `PulseContent` で結びつけ、State とコールバックを Section に渡し、戻るなど画面の外に出ていく Event を自分のコールバックに変えます。こうすると、画面遷移は Screen を表示する側に残ります。
+Screen はルートが表示するもので、ViewModel と UI が出会う唯一の場所です。アプリで ViewModel を作っている手段で ViewModel を作ります。Android でも iOS でも使える lifecycle-viewmodel-compose の `viewModel()`、`koinViewModel()`、`navigation-mobile` の `rememberPulseViewModel` などです。それを `PulseContent` で結びつけ、State とコールバックを Section に渡し、戻るなど画面の外に出ていく Event を自分のコールバックに変えます。こうすると、画面遷移は Screen を表示する側に残ります。
 
 ```kotlin
 @Composable
@@ -35,10 +35,46 @@ fun CounterScreen(onBack: () -> Unit) {
 
 ## ViewModel の寿命
 
-`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、Android でも iOS でも、それを保持する `ViewModelStoreOwner` が寿命を決めます。Screen で呼んだ `viewModel()` は、スコープにあるオーナー（Android では Activity やナビゲーションのエントリ、iOS では Compose が用意するオーナー）に ViewModel を保持します。Android の構成変更ではインスタンスが再利用されるので、`onSetup` は再実行されず、State もそのままです。画面を完全に離れるとオーナーがクリアされ、`onCleared` が ViewModel の始めた処理をキャンセルします。
+`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、Android でも iOS でも、それを保持する `ViewModelStoreOwner` が寿命を決めます。Screen で呼んだ `viewModel()` は、スコープにあるオーナー（Android では Activity、iOS では Compose が用意するオーナー、Navigation 3 ではバックスタックのエントリ）に ViewModel を保持します。Android の構成変更ではインスタンスが再利用されるので、`onSetup` は再実行されず、State もそのままです。画面を完全に離れるとオーナーがクリアされ、`onCleared` が ViewModel の始めた処理をキャンセルします。
+
+## Navigation 3 と使う
+
+`navigation-mobile` は、Screen の ViewModel を Navigation 3 のバックスタックエントリにスコープします。`NavDisplay` に `rememberPulseNavEntryDecorators()` を渡し、Screen の中で `rememberPulseViewModel`、または同じエントリのオーナーを見つける `viewModel()` で ViewModel を作ります。すると ViewModel は、そのルートがバックスタックにある間だけ生きます。別の Screen に覆われている間は State も処理も保ち、ポップされるとクリアされます。オーナーがどう決まるかは [Navigation 3](/ja/guide/navigation3) にあります。
+
+```kotlin
+// build.gradle.kts、commonMain
+implementation("com.github.kaleidot725.PulsePlatform:navigation-mobile:<version>")
+```
+
+```kotlin
+@Composable
+fun App() {
+    val backStack = remember { mutableStateListOf<Route>(Route.Counter) }
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryDecorators = rememberPulseNavEntryDecorators(),
+        entryProvider =
+            entryProvider {
+                entry<Route.Counter> {
+                    CounterScreen(onBack = { backStack.removeLastOrNull() })
+                }
+            },
+    )
+}
+
+@Composable
+fun CounterScreen(onBack: () -> Unit) {
+    val viewModel = rememberPulseViewModel { CounterViewModel() }
+    PulseContent(viewModel = viewModel, onEvent = { onBack() }) { state, onAction ->
+        CounterSection(count = state.count, onIncrement = { onAction(CounterAction.Increment) })
+    }
+}
+```
 
 ## 次のステップ
 
 - [モバイルのクイックスタート](/ja/guide/getting-started-mobile) — カウンター画面を作って検査する
 - [UI の構成のルール](/ja/guide/rules/ui#モバイル) — モバイルの配置をルールごとに
+- [Navigation 3](/ja/guide/navigation3) — バックスタックのエントリが ViewModel をどう持つか
 - [ViewModel](/ja/guide/viewmodel) — State、Action、Event とライフサイクルフック

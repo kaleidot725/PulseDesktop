@@ -1,6 +1,6 @@
 # Navigation 3
 
-このページの内容はすべて、デスクトップ向けの任意のアーティファクト `navigation` にあります。パッケージは `jp.kaleidot725.pulse.navigation` です。
+このページの内容はすべて、デスクトップ向けの任意のアーティファクト `navigation` と、Android と iOS 向けの `navigation-mobile` にあります。モバイルの `rememberPulseViewModel` は `PulseViewModel<*, *, *>` を受け取り、`rememberPulseContainer` はありません。パッケージは `jp.kaleidot725.pulse.navigation` です。
 
 仕組みの解説は [Navigation 3 ガイド](/ja/guide/navigation3) を、`mvi` だけで使う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
@@ -83,7 +83,7 @@ inline fun <reified Container : PulseContainer<*, *>> rememberPulseContainer(
 ): Container
 ```
 
-コンポジションの再起動をまたいで生き残る Container を生成します。Unicast の購読は維持されます。オーナーの `ViewModelStore` が破棄されるときに、`PulseContainer.close()` が呼ばれます。
+デスクトップだけのものです。コンポジションの再起動をまたいで生き残る Container を生成します。Unicast の購読は維持されます。オーナーの `ViewModelStore` が破棄されるときに、`PulseContainer.close()` が呼ばれます。
 
 ### パラメータ
 

@@ -1,19 +1,19 @@
 # Navigation 3
 
-`navigation` はデスクトップ向けの任意のアーティファクトです。`PulseViewModel` の寿命を、Navigation 3 のバックスタックエントリに結びつけます。モバイルでは、スコープすべき Container を持たない `mvi-mobile` に対して、lifecycle-viewmodel-navigation3 のデコレータが同じことをします。
+`PulseViewModel` の寿命を Navigation 3 のバックスタックエントリに結びつける任意のアーティファクトが 2 つあります。デスクトップ向けに `mvi` と並ぶ `navigation`、Android と iOS 向けに `mvi-mobile` と並ぶ `navigation-mobile` です。パッケージと API は同じですが、モバイルには Container がないので、`rememberPulseContainer` はデスクトップ版だけにあります。このページの内容はどちらにも当てはまります。
 
 `mvi` は寿命について何も決めていません。`PulseViewModel` は `androidx.lifecycle.ViewModel` なので、それを保持している `ViewModelStore` が寿命を決めます。このアーティファクトが提供するのは、バックスタックエントリごとのストアと、ViewModel をそこに入れる Composable です。
 
-組み込みの手順は [デスクトップのクイックスタート 手順 5](/ja/guide/getting-started#_5-viewmodel-を-navigation-3-の-destination-にスコープする) にあります。このページでは、その手順が何をしているかを解説します。
+組み込みの手順は [デスクトップのクイックスタート 手順 5](/ja/guide/getting-started#_5-viewmodel-を-navigation-3-の-destination-にスコープする) と [モバイルの Screen](/ja/guide/mobile#navigation-3-と使う) にあります。このページでは、その手順が何をしているかを解説します。
 
 ## アーティファクトが追加するもの
 
-Composable が 3 つ、それだけです。コアは Navigation 3 や lifecycle-compose に依存しません。
+Composable がデスクトップでは 3 つ、モバイルでは 2 つ、それだけです。コアは Navigation 3 や lifecycle-compose に依存しません。
 
 | Composable | 役割 |
 |---|---|
 | `rememberPulseViewModel` | スコープにあるオーナーの `ViewModelStore` に `PulseViewModel` を生成する。既にあればそれを返す |
-| `rememberPulseContainer` | 同じことを `PulseContainer` に対して行う |
+| `rememberPulseContainer` | 同じことを `PulseContainer` に対して行う（デスクトップのみ） |
 | `rememberPulseNavEntryDecorators` | `NavDisplay` の各エントリをオーナーにするための `NavEntryDecorator` のリスト |
 
 ## オーナーはどう決まるか
@@ -22,7 +22,7 @@ Composable が 3 つ、それだけです。コアは Navigation 3 や lifecycle
 
 どこで呼ぶかで、オーナーは変わります。
 
-- **`Window` の直下** — オーナーはウィンドウです。ViewModel は画面と同じ長さだけ生きます
+- **`Window` や Activity の直下** — オーナーはウィンドウや Activity です。ViewModel は画面と同じ長さだけ生きます
 - **`NavDisplay` の destination の中** — `rememberPulseNavEntryDecorators()` を渡した `NavDisplay` では、バックスタックの各エントリが独自のオーナーを持ちます。ViewModel はそのエントリのストアに入ります
 
 したがって、ルートに属させたいものは `NavDisplay` より上で生成してはいけません。destination の外で生成した ViewModel はウィンドウのストアに入り、すべてのルートより長生きします。

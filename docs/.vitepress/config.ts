@@ -48,6 +48,7 @@ export default withMermaid(defineConfig({
               items: [
                 { text: 'MVI', link: '/guide/mvi' },
                 { text: 'ViewModel', link: '/guide/viewmodel' },
+                { text: 'Navigation 3', link: '/guide/navigation3' },
               ],
             },
             {
@@ -56,7 +57,6 @@ export default withMermaid(defineConfig({
                 { text: 'Host and Container', link: '/guide/container' },
                 { text: 'Broadcast', link: '/guide/broadcast' },
                 { text: 'Unicast', link: '/guide/unicast' },
-                { text: 'Navigation 3', link: '/guide/navigation3' },
               ],
             },
             {
@@ -80,13 +80,13 @@ export default withMermaid(defineConfig({
                 { text: 'PulseViewModel', link: '/api/pulse-viewmodel' },
                 { text: 'Composables', link: '/api/composables' },
                 { text: 'Marker Interfaces', link: '/api/interfaces' },
+                { text: 'Navigation 3', link: '/api/navigation3' },
               ],
             },
             {
               text: 'Desktop',
               items: [
                 { text: 'PulseContainer', link: '/api/pulse-container' },
-                { text: 'Navigation 3', link: '/api/navigation3' },
               ],
             },
           ],
@@ -138,6 +138,7 @@ export default withMermaid(defineConfig({
               items: [
                 { text: 'MVI', link: '/ja/guide/mvi' },
                 { text: 'ViewModel', link: '/ja/guide/viewmodel' },
+                { text: 'Navigation 3', link: '/ja/guide/navigation3' },
               ],
             },
             {
@@ -146,7 +147,6 @@ export default withMermaid(defineConfig({
                 { text: 'Host と Container', link: '/ja/guide/container' },
                 { text: 'Broadcast', link: '/ja/guide/broadcast' },
                 { text: 'Unicast', link: '/ja/guide/unicast' },
-                { text: 'Navigation 3', link: '/ja/guide/navigation3' },
               ],
             },
             {
@@ -170,13 +170,13 @@ export default withMermaid(defineConfig({
                 { text: 'PulseViewModel', link: '/ja/api/pulse-viewmodel' },
                 { text: 'Composable', link: '/ja/api/composables' },
                 { text: 'マーカーインターフェース', link: '/ja/api/interfaces' },
+                { text: 'Navigation 3', link: '/ja/api/navigation3' },
               ],
             },
             {
               text: 'デスクトップ',
               items: [
                 { text: 'PulseContainer', link: '/ja/api/pulse-container' },
-                { text: 'Navigation 3', link: '/ja/api/navigation3' },
               ],
             },
           ],

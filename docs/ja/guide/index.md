@@ -52,7 +52,7 @@ counter/                                 counter/
 
 ## アーティファクト
 
-PulsePlatform は JitPack で 4 つのアーティファクトとして公開しています。ルールはどのプラットフォームでも使い、MVI のアーティファクトはターゲットに合わせて 2 つのうちどちらかを使います。
+PulsePlatform は JitPack で 5 つのアーティファクトとして公開しています。ルールはどのプラットフォームでも使い、MVI と Navigation 3 のアーティファクトはターゲットに合わせて選びます。
 
 | アーティファクト | 役割 | プラットフォーム |
 |---|---|---|
@@ -60,6 +60,7 @@ PulsePlatform は JitPack で 4 つのアーティファクトとして公開し
 | `mvi` | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース | デスクトップ |
 | `mvi-mobile` | `PulseViewModel`、`PulseContent`、3 つのマーカーインターフェース | Android、iOS |
 | `navigation` | ViewModel と Container を Navigation 3 のバックスタックエントリに結びつける | デスクトップ |
+| `navigation-mobile` | ViewModel を Navigation 3 のバックスタックエントリに結びつける | Android、iOS |
 
 ## インストール
 
@@ -89,6 +90,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
+            implementation("com.github.kaleidot725.PulsePlatform:navigation-mobile:<version>")
         }
     }
 }

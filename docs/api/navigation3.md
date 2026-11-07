@@ -1,6 +1,6 @@
 # Navigation 3
 
-Everything on this page lives in the optional `navigation` artifact, for the desktop. The package is
+Everything on this page lives in the optional `navigation` artifact for the desktop and `navigation-mobile` for Android and iOS. On mobile, `rememberPulseViewModel` takes a `PulseViewModel<*, *, *>` and `rememberPulseContainer` does not exist. The package is
 `jp.kaleidot725.pulse.navigation`.
 
 For how the pieces fit together, see the [Navigation 3 guide](/guide/navigation3). For using the
@@ -92,7 +92,7 @@ inline fun <reified Container : PulseContainer<*, *>> rememberPulseContainer(
 ): Container
 ```
 
-Creates a Container that survives a composition restart. Its Unicast subscriptions stay alive.
+Desktop only. Creates a Container that survives a composition restart. Its Unicast subscriptions stay alive.
 `PulseContainer.close()` is called when the owner's `ViewModelStore` is cleared.
 
 ### Parameters

@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 PulsePlatform is a rule set and a library for Compose UIs that AI agents build, on the desktop and
 on Android and iOS. The rules (the `architecture` artifact) are Konsist assertions an app runs from
 its own tests, and their failure messages say what to move where; the library (`mvi`, `mvi-mobile`,
-`navigation`) holds the MVI pieces those rules expect. The docs present the rules first and the
+`navigation`, `navigation-mobile`) holds the MVI pieces those rules expect. The docs present the rules first and the
 library second.
 
 The library is Kotlin MVI (Model-View-Intent). Its desktop artifacts
@@ -73,8 +73,8 @@ text is in `values` (English) and `values-ja` (Japanese).
 - **Clean build**: `./gradlew clean`
 - **Check code quality**: `./gradlew ktlintCheck` (auto-fix with `./gradlew ktlintFormat`)
 - **Test coverage**: `./gradlew koverHtmlReport` (opens at `build/reports/kover/html/index.html`; XML via `koverXmlReport`)
-- **Publish to local Maven**: `./gradlew :library:mvi:publishToMavenLocal :library:navigation:publishToMavenLocal :library:architecture:publishToMavenLocal :library:mvi-mobile:publishToMavenLocal`
-- **Run the mobile tests**: `./gradlew :library:mvi-mobile:testDebugUnitTest :library:mvi-mobile:iosSimulatorArm64Test` (the iOS tests need a Mac; CI runs them in a macOS job)
+- **Publish to local Maven**: `./gradlew :library:mvi:publishToMavenLocal :library:navigation:publishToMavenLocal :library:architecture:publishToMavenLocal :library:mvi-mobile:publishToMavenLocal :library:navigation-mobile:publishToMavenLocal`
+- **Run the mobile tests**: `./gradlew :library:mvi-mobile:testDebugUnitTest :library:mvi-mobile:iosSimulatorArm64Test :library:navigation-mobile:testDebugUnitTest :library:navigation-mobile:iosSimulatorArm64Test` (the iOS tests need a Mac; CI runs them in a macOS job)
 - **Run the demo**: `./gradlew :demo:app:run`
 
 ## Writing Tests
@@ -103,6 +103,7 @@ Put a test in the source set that matches what it needs.
 | `library/architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
 | `library/mvi-mobile/src/commonTest` | The mobile `PulseViewModel`, on Android and iOS |
 | `library/mvi-mobile/src/androidUnitTest`, `src/iosTest` | `PulseContent`, under Robolectric and with `runComposeUiTest` |
+| `library/navigation-mobile/src/…` | `rememberPulseViewModel` and `rememberPulseNavEntryDecorators` on mobile, laid out like `mvi-mobile`'s tests |
 
 ### Coverage
 
@@ -143,13 +144,16 @@ PulsePlatform/
 │   │       │   ├── PulseModuleLayout.kt      # which module names play which layer
 │   │       │   └── PulseResourceConventions.kt # assertPulseResourceConventions: text comes from string resources
 │   │       └── jvmTest/…             # the checks, over conforming and violating fixtures
-│   └── mvi-mobile/                   # :library:mvi-mobile — Android and iOS artifact: mvi-mobile
-│       └── src/
-│           ├── commonMain/kotlin/jp/kaleidot725/pulse/mvi/   # the same package as mvi: PulseState, PulseAction,
-│           │                                                 # PulseEvent, PulseViewModel and PulseContent
-│           ├── commonTest/…          # PulseViewModelTest, on both platforms
-│           ├── androidUnitTest/…     # PulseContentTest (Robolectric)
-│           └── iosTest/…             # PulseContentIosTest (runComposeUiTest)
+│   ├── mvi-mobile/                   # :library:mvi-mobile — Android and iOS artifact: mvi-mobile
+│   │   └── src/
+│   │       ├── commonMain/kotlin/jp/kaleidot725/pulse/mvi/   # the same package as mvi: PulseState, PulseAction,
+│   │       │                                                 # PulseEvent, PulseViewModel and PulseContent
+│   │       ├── commonTest/…          # PulseViewModelTest, on both platforms
+│   │       ├── androidUnitTest/…     # PulseContentTest (Robolectric)
+│   │       └── iosTest/…             # PulseContentIosTest (runComposeUiTest)
+│   └── navigation-mobile/            # :library:navigation-mobile — Android and iOS artifact: navigation-mobile
+│       └── src/commonMain/kotlin/jp/kaleidot725/pulse/navigation/
+│           └── PulseNavigation.kt    # rememberPulseViewModel / rememberPulseNavEntryDecorators
 ├── demo/                             # Pulse grid demo app, split the way assertPulseModuleConventions expects
 │   ├── app/                          # :demo:app — the window, NavDisplay, the back stack, and di/:
 │   │   └── src/jvmMain/kotlin/jp/kaleidot725/pulse/demo/   # every Koin module, started in Main
@@ -199,7 +203,7 @@ resources in `commonMain`.
 - **Compose Multiplatform Version**: 1.10.1
 - **Coroutines Version**: 1.10.2
 - **Lifecycle Version**: 2.10.0
-- **Navigation 3 Version**: 1.1.1 (`navigation` module only)
+- **Navigation 3 Version**: 1.1.1 (`navigation` and `navigation-mobile` modules only)
 - **Konsist Version**: 0.17.3 (`architecture` module only)
 - **Android Gradle Plugin**: 8.13.2, compileSdk 36, minSdk 26 (`mvi-mobile` module only)
 - **JVM Toolchain**: Java 17
@@ -208,8 +212,8 @@ resources in `commonMain`.
 ## Key Configuration
 
 - Group ID: `com.github.kaleidot725.PulsePlatform` (what JitPack serves for a multi-module repo)
-- Artifact IDs: `mvi`, `navigation`, `architecture`, `mvi-mobile` — the projects are `:library:mvi`,
-  `:library:navigation`, `:library:architecture` and `:library:mvi-mobile`, and JitPack names an artifact after the project,
+- Artifact IDs: `mvi`, `navigation`, `architecture`, `mvi-mobile`, `navigation-mobile` — the projects are `:library:mvi`,
+  `:library:navigation`, `:library:architecture`, `:library:mvi-mobile` and `:library:navigation-mobile`, and JitPack names an artifact after the project,
   so the `library` directory does not appear in the coordinates
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation`,
   `jp.kaleidot725.pulse.architecture` — one package per artifact, all three beside each other under

@@ -52,7 +52,7 @@ counter/                                 counter/
 
 ## Artifacts
 
-PulsePlatform is published on JitPack as four artifacts. Use the rules on every platform, and one of the two MVI artifacts depending on the target.
+PulsePlatform is published on JitPack as five artifacts. Use the rules on every platform, and the MVI and Navigation 3 artifacts for your target.
 
 | Artifact | Role | Platforms |
 |---|---|---|
@@ -60,6 +60,7 @@ PulsePlatform is published on JitPack as four artifacts. Use the rules on every 
 | `mvi` | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces | desktop |
 | `mvi-mobile` | `PulseViewModel`, `PulseContent` and three marker interfaces | Android, iOS |
 | `navigation` | ties ViewModels and Containers to a Navigation 3 back stack entry | desktop |
+| `navigation-mobile` | ties ViewModels to a Navigation 3 back stack entry | Android, iOS |
 
 ## Installation
 
@@ -89,6 +90,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation("com.github.kaleidot725.PulsePlatform:mvi-mobile:<version>")
+            implementation("com.github.kaleidot725.PulsePlatform:navigation-mobile:<version>")
         }
     }
 }

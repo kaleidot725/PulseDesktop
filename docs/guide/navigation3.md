@@ -1,8 +1,9 @@
 # Navigation 3
 
-`navigation` is an optional artifact for the desktop. It ties a `PulseViewModel`'s lifetime to a
-Navigation 3 back stack entry. On mobile, lifecycle-viewmodel-navigation3's own decorator does the
-same for `mvi-mobile`, which has no Container to scope.
+Two optional artifacts tie a `PulseViewModel`'s lifetime to a Navigation 3 back stack entry:
+`navigation` for the desktop, beside `mvi`, and `navigation-mobile` for Android and iOS, beside
+`mvi-mobile`. They share a package and an API, except that only the desktop one has
+`rememberPulseContainer`, since mobile has no Container. Everything on this page applies to both.
 
 The `mvi` artifact has no opinion about lifetime. `PulseViewModel` is an
 `androidx.lifecycle.ViewModel`, so whichever `ViewModelStore` holds it decides how long it lives.
@@ -10,18 +11,18 @@ This artifact supplies a store per back stack entry, and the composables that pu
 it.
 
 The wiring itself is in
-[Desktop quick start, step 5](/guide/getting-started#_5-scope-the-viewmodel-to-a-navigation-3-destination).
-This page explains what that wiring does.
+[Desktop quick start, step 5](/guide/getting-started#_5-scope-the-viewmodel-to-a-navigation-3-destination)
+and in [Mobile screens](/guide/mobile#with-navigation-3). This page explains what that wiring does.
 
 ## What the artifact adds
 
-Three composables, and nothing else. The core does not depend on Navigation 3 or
+Three composables on the desktop, two on mobile, and nothing else. The core does not depend on Navigation 3 or
 lifecycle-compose.
 
 | Composable | Role |
 |---|---|
 | `rememberPulseViewModel` | Creates a `PulseViewModel` in the `ViewModelStore` of the owner in scope, or returns the one already there |
-| `rememberPulseContainer` | The same for a `PulseContainer` |
+| `rememberPulseContainer` | The same for a `PulseContainer` (desktop only) |
 | `rememberPulseNavEntryDecorators` | The `NavEntryDecorator` list that makes each `NavDisplay` entry an owner |
 
 ## How an owner is found
@@ -32,7 +33,7 @@ call site decides the lifetime.
 
 Where you call it changes which owner that is.
 
-- **Directly under `Window`** — the owner is the window. The ViewModel lives as long as the screen
+- **Directly under `Window` or an activity** — the owner is the window or the activity. The ViewModel lives as long as the screen
 - **Inside a `NavDisplay` destination** — with `rememberPulseNavEntryDecorators()` passed to
   `NavDisplay`, each back stack entry carries its own owner. The ViewModel goes into that entry's
   store
