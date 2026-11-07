@@ -40,6 +40,7 @@ dependencies {
     kover(project(":library:navigation"))
     kover(project(":library:architecture"))
     kover(project(":library:mvi-mobile"))
+    kover(project(":library:navigation-mobile"))
 }
 
 kover {
