@@ -50,14 +50,14 @@ flowchart TB
 
 ## Artifacts
 
-PulseDesktop is split into four artifacts. Only `mvi` is required, or `mvi-android` in an Android app, which shares its package.
+PulseDesktop is split into four artifacts. Only `mvi` is required, or `mvi-mobile` in an Android or iOS app, which shares its package.
 
 | Artifact | What it decides | Contents |
 |---|---|---|
 | `mvi` | where state lives and how contents talk | `PulseViewModel`, `PulseContainer`, `PulseHost`, `PulseContent` and the five marker interfaces |
 | `navigation` | how long a host's ViewModels live | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
 | `architecture` | that the code keeps to the conventions | Konsist assertions for the state rules, the host, content, section and component split, previews, repositories, module dependencies and Koin |
-| `mvi-android` | the same for one ViewModel on Android | `PulseViewModel`, `PulseContent` and three marker interfaces, without the Container — see [Android](/guide/android) |
+| `mvi-mobile` | the same for one ViewModel on Android and iOS | `PulseViewModel`, `PulseContent` and three marker interfaces, without the Container — see [Mobile](/guide/mobile) |
 
 ## Installation
 
