@@ -27,7 +27,7 @@ AI エージェントは、コンパイルが通り、最初から動く画面�
 
 | | デスクトップ | モバイル |
 |---|---|---|
-| アーティファクト | `mvi` | `mvi-mobile` |
+| アーティファクト | `mvi-desktop` | `mvi-mobile` |
 | ターゲット | JVM（Compose Desktop） | Android、iOS（Compose Multiplatform） |
 | feature の単位 | Host、その Content、Container | Screen 1 つと ViewModel 1 つ |
 | ViewModel を結びつける場所 | 各 Content | Screen |
@@ -57,9 +57,9 @@ PulsePlatform は JitPack で 5 つのアーティファクトとして公開し
 | アーティファクト | 役割 | プラットフォーム |
 |---|---|---|
 | `architecture` | ルール。テストから呼ぶ Konsist のアサート | JVM で動き、デスクトップとモバイルのコードを検査する |
-| `mvi` | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース | デスクトップ |
+| `mvi-desktop` | `PulseViewModel`、`PulseContainer`、`PulseHost`、`PulseContent`、5 つのマーカーインターフェース | デスクトップ |
 | `mvi-mobile` | `PulseViewModel`、`PulseContent`、3 つのマーカーインターフェース | Android、iOS |
-| `navigation` | ViewModel と Container を Navigation 3 のバックスタックエントリに結びつける | デスクトップ |
+| `navigation-desktop` | ViewModel と Container を Navigation 3 のバックスタックエントリに結びつける | デスクトップ |
 | `navigation-mobile` | ViewModel を Navigation 3 のバックスタックエントリに結びつける | Android、iOS |
 
 ## インストール
@@ -78,8 +78,8 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts — デスクトップ
 dependencies {
-    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi-desktop:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation-desktop:<version>")
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```

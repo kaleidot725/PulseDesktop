@@ -2,12 +2,12 @@
 
 このガイドでは、Compose Desktop でカウンターのウィンドウを作ります。Host、Content 1 つ、Container からなり、最後にルールで検査します。Android と iOS については [モバイルのクイックスタート](/ja/guide/getting-started-mobile) を参照してください。
 
-ViewModel の生成には `navigation` が追加する `rememberPulseViewModel` を使うので、`mvi` と一緒に追加し、ルールはテストに追加してください。`mvi` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
+ViewModel の生成には `navigation-desktop` が追加する `rememberPulseViewModel` を使うので、`mvi-desktop` と一緒に追加し、ルールはテストに追加してください。`mvi-desktop` だけでライフサイクルを自前で扱う場合は [ViewModel](/ja/guide/viewmodel) を参照してください。
 
 ```kotlin
 dependencies {
-    implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")
-    implementation("com.github.kaleidot725.PulsePlatform:navigation:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:mvi-desktop:<version>")
+    implementation("com.github.kaleidot725.PulsePlatform:navigation-desktop:<version>")
     testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")
 }
 ```

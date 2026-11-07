@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PulsePlatform is a rule set and a library for Compose UIs that AI agents build, on the desktop and
 on Android and iOS. The rules (the `architecture` artifact) are Konsist assertions an app runs from
-its own tests, and their failure messages say what to move where; the library (`mvi`, `mvi-mobile`,
-`navigation`, `navigation-mobile`) holds the MVI pieces those rules expect. The docs present the rules first and the
+its own tests, and their failure messages say what to move where; the library (`mvi-desktop`, `mvi-mobile`,
+`navigation-desktop`, `navigation-mobile`) holds the MVI pieces those rules expect. The docs present the rules first and the
 library second.
 
 The library is Kotlin MVI (Model-View-Intent). Its desktop artifacts
@@ -24,7 +24,7 @@ classes, and the `PulseHost` and `PulseContent` composables.
 
 `PulseViewModel` and `PulseContainer` extend `androidx.lifecycle.ViewModel`, so whichever
 `ViewModelStore` holds them decides how long they live. `PulseContent` calls `setupOnce()`, which
-runs `onSetup()` the first time an instance is observed and never again. The `navigation`
+runs `onSetup()` the first time an instance is observed and never again. The `navigation-desktop`
 artifact adds `rememberPulseViewModel` / `rememberPulseContainer`, and
 `rememberPulseNavEntryDecorators()` scopes an instance to a Navigation 3 back stack entry.
 
@@ -42,7 +42,7 @@ component has a `@Preview` named `<Name>_Preview`, or `<Name>_Preview_<Condition
 for the state it shows, such as `PulseTextButton_Preview_Disabled`. `assertPulseMobileConventions` checks an app on `mvi-mobile` instead: a feature is one
 `…Screen` that binds the one ViewModel beside it with `PulseContent`, with only `section` and
 `component` under it. The checks match the Pulse types by fully qualified name, so `architecture`
-depends on neither `mvi` nor `mvi-mobile`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
+depends on neither `mvi-desktop` nor `mvi-mobile`. `assertPulseModuleConventions` checks a multi-module app laid out like Now in Android (`app`,
 `feature/<name>`, `core/<name>`) with Clean Architecture's dependency direction: `core/domain` holds
 the entities (`model`), repository interfaces (`repository`) and any use cases (`usecase`) and depends
 on nothing, `core/data` implements the interfaces (`repository`) over data sources (`local`) and what
@@ -73,7 +73,7 @@ text is in `values` (English) and `values-ja` (Japanese).
 - **Clean build**: `./gradlew clean`
 - **Check code quality**: `./gradlew ktlintCheck` (auto-fix with `./gradlew ktlintFormat`)
 - **Test coverage**: `./gradlew koverHtmlReport` (opens at `build/reports/kover/html/index.html`; XML via `koverXmlReport`)
-- **Publish to local Maven**: `./gradlew :library:mvi:publishToMavenLocal :library:navigation:publishToMavenLocal :library:architecture:publishToMavenLocal :library:mvi-mobile:publishToMavenLocal :library:navigation-mobile:publishToMavenLocal`
+- **Publish to local Maven**: `./gradlew :library:mvi-desktop:publishToMavenLocal :library:navigation-desktop:publishToMavenLocal :library:architecture:publishToMavenLocal :library:mvi-mobile:publishToMavenLocal :library:navigation-mobile:publishToMavenLocal`
 - **Run the mobile tests**: `./gradlew :library:mvi-mobile:testDebugUnitTest :library:mvi-mobile:iosSimulatorArm64Test :library:navigation-mobile:testDebugUnitTest :library:navigation-mobile:iosSimulatorArm64Test` (the iOS tests need a Mac; CI runs them in a macOS job)
 - **Run the demo**: `./gradlew :demo:app:run`
 
@@ -98,8 +98,8 @@ Put a test in the source set that matches what it needs.
 
 | Source set | Use it for |
 |---|---|
-| `library/mvi/src/jvmTest` | `PulseViewModel` and `PulseContainer`, and the composables through `createComposeRule()` from `ui-test-junit4` |
-| `library/navigation/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
+| `library/mvi-desktop/src/jvmTest` | `PulseViewModel` and `PulseContainer`, and the composables through `createComposeRule()` from `ui-test-junit4` |
+| `library/navigation-desktop/src/jvmTest` | `rememberPulseViewModel`, `rememberPulseContainer`, `rememberPulseNavEntryDecorators` |
 | `library/architecture/src/jvmTest` | The Konsist assertions, over conforming and violating fixtures |
 | `library/mvi-mobile/src/commonTest` | The mobile `PulseViewModel`, on Android and iOS |
 | `library/mvi-mobile/src/androidUnitTest`, `src/iosTest` | `PulseContent`, under Robolectric and with `runComposeUiTest` |
@@ -118,7 +118,7 @@ the library. A new public declaration is still expected to arrive with the test 
 ```
 PulsePlatform/
 ├── library/                          # Everything published; each module is one artifact
-│   ├── mvi/                          # :library:mvi — core artifact: mvi
+│   ├── mvi-desktop/                  # :library:mvi-desktop — core artifact: mvi-desktop
 │   │   └── src/
 │   │       ├── jvmMain/kotlin/jp/kaleidot725/pulse/mvi/
 │   │       │   ├── PulseState.kt     # Marker interface for state
@@ -130,7 +130,7 @@ PulsePlatform/
 │   │       │   ├── PulseContainer.kt # Coordinates ViewModels: broadcast, refresh, close
 │   │       │   └── PulseContent.kt   # PulseHost and PulseContent composables
 │   │       └── jvmTest/kotlin/…      # PulseViewModelTest, PulseContainerTest, PulseContentTest
-│   ├── navigation/                   # :library:navigation — optional artifact: navigation
+│   ├── navigation-desktop/           # :library:navigation-desktop — optional artifact: navigation-desktop
 │   │   └── src/jvmMain/kotlin/jp/kaleidot725/pulse/navigation/
 │   │       └── PulseNavigation.kt    # rememberPulseViewModel / rememberPulseContainer /
 │   │                                 # rememberPulseNavEntryDecorators
@@ -203,7 +203,7 @@ resources in `commonMain`.
 - **Compose Multiplatform Version**: 1.10.1
 - **Coroutines Version**: 1.10.2
 - **Lifecycle Version**: 2.10.0
-- **Navigation 3 Version**: 1.1.1 (`navigation` and `navigation-mobile` modules only)
+- **Navigation 3 Version**: 1.1.1 (`navigation-desktop` and `navigation-mobile` modules only)
 - **Konsist Version**: 0.17.3 (`architecture` module only)
 - **Android Gradle Plugin**: 8.13.2, compileSdk 36, minSdk 26 (`mvi-mobile` module only)
 - **JVM Toolchain**: Java 17
@@ -212,12 +212,12 @@ resources in `commonMain`.
 ## Key Configuration
 
 - Group ID: `com.github.kaleidot725.PulsePlatform` (what JitPack serves for a multi-module repo)
-- Artifact IDs: `mvi`, `navigation`, `architecture`, `mvi-mobile`, `navigation-mobile` — the projects are `:library:mvi`,
-  `:library:navigation`, `:library:architecture`, `:library:mvi-mobile` and `:library:navigation-mobile`, and JitPack names an artifact after the project,
+- Artifact IDs: `mvi-desktop`, `navigation-desktop`, `architecture`, `mvi-mobile`, `navigation-mobile` — the projects are `:library:mvi-desktop`,
+  `:library:navigation-desktop`, `:library:architecture`, `:library:mvi-mobile` and `:library:navigation-mobile`, and JitPack names an artifact after the project,
   so the `library` directory does not appear in the coordinates
 - Packages: `jp.kaleidot725.pulse.mvi`, `jp.kaleidot725.pulse.navigation`,
   `jp.kaleidot725.pulse.architecture` — one package per artifact, all three beside each other under
   `pulse`. The core package and the `Pulse` class prefix are unchanged by the rename
-- JitPack dependency: `implementation("com.github.kaleidot725.PulsePlatform:mvi:<version>")`, and
+- JitPack dependency: `implementation("com.github.kaleidot725.PulsePlatform:mvi-desktop:<version>")`, and
   `testImplementation("com.github.kaleidot725.PulsePlatform:architecture:<version>")` for the
   convention checks

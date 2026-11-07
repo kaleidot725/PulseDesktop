@@ -1,6 +1,6 @@
 # Navigation 3
 
-Everything on this page lives in the optional `navigation` artifact for the desktop and `navigation-mobile` for Android and iOS. On mobile, `rememberPulseViewModel` takes a `PulseViewModel<*, *, *>` and `rememberPulseContainer` does not exist. The package is
+Everything on this page lives in the optional `navigation-desktop` artifact for the desktop and `navigation-mobile` for Android and iOS. On mobile, `rememberPulseViewModel` takes a `PulseViewModel<*, *, *>` and `rememberPulseContainer` does not exist. The package is
 `jp.kaleidot725.pulse.navigation`.
 
 For how the pieces fit together, see the [Navigation 3 guide](/guide/navigation3). For using the
@@ -45,7 +45,7 @@ long the ViewModel lives. Anything that changes that owner changes the ViewModel
 | The Compose Desktop `Window` | As long as the screen; survives a composition restart |
 | A Navigation 3 entry, via `rememberPulseNavEntryDecorators()` as `NavDisplay`'s `entryDecorators` | As long as the route stays on the back stack; cancelled when the route is popped |
 | One you provide with `CompositionLocalProvider(LocalViewModelStoreOwner provides ...)` | As long as you keep that owner |
-| None provided by the host | `rememberPulseViewModel` fails with a message: nothing owns a lifetime, so provide an owner or use `mvi` alone |
+| None provided by the host | `rememberPulseViewModel` fails with a message: nothing owns a lifetime, so provide an owner or use `mvi-desktop` alone |
 
 #### Two consequences worth planning for
 

@@ -1,6 +1,6 @@
 # API Overview
 
-PulsePlatform publishes one package per role. The rules live in `jp.kaleidot725.pulse.architecture` (the `architecture` artifact). The library lives in `jp.kaleidot725.pulse.mvi`, published as `mvi` for the desktop and `mvi-mobile` for Android and iOS. Navigation 3 support lives in `jp.kaleidot725.pulse.navigation`, published as `navigation` and `navigation-mobile`.
+PulsePlatform publishes one package per role. The rules live in `jp.kaleidot725.pulse.architecture` (the `architecture` artifact). The library lives in `jp.kaleidot725.pulse.mvi`, published as `mvi-desktop` for the desktop and `mvi-mobile` for Android and iOS. Navigation 3 support lives in `jp.kaleidot725.pulse.navigation`, published as `navigation-desktop` and `navigation-mobile`.
 
 ## Rules
 
@@ -33,7 +33,7 @@ The assertions your tests call, and the queries behind them. Every page of the [
 
 ## Library
 
-`PulseViewModel`, `PulseContent` and the three markers below are in both `mvi` and `mvi-mobile`, and the two Navigation 3 composables are in both `navigation` and `navigation-mobile`. On mobile, `PulseViewModel` takes three type parameters instead of five.
+`PulseViewModel`, `PulseContent` and the three markers below are in both `mvi-desktop` and `mvi-mobile`, and the two Navigation 3 composables are in both `navigation-desktop` and `navigation-mobile`. On mobile, `PulseViewModel` takes three type parameters instead of five.
 
 | Declaration | Description |
 |---|---|
@@ -47,7 +47,7 @@ The assertions your tests call, and the queries behind them. Every page of the [
 
 ## Desktop
 
-These are in `mvi` and `navigation` only.
+These are in `mvi-desktop` and `navigation-desktop` only.
 
 | Declaration | Description |
 |---|---|

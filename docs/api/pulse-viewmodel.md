@@ -15,7 +15,7 @@ abstract class PulseViewModel<
 
 Abstract base class that holds the UI state of a content on the desktop, or of a screen on mobile.
 
-The signature above is the desktop's, in `mvi`. In `mvi-mobile` the class takes three type parameters, and `unicast`, `onReceive()` and `unicast()` do not exist; everything else on this page is the same. Use `unicast()` on the desktop when the ViewModel needs to send messages up to its parent Container.
+The signature above is the desktop's, in `mvi-desktop`. In `mvi-mobile` the class takes three type parameters, and `unicast`, `onReceive()` and `unicast()` do not exist; everything else on this page is the same. Use `unicast()` on the desktop when the ViewModel needs to send messages up to its parent Container.
 
 ```kotlin
 // mvi-mobile
